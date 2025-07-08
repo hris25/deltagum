@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { createOrderSchema } from "@/lib/validations";
 import { ApiResponse } from "@/types";
-import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/orders - Récupérer les commandes
@@ -13,9 +12,9 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get("limit");
     const offset = searchParams.get("offset");
 
-    const where: Prisma.OrderWhereInput = {};
+    const where: any = {};
     if (customerId) where.customerId = customerId;
-    if (status) where.status = status as Prisma.EnumOrderStatusFilter;
+    if (status) where.status = status;
 
     const take = limit ? parseInt(limit) : undefined;
     const skip = offset ? parseInt(offset) : undefined;

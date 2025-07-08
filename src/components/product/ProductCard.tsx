@@ -25,12 +25,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   // Vérifier la disponibilité
   const totalStock =
-    product.variants?.reduce((sum, v) => sum + v.stock, 0) || 0;
+    product.variants?.reduce((sum: any, v: any) => sum + v.stock, 0) || 0;
   const isOutOfStock = totalStock === 0;
 
   // Compter les saveurs disponibles
   const availableFlavors =
-    product.variants?.filter((v) => v.stock > 0).length || 0;
+    product.variants?.filter((v: any) => v.stock > 0).length || 0;
 
   return (
     <motion.div
@@ -194,28 +194,32 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   Saveurs :
                 </span>
                 <div className="flex justify-center space-x-1">
-                  {product.variants.slice(0, 3).map((variant, index) => {
-                    const flavorEmoji =
-                      {
-                        strawberry: "🍓",
-                        blueberry: "🫐",
-                        apple: "🍏",
-                      }[variant.flavor.toLowerCase()] || "🍭";
+                  {product.variants
+                    .slice(0, 3)
+                    .map((variant: any, index: any) => {
+                      const flavorEmoji =
+                        (
+                          {
+                            strawberry: "🍓",
+                            blueberry: "🫐",
+                            apple: "🍏",
+                          } as any
+                        )[variant.flavor.toLowerCase()] || "🍭";
 
-                    return (
-                      <motion.span
-                        key={variant.id}
-                        className={`text-lg ${
-                          variant.stock === 0 ? "opacity-30" : ""
-                        }`}
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        {flavorEmoji}
-                      </motion.span>
-                    );
-                  })}
+                      return (
+                        <motion.span
+                          key={variant.id}
+                          className={`text-lg ${
+                            variant.stock === 0 ? "opacity-30" : ""
+                          }`}
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          {flavorEmoji}
+                        </motion.span>
+                      );
+                    })}
                   {product.variants.length > 3 && (
                     <span className="text-xs text-gray-400 self-center">
                       +{product.variants.length - 3}

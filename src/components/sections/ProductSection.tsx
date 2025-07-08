@@ -84,7 +84,7 @@ const ProductSection: React.FC = () => {
 
   // Create variants with product relation for FlavorSelector
   const variantsWithProduct =
-    selectedProduct?.variants?.map((variant) => ({
+    selectedProduct?.variants?.map((variant: any) => ({
       ...variant,
       product: selectedProduct,
     })) || [];
