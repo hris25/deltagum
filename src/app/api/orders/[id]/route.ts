@@ -107,7 +107,7 @@ export async function PATCH(
             orderId: updatedOrder.id,
             customerName: `${updatedOrder.customer.firstName} ${updatedOrder.customer.lastName}`,
             totalAmount: Number(updatedOrder.totalAmount),
-            items: updatedOrder.items.map((item) => ({
+            items: updatedOrder.items.map((item: any) => ({
               name: item.product.name,
               flavor: item.variant.flavor,
               quantity: item.quantity,
