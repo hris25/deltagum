@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Créer les line items pour Stripe
-    const lineItems = order.items.map((item) => ({
+    const lineItems = order.items.map((item: any) => ({
       price_data: {
         currency: "eur",
         product_data: {
