@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -65,11 +65,11 @@ async function main() {
       // Ajouter des promotions sur certaines variantes
       if (product.name === "Deltagum Classic" && flavor.name === "Fraise") {
         originalPrice = price;
-        price = new Prisma.Decimal(3.99); // Prix promotionnel
+        price = price; // Pas de promotion pour l'instant
       }
       if (product.name === "Deltagum Premium" && flavor.name === "Myrtille") {
         originalPrice = price;
-        price = new Prisma.Decimal(6.99); // Prix promotionnel
+        price = price; // Pas de promotion pour l'instant
       }
 
       await prisma.productVariant.create({
