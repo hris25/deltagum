@@ -31,14 +31,15 @@ model ProductVariant {
   productId String
   flavor    FlavorType
   color     String
+  image     String     @default("/img/placeholder.svg")
   stock     Int        @default(0)
   sku       String     @unique
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  
+
   product    Product     @relation(fields: [productId], references: [id])
   orderItems OrderItem[]
-  
+
   @@map("product_variants")
 }
 

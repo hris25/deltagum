@@ -5,7 +5,8 @@ import { staggerContainer, staggerItem } from "@/lib/animations";
 import { formatPrice } from "@/lib/utils";
 import type { ProductVariant } from "@/types";
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { FlavorSlider } from "./FlavorSlider";
 
 interface FlavorSelectorProps {
   variants: ProductVariant[];
@@ -17,7 +18,7 @@ const flavorConfig = {
   strawberry: {
     name: "Fraise",
     emoji: "🍓",
-    image: "/img/4.jpg", // Image spécifique fraise
+
     color: "from-pink-400 to-red-500",
     bgColor: "bg-pink-50",
     borderColor: "border-pink-300",
@@ -27,7 +28,7 @@ const flavorConfig = {
   blueberry: {
     name: "Myrtille",
     emoji: "🫐",
-    image: "/img/5.jpg", // Image spécifique myrtille
+
     color: "from-blue-400 to-purple-500",
     bgColor: "bg-blue-50",
     borderColor: "border-blue-300",
@@ -37,7 +38,7 @@ const flavorConfig = {
   apple: {
     name: "Pomme",
     emoji: "🍏",
-    image: "/img/6.jpg", // Image spécifique pomme
+
     color: "from-green-400 to-emerald-500",
     bgColor: "bg-green-50",
     borderColor: "border-green-300",
@@ -51,13 +52,35 @@ const FlavorSelector: React.FC<FlavorSelectorProps> = ({
   selectedVariant,
   onVariantSelect,
 }) => {
+  const [screenSize, setScreenSize] = useState<"mobile" | "tablet" | "desktop">(
+    "desktop"
+  );
+
+  // Détecter la taille d'écran
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setScreenSize("mobile");
+      } else if (width < 1024) {
+        setScreenSize("tablet");
+      } else {
+        setScreenSize("desktop");
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   const getFlavorConfig = (flavor: string) => {
     const normalizedFlavor = flavor.toLowerCase();
     return (
       flavorConfig[normalizedFlavor as keyof typeof flavorConfig] || {
         name: flavor,
         emoji: "🍭",
-        image: "/img/placeholder.svg",
         color: "from-gray-400 to-gray-500",
         bgColor: "bg-gray-50",
         borderColor: "border-gray-300",
@@ -66,6 +89,17 @@ const FlavorSelector: React.FC<FlavorSelectorProps> = ({
       }
     );
   };
+
+  // Si on est sur mobile ou tablette, utiliser le slider
+  if (screenSize === "mobile" || screenSize === "tablet") {
+    return (
+      <FlavorSlider
+        variants={variants}
+        selectedVariant={selectedVariant}
+        onVariantSelect={onVariantSelect}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -80,7 +114,7 @@ const FlavorSelector: React.FC<FlavorSelectorProps> = ({
         >
           <div className="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden shadow-xl">
             <img
-              src={getFlavorConfig(selectedVariant.flavor).image}
+              src={(selectedVariant as any).image || "/img/placeholder.svg"}
               alt={`Délices CBD saveur ${
                 getFlavorConfig(selectedVariant.flavor).name
               }`}

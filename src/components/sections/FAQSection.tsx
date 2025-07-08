@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent } from "@/components/ui";
 import { FAQFloatingCandies } from "@/components/animations";
+import { Card, CardContent } from "@/components/ui";
 import {
   fadeIn,
   slideUp,
   staggerContainer,
   staggerItem,
 } from "@/lib/animations";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useState } from "react";
 
 interface FAQItem {
   id: string;
@@ -26,34 +26,50 @@ const FAQSection: React.FC = () => {
   const faqItems: FAQItem[] = [
     {
       id: "1",
-      question: "Quels sont les ingrédients utilisés dans vos bonbons ?",
+      question: "Qu'est-ce que le CBD et quels sont ses effets ?",
       answer:
-        "Nos bonbons sont fabriqués avec des ingrédients naturels de première qualité : sucre de canne, sirop de glucose, arômes naturels de fruits (fraise, myrtille, pomme), colorants naturels, et gélatine. Nous n'utilisons aucun conservateur artificiel ni additif chimique.",
+        "Le CBD (cannabidiol) est un composé naturel extrait du chanvre. Il est reconnu pour ses propriétés relaxantes et apaisantes, sans effet psychoactif. Nos délices Deltagum contiennent 10mg de CBD par unité, dosage idéal pour la détente et le bien-être quotidien.",
       category: "products",
-      icon: "🌱",
+      icon: "🌿",
     },
     {
       id: "2",
-      question: "Combien de temps prend la livraison ?",
+      question: "Les produits Deltagum sont-ils légaux en France ?",
       answer:
-        "Nous proposons deux options de livraison : standard (gratuite, 3-5 jours ouvrés) et express (4,99€, 24-48h). Toutes les commandes passées avant 14h sont expédiées le jour même. Vous recevrez un email de suivi avec le numéro de tracking.",
-      category: "shipping",
-      icon: "🚚",
+        "Oui, nos produits CBD Deltagum sont parfaitement légaux en France. Ils contiennent moins de 0,2% de THC conformément à la réglementation européenne. Nos produits sont testés en laboratoire et certifiés pour garantir leur conformité.",
+      category: "general",
+      icon: "⚖️",
     },
     {
       id: "3",
-      question: "Vos bonbons conviennent-ils aux végétariens ?",
+      question: "À partir de quel âge peut-on consommer Deltagum ?",
       answer:
-        "Nos bonbons contiennent de la gélatine d'origine animale et ne conviennent donc pas aux végétariens. Nous travaillons actuellement sur une gamme végane avec de la pectine de fruits qui sera disponible prochainement.",
+        "Nos délices CBD Deltagum sont strictement réservés aux adultes de 18 ans et plus. Une vérification d'âge est obligatoire lors de l'achat. Nous déconseillons la consommation aux femmes enceintes ou allaitantes.",
+      category: "general",
+      icon: "🔞",
+    },
+    {
+      id: "4",
+      question: "Combien de délices CBD puis-je consommer par jour ?",
+      answer:
+        "Nous recommandons de commencer par 1 délice par jour (10mg de CBD) et d'ajuster selon vos besoins. Ne pas dépasser 3 délices par jour. Attendez 2h entre chaque prise pour évaluer les effets. Consultez un professionnel de santé si vous prenez des médicaments.",
       category: "products",
-      icon: "🥕",
+      icon: "💊",
+    },
+    {
+      id: "5",
+      question: "Combien de temps prend la livraison ?",
+      answer:
+        "Livraison standard gratuite en 3-5 jours ouvrés, express (4,99€) en 24-48h. Commandes avant 14h expédiées le jour même. Emballage discret et sécurisé. Suivi par email avec numéro de tracking.",
+      category: "shipping",
+      icon: "🚚",
     },
   ];
 
   const categories = [
     { id: "all", name: "Toutes", icon: "📋" },
     { id: "general", name: "Général", icon: "❓" },
-    { id: "products", name: "Produits", icon: "🍭" },
+    { id: "products", name: "Produits", icon: "🌿" },
     { id: "shipping", name: "Livraison", icon: "📦" },
     { id: "payment", name: "Paiement", icon: "💰" },
   ];

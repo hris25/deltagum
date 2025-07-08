@@ -44,20 +44,29 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const variantClasses = {
       default: [
-        "border border-gray-300 bg-white",
+        "border border-gray-300 bg-white text-gray-900",
+        "placeholder:text-gray-400",
+        "hover:border-gray-400",
         "focus:border-pink-500 focus:ring-pink-500/20",
+        "shadow-sm",
         error
           ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
           : "",
       ],
       filled: [
-        "border-0 bg-gray-100",
-        "focus:bg-white focus:ring-pink-500/20",
+        "border-0 bg-gray-50 text-gray-900",
+        "placeholder:text-gray-400",
+        "hover:bg-gray-100",
+        "focus:bg-white focus:ring-pink-500/20 focus:shadow-md",
+        "shadow-sm",
         error ? "bg-red-50 focus:ring-red-500/20" : "",
       ],
       outlined: [
-        "border-2 border-gray-300 bg-transparent",
+        "border-2 border-gray-300 bg-white text-gray-900",
+        "placeholder:text-gray-400",
+        "hover:border-gray-400",
         "focus:border-pink-500 focus:ring-pink-500/20",
+        "shadow-sm",
         error
           ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
           : "",
@@ -244,20 +253,29 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     const variantClasses = {
       default: [
-        "border border-gray-300 bg-white",
+        "border border-gray-300 bg-white text-gray-900",
+        "placeholder:text-gray-400",
+        "hover:border-gray-400",
         "focus:border-pink-500 focus:ring-pink-500/20",
+        "shadow-sm",
         error
           ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
           : "",
       ],
       filled: [
-        "border-0 bg-gray-100",
-        "focus:bg-white focus:ring-pink-500/20",
+        "border-0 bg-gray-50 text-gray-900",
+        "placeholder:text-gray-400",
+        "hover:bg-gray-100",
+        "focus:bg-white focus:ring-pink-500/20 focus:shadow-md",
+        "shadow-sm",
         error ? "bg-red-50 focus:ring-red-500/20" : "",
       ],
       outlined: [
-        "border-2 border-gray-300 bg-transparent",
+        "border-2 border-gray-300 bg-white text-gray-900",
+        "placeholder:text-gray-400",
+        "hover:border-gray-400",
         "focus:border-pink-500 focus:ring-pink-500/20",
+        "shadow-sm",
         error
           ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
           : "",

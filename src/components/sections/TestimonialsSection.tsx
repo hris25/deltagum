@@ -34,7 +34,7 @@ const TestimonialsSection: React.FC = () => {
       location: "Paris",
       rating: 5,
       comment:
-        "Des bonbons absolument délicieux ! La saveur fraise est incroyable, on sent vraiment le fruit. Mon fils en redemande sans arrêt. Livraison rapide et emballage soigné.",
+        "Deltagum m'aide énormément à gérer mon stress quotidien. La saveur fraise est délicieuse et l'effet relaxant se fait sentir rapidement. Parfait après une journée difficile !",
       avatar: "👩‍🦰",
       date: "2024-01-15",
       verified: true,
@@ -46,7 +46,7 @@ const TestimonialsSection: React.FC = () => {
       location: "Lyon",
       rating: 5,
       comment:
-        "J'ai découvert Deltagum par hasard et c'est devenu ma confiserie préférée ! Les bonbons à la myrtille sont un pur délice. Qualité artisanale exceptionnelle.",
+        "J'ai découvert Deltagum CBD pour mes problèmes de sommeil. Les délices à la myrtille m'aident à me détendre le soir. Qualité exceptionnelle et effet naturel.",
       avatar: "👨‍💼",
       date: "2024-01-12",
       verified: true,
@@ -58,7 +58,7 @@ const TestimonialsSection: React.FC = () => {
       location: "Marseille",
       rating: 5,
       comment:
-        "Parfait pour offrir ! J'ai commandé pour l'anniversaire de ma fille et tous les enfants ont adoré. Les saveurs sont authentiques et pas trop sucrées.",
+        "Excellente alternative naturelle pour la relaxation ! Les délices CBD saveur pomme sont parfaits pour décompresser. Goût authentique et effet apaisant garanti.",
       avatar: "👩‍🎨",
       date: "2024-01-10",
       verified: true,
@@ -70,7 +70,7 @@ const TestimonialsSection: React.FC = () => {
       location: "Toulouse",
       rating: 5,
       comment:
-        "En tant que chef pâtissier, je suis très exigeant sur la qualité. Ces bonbons sont remarquables, avec des arômes naturels et une texture parfaite.",
+        "En tant que professionnel du bien-être, je recommande Deltagum. Produit CBD de qualité premium, dosage parfait et saveurs naturelles remarquables.",
       avatar: "👨‍🍳",
       date: "2024-01-08",
       verified: true,
@@ -82,7 +82,7 @@ const TestimonialsSection: React.FC = () => {
       location: "Bordeaux",
       rating: 5,
       comment:
-        "Service client au top ! J'avais une question sur les ingrédients (allergies) et j'ai eu une réponse très rapide et détaillée. Produits excellents !",
+        "Service client très professionnel ! Ils m'ont bien expliqué les effets du CBD et conseillé le bon dosage. Produit efficace pour la détente et le bien-être.",
       avatar: "👩‍💻",
       date: "2024-01-05",
       verified: true,
@@ -316,8 +316,8 @@ const TestimonialsSection: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="mr-2">🍭</span>
-              Découvrir nos bonbons
+              <span className="mr-2">🌿</span>
+              Découvrir nos délices CBD
             </motion.button>
 
             <motion.button

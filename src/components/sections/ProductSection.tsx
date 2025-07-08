@@ -128,23 +128,38 @@ const ProductSection: React.FC = () => {
         </motion.div>
 
         {/* Products Grid */}
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16"
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-        >
-          {products.map((product) => (
-            <motion.div key={product.id} variants={staggerItem}>
-              <ProductCard
-                product={product}
-                isSelected={selectedProduct?.id === product.id}
-                onSelect={() => setSelectedProduct(product)}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
+        {products.length > 0 ? (
+          <motion.div
+            className={`mb-16 ${
+              products.length === 1
+                ? "flex justify-center"
+                : "grid grid-cols-1 lg:grid-cols-3 gap-8"
+            }`}
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
+            {products.map((product) => (
+              <motion.div
+                key={product.id}
+                variants={staggerItem}
+                className={products.length === 1 ? "max-w-md w-full" : ""}
+              >
+                <ProductCard
+                  product={product}
+                  isSelected={selectedProduct?.id === product.id}
+                  onSelect={() => setSelectedProduct(product)}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="text-4xl mb-4">🍭</div>
+            <p className="text-gray-500 text-lg">Chargement des produits...</p>
+          </div>
+        )}
 
         {/* Product Details & Flavor Selection */}
         <AnimatePresence mode="wait">

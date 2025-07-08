@@ -138,27 +138,36 @@ const ContactSection: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Card className="h-full">
+              <Card className="h-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                 <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-6">
-                    Envoyez-nous un message
-                  </h3>
+                  <div className="text-center mb-8">
+                    <div className="text-4xl mb-4">💬</div>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                      Envoyez-nous un message
+                    </h3>
+                    <p className="text-gray-600">
+                      Nous vous répondrons dans les plus brefs délais
+                    </p>
+                  </div>
 
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
                           Nom complet *
                         </label>
                         <Input
                           {...register("name")}
-                          placeholder="Votre nom"
+                          placeholder="Votre nom complet"
                           error={errors.name?.message}
+                          variant="filled"
+                          inputSize="lg"
+                          fullWidth
                         />
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
                           Email *
                         </label>
                         <Input
@@ -166,62 +175,77 @@ const ContactSection: React.FC = () => {
                           type="email"
                           placeholder="votre@email.com"
                           error={errors.email?.message}
+                          variant="filled"
+                          inputSize="lg"
+                          fullWidth
                         />
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-semibold text-gray-700">
                         Sujet *
                       </label>
                       <Input
                         {...register("subject")}
                         placeholder="Objet de votre message"
                         error={errors.subject?.message}
+                        variant="filled"
+                        inputSize="lg"
+                        fullWidth
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-semibold text-gray-700">
                         Message *
                       </label>
                       <Textarea
                         {...register("message")}
-                        placeholder="Votre message..."
+                        placeholder="Décrivez votre demande en détail..."
                         rows={6}
                         error={errors.message?.message}
+                        variant="filled"
+                        inputSize="lg"
+                        fullWidth
                       />
                     </div>
 
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      size="lg"
-                      disabled={isSubmitting}
-                      fullWidth
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
-                      {isSubmitting ? (
-                        <span className="flex items-center">
-                          <motion.span
-                            className="mr-2"
-                            animate={{ rotate: 360 }}
-                            transition={{
-                              duration: 1,
-                              repeat: Infinity,
-                              ease: "linear",
-                            }}
-                          >
-                            📧
-                          </motion.span>
-                          Envoi en cours...
-                        </span>
-                      ) : (
-                        <span className="flex items-center">
-                          <span className="mr-2">📨</span>
-                          Envoyer le message
-                        </span>
-                      )}
-                    </Button>
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        size="lg"
+                        disabled={isSubmitting}
+                        fullWidth
+                        className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        {isSubmitting ? (
+                          <span className="flex items-center justify-center">
+                            <motion.span
+                              className="mr-3 text-xl"
+                              animate={{ rotate: 360 }}
+                              transition={{
+                                duration: 1,
+                                repeat: Infinity,
+                                ease: "linear",
+                              }}
+                            >
+                              📧
+                            </motion.span>
+                            Envoi en cours...
+                          </span>
+                        ) : (
+                          <span className="flex items-center justify-center">
+                            <span className="mr-3 text-xl">📨</span>
+                            Envoyer le message
+                          </span>
+                        )}
+                      </Button>
+                    </motion.div>
                   </form>
                 </CardContent>
               </Card>

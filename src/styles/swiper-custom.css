@@ -1,0 +1,150 @@
+/* Styles personnalisés pour Swiper */
+
+/* Pagination bullets */
+.swiper-pagination-bullet {
+  width: 12px !important;
+  height: 12px !important;
+  background: #f3f4f6 !important;
+  opacity: 0.7 !important;
+  transition: all 0.3s ease !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: linear-gradient(135deg, #ec4899, #f97316) !important;
+  opacity: 1 !important;
+  transform: scale(1.2) !important;
+}
+
+/* Espacement de la pagination */
+.swiper-pagination {
+  bottom: 0 !important;
+  padding-top: 20px !important;
+}
+
+/* Styles pour les boutons de navigation personnalisés */
+.flavor-nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.flavor-nav-button:hover {
+  color: #ec4899;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.flavor-nav-button:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.flavor-nav-button.prev {
+  left: -22px;
+}
+
+.flavor-nav-button.next {
+  right: -22px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .flavor-nav-button {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .flavor-nav-button.prev {
+    left: -18px;
+  }
+  
+  .flavor-nav-button.next {
+    right: -18px;
+  }
+}
+
+/* Animation pour les cartes */
+.flavor-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flavor-card:hover {
+  transform: translateY(-4px);
+}
+
+.flavor-card.selected {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Gradient overlay animation */
+.flavor-gradient-overlay {
+  transition: opacity 0.3s ease;
+}
+
+/* Styles pour les badges */
+.flavor-badge {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Animation pour l'indicateur de sélection */
+.selection-indicator {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Styles pour l'image principale */
+.main-flavor-image {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-flavor-image:hover {
+  transform: scale(1.02);
+}
+
+/* Amélioration de l'accessibilité */
+.flavor-nav-button:focus {
+  outline: 2px solid #ec4899;
+  outline-offset: 2px;
+}
+
+.flavor-card:focus {
+  outline: 2px solid #ec4899;
+  outline-offset: 2px;
+}
+
+/* Animation de chargement */
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
