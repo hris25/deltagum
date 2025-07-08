@@ -24,7 +24,7 @@ export async function GET(
     }
 
     // Récupérer la commande associée
-    let order = null;
+    let order: any = null;
     if (session.metadata?.orderId) {
       order = await prisma.order.findUnique({
         where: { id: session.metadata.orderId },
