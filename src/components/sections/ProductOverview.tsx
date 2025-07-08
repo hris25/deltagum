@@ -7,7 +7,7 @@ import { useProduct } from "@/stores";
 import { motion } from "framer-motion";
 import { Eye } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 const ProductOverview = () => {
   const { products, fetchProducts } = useProduct();
@@ -16,9 +16,16 @@ const ProductOverview = () => {
     fetchProducts();
   }, [fetchProducts]);
 
+  // Debug: afficher les produits dans la console
+  useEffect(() => {
+    console.log("ProductOverview - products:", products);
+  }, [products]);
+
   const getBasePrice = (product) => {
     if (product.priceTiers && product.priceTiers.length > 0) {
-      const sortedTiers = [...product.priceTiers].sort((a, b) => a.quantity - b.quantity);
+      const sortedTiers = [...product.priceTiers].sort(
+        (a, b) => a.quantity - b.quantity
+      );
       return Number(sortedTiers[0].price);
     }
     return Number(product.basePrice);
@@ -26,7 +33,9 @@ const ProductOverview = () => {
 
   const getBaseQuantity = (product) => {
     if (product.priceTiers && product.priceTiers.length > 0) {
-      const sortedTiers = [...product.priceTiers].sort((a, b) => a.quantity - b.quantity);
+      const sortedTiers = [...product.priceTiers].sort(
+        (a, b) => a.quantity - b.quantity
+      );
       return sortedTiers[0].quantity;
     }
     return 1;
@@ -130,11 +139,7 @@ const ProductOverview = () => {
                   </div>
 
                   <Link href={`/products/${product.id}`}>
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      className="w-full"
-                    >
+                    <Button variant="primary" size="lg" className="w-full">
                       <Eye className="w-4 h-4 mr-2" />
                       Voir le produit
                     </Button>
@@ -156,7 +161,8 @@ const ProductOverview = () => {
               Nos produits arrivent bientôt !
             </h3>
             <p className="text-gray-600">
-              Nous préparons une sélection exceptionnelle de produits Delta-9 pour vous.
+              Nous préparons une sélection exceptionnelle de produits Delta-9
+              pour vous.
             </p>
           </motion.div>
         )}
