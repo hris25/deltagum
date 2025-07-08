@@ -10,18 +10,18 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ProductPage() {
   const params = useParams();
   const productId = params.id;
-  
+
   const { products, fetchProducts } = useProduct();
   const { addItem } = useCart();
   const { addNotification } = useNotifications();
-  
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedVariant, setSelectedVariant] = useState(null);
+
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
   useEffect(() => {
@@ -30,30 +30,36 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (products.length > 0 && productId) {
-      const product = products.find(p => p.id === productId);
+      const product = products.find((p) => p.id === productId);
       if (product) {
         setSelectedProduct(product);
         if (product.variants && product.variants.length > 0) {
           setSelectedVariant(product.variants[0]);
         }
         if (product.priceTiers && product.priceTiers.length > 0) {
-          const sortedTiers = [...product.priceTiers].sort((a, b) => a.quantity - b.quantity);
+          const sortedTiers = [...product.priceTiers].sort(
+            (a, b) => a.quantity - b.quantity
+          );
           setSelectedQuantity(sortedTiers[0].quantity);
         }
       }
     }
   }, [products, productId]);
 
-  const getPriceForQuantity = (product, quantity) => {
+  const getPriceForQuantity = (product: any, quantity: number) => {
     if (!product.priceTiers || product.priceTiers.length === 0) {
       return Number(product.basePrice) * quantity;
     }
-    
-    const priceTier = product.priceTiers.find(tier => tier.quantity === quantity);
-    return priceTier ? Number(priceTier.price) : Number(product.basePrice) * quantity;
+
+    const priceTier = product.priceTiers.find(
+      (tier) => tier.quantity === quantity
+    );
+    return priceTier
+      ? Number(priceTier.price)
+      : Number(product.basePrice) * quantity;
   };
 
-  const handleQuantityChange = (newQuantity) => {
+  const handleQuantityChange = (newQuantity: number) => {
     setSelectedQuantity(newQuantity);
   };
 
@@ -61,7 +67,6 @@ export default function ProductPage() {
     if (!selectedProduct || !selectedVariant) return;
 
     addItem({
-      id: `${selectedProduct.id}-${selectedVariant.id}`,
       productId: selectedProduct.id,
       variantId: selectedVariant.id,
       quantity: selectedQuantity,
@@ -74,11 +79,14 @@ export default function ProductPage() {
 
     addNotification({
       type: "success",
+      title: "Produit ajouté !",
       message: `${selectedQuantity} ${selectedProduct.name} ajouté au panier !`,
     });
 
     if (selectedProduct.priceTiers && selectedProduct.priceTiers.length > 0) {
-      const sortedTiers = [...selectedProduct.priceTiers].sort((a, b) => a.quantity - b.quantity);
+      const sortedTiers = [...selectedProduct.priceTiers].sort(
+        (a, b) => a.quantity - b.quantity
+      );
       setSelectedQuantity(sortedTiers[0].quantity);
     }
   };
@@ -157,30 +165,34 @@ export default function ProductPage() {
             <div className="text-center lg:text-left">
               <div className="flex items-center justify-center lg:justify-start space-x-3">
                 <span className="text-4xl font-bold text-pink-600">
-                  {formatPrice(getPriceForQuantity(selectedProduct, selectedQuantity))}
+                  {formatPrice(
+                    getPriceForQuantity(selectedProduct, selectedQuantity)
+                  )}
                 </span>
               </div>
             </div>
 
-            {selectedProduct.variants && selectedProduct.variants.length > 0 && (
-              <FlavorSelector
-                variants={selectedProduct.variants.map(variant => ({
-                  ...variant,
-                  product: selectedProduct,
-                }))}
-                selectedVariant={selectedVariant}
-                onVariantChange={setSelectedVariant}
-              />
-            )}
+            {selectedProduct.variants &&
+              selectedProduct.variants.length > 0 && (
+                <FlavorSelector
+                  variants={selectedProduct.variants.map((variant: any) => ({
+                    ...variant,
+                    product: selectedProduct,
+                  }))}
+                  selectedVariant={selectedVariant}
+                  onVariantSelect={setSelectedVariant}
+                />
+              )}
 
-            {selectedProduct.priceTiers && selectedProduct.priceTiers.length > 0 && (
-              <QuantitySelector
-                priceTiers={selectedProduct.priceTiers}
-                selectedQuantity={selectedQuantity}
-                onQuantityChange={handleQuantityChange}
-                className="mb-6"
-              />
-            )}
+            {selectedProduct.priceTiers &&
+              selectedProduct.priceTiers.length > 0 && (
+                <QuantitySelector
+                  priceTiers={selectedProduct.priceTiers}
+                  selectedQuantity={selectedQuantity}
+                  onQuantityChange={handleQuantityChange}
+                  className="mb-6"
+                />
+              )}
 
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 rounded-full bg-green-500" />
@@ -194,11 +206,16 @@ export default function ProductPage() {
               className="w-full text-lg py-4"
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
-              Ajouter au panier - {formatPrice(getPriceForQuantity(selectedProduct, selectedQuantity))}
+              Ajouter au panier -{" "}
+              {formatPrice(
+                getPriceForQuantity(selectedProduct, selectedQuantity)
+              )}
             </Button>
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-800 mb-2">⚠️ Informations importantes</h4>
+              <h4 className="font-semibold text-yellow-800 mb-2">
+                ⚠️ Informations importantes
+              </h4>
               <ul className="text-sm text-yellow-700 space-y-1">
                 <li>• Réservé aux adultes (18+)</li>
                 <li>• Ne pas conduire après consommation</li>
