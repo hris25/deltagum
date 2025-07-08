@@ -200,11 +200,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
                       const flavorEmoji =
                         (
                           {
-                            strawberry: "🍓",
-                            blueberry: "🫐",
-                            apple: "🍏",
+                            STRAWBERRY: "🍓",
+                            BLUEBERRY: "🫐",
+                            APPLE: "🍏",
                           } as any
-                        )[variant.flavor.toLowerCase()] || "🍭";
+                        )[variant.flavor] || "🍭";
 
                       return (
                         <motion.span

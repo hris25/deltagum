@@ -53,7 +53,7 @@ const HeroSection: React.FC = () => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-[80vh] flex items-center justify-center overflow-hidden"
       style={{
         background: "var(--gradient-hero)",
       }}
@@ -156,19 +156,19 @@ const HeroSection: React.FC = () => {
 
               {/* Main Title */}
               <motion.h1
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight font-serif"
                 initial={{ opacity: 0, y: 50, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
                 <span className="block bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
-                  Délices CBD
+                  Nos produits
                 </span>
                 <span className="block bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-                  qui détendent
+                  Deltagum
                 </span>
                 <span className="block bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 bg-clip-text text-transparent">
-                  naturellement
+                  premium
                 </span>
               </motion.h1>
 
@@ -179,9 +179,9 @@ const HeroSection: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
               >
-                Découvrez Deltagum, nos délices CBD artisanaux aux saveurs
-                naturelles. Un seul produit exceptionnel disponible en trois
-                délicieuses variantes :
+                Découvrez Deltagum, nos produits premium aux saveurs naturelles.
+                Un produit exceptionnel disponible en trois délicieuses
+                variantes :
                 <span className="text-pink-500 font-semibold"> fraise</span>,
                 <span className="text-blue-500 font-semibold"> myrtille</span>{" "}
                 et
@@ -233,7 +233,7 @@ const HeroSection: React.FC = () => {
                 {/* Image décorative */}
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                   <img
-                    src="/img/2.jpg"
+                    src="/img/3.jpg"
                     alt="Délicieux délices colorés - Image décorative"
                     className="w-full h-auto object-cover"
                     loading="eager"

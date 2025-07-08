@@ -1,6 +1,6 @@
 "use client";
 
-import { ContactFloatingCandies } from "@/components/animations";
+// import { ContactFloatingCandies } from "@/components/animations";
 import { Button, Card, CardContent, Input, Textarea } from "@/components/ui";
 import {
   fadeIn,
@@ -91,15 +91,14 @@ const ContactSection: React.FC = () => {
   return (
     <section
       id="contact"
-      className="py-20 bg-gradient-to-br from-gray-50 to-pink-50 relative overflow-hidden"
+      className="py-8 bg-gradient-to-br from-gray-50 to-pink-50 relative overflow-hidden"
     >
-      {/* Background Elements */}
-      <ContactFloatingCandies />
+      {/* Background Elements - Removed for cleaner design */}
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-8"
           initial={fadeIn.initial}
           whileInView={fadeIn.animate}
           viewport={{ once: true }}

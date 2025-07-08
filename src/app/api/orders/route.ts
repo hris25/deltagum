@@ -84,14 +84,15 @@ export async function POST(request: NextRequest) {
         throw new Error(`Produit ${item.productId} non trouvé`);
       }
 
-      const itemTotal = Number(product.price) * item.quantity;
+      const itemPrice = Number((product as any).basePrice);
+      const itemTotal = itemPrice * item.quantity;
       totalAmount += itemTotal;
 
       orderItems.push({
         productId: item.productId,
         variantId: item.variantId,
         quantity: item.quantity,
-        price: Number(product.price),
+        price: itemPrice,
       });
     }
 

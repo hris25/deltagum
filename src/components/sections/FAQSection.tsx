@@ -1,6 +1,6 @@
 "use client";
 
-import { FAQFloatingCandies } from "@/components/animations";
+// import { FAQFloatingCandies } from "@/components/animations";
 import { Card, CardContent } from "@/components/ui";
 import {
   fadeIn,
@@ -84,14 +84,13 @@ const FAQSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-20 bg-white relative overflow-hidden">
-      {/* Background Elements */}
-      <FAQFloatingCandies />
+    <section id="faq" className="py-8 bg-white relative overflow-hidden">
+      {/* Background Elements - Removed for cleaner design */}
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-8"
           initial={fadeIn.initial}
           whileInView={fadeIn.animate}
           viewport={{ once: true }}
@@ -123,7 +122,7 @@ const FAQSection: React.FC = () => {
 
         {/* Category Filter */}
         <motion.div
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="flex flex-wrap justify-center gap-3 mb-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui";
 import { staggerContainer, staggerItem } from "@/lib/animations";
+import { translateFlavor } from "@/lib/flavors";
 import { formatPrice } from "@/lib/utils";
 import type { ProductVariant } from "@/types";
 import { motion } from "framer-motion";
@@ -15,7 +16,7 @@ interface FlavorSelectorProps {
 }
 
 const flavorConfig = {
-  strawberry: {
+  STRAWBERRY: {
     name: "Fraise",
     emoji: "🍓",
 
@@ -25,7 +26,7 @@ const flavorConfig = {
     selectedBorder: "border-pink-500",
     textColor: "text-pink-700",
   },
-  blueberry: {
+  BLUEBERRY: {
     name: "Myrtille",
     emoji: "🫐",
 
@@ -35,7 +36,7 @@ const flavorConfig = {
     selectedBorder: "border-blue-500",
     textColor: "text-blue-700",
   },
-  apple: {
+  APPLE: {
     name: "Pomme",
     emoji: "🍏",
 
@@ -76,10 +77,9 @@ const FlavorSelector: React.FC<FlavorSelectorProps> = ({
   }, []);
 
   const getFlavorConfig = (flavor: string) => {
-    const normalizedFlavor = flavor.toLowerCase();
     return (
-      flavorConfig[normalizedFlavor as keyof typeof flavorConfig] || {
-        name: flavor,
+      flavorConfig[flavor as keyof typeof flavorConfig] || {
+        name: translateFlavor(flavor),
         emoji: "🍭",
         color: "from-gray-400 to-gray-500",
         bgColor: "bg-gray-50",

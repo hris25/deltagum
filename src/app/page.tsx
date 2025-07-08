@@ -1,12 +1,11 @@
 import {
   CartSection,
-  CheckoutSection,
   ContactSection,
   FAQSection,
   HeroSection,
-  ProductSection,
   TestimonialsSection,
 } from "@/components/sections";
+import ProductOverview from "@/components/sections/ProductOverview";
 
 export default function Home() {
   return (
@@ -15,13 +14,10 @@ export default function Home() {
       <HeroSection />
 
       {/* Section des produits */}
-      <ProductSection />
+      <ProductOverview />
 
       {/* Section du panier */}
       <CartSection />
-
-      {/* Section de commande/checkout */}
-      <CheckoutSection />
 
       {/* Section des témoignages */}
       <TestimonialsSection />

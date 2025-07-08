@@ -3,7 +3,7 @@
 import { ToastContainer } from "@/components/ui";
 import { useAgeVerification } from "@/hooks/useAgeVerification";
 import { cn } from "@/lib/utils";
-import { useUI } from "@/stores";
+import { useCheckoutModal, useUI } from "@/stores";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect } from "react";
 import { Footer } from "./Footer";
@@ -30,7 +30,6 @@ const Layout: React.FC<LayoutProps> = ({
 }) => {
   const {
     isCartOpen,
-    isCheckoutOpen,
     isAuthModalOpen,
     isMobile,
     setIsMobile,
@@ -38,7 +37,18 @@ const Layout: React.FC<LayoutProps> = ({
     closeAllModals,
   } = useUI();
 
+  const { isOpen: isCheckoutModalOpen, closeModal: closeCheckoutModal } =
+    useCheckoutModal();
+
   const { isVerified, showModal, confirmAge, denyAge } = useAgeVerification();
+
+  // État pour éviter les problèmes d'hydratation
+  const [isClient, setIsClient] = React.useState(false);
+
+  // Éviter les problèmes d'hydratation
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Détecter si on est sur mobile
   useEffect(() => {
@@ -53,7 +63,7 @@ const Layout: React.FC<LayoutProps> = ({
 
   // Empêcher le scroll quand une modal est ouverte
   useEffect(() => {
-    const hasOpenModal = isCartOpen || isCheckoutOpen || isAuthModalOpen;
+    const hasOpenModal = isCartOpen || isCheckoutModalOpen || isAuthModalOpen;
     if (hasOpenModal) {
       document.body.style.overflow = "hidden";
     } else {
@@ -63,7 +73,7 @@ const Layout: React.FC<LayoutProps> = ({
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isCartOpen, isCheckoutOpen, isAuthModalOpen]);
+  }, [isCartOpen, isCheckoutModalOpen, isAuthModalOpen]);
 
   // Ne pas afficher le contenu tant que la vérification n'est pas faite
   if (isVerified === null) {
@@ -107,11 +117,25 @@ const Layout: React.FC<LayoutProps> = ({
           {showFooter && <Footer />}
 
           {/* Modals */}
-          <AnimatePresence mode="wait">
-            <CartModal isOpen={isCartOpen} onClose={closeAllModals} />
-            <ProductModal isOpen={false} onClose={closeAllModals} />
-            <CheckoutModal isOpen={isCheckoutOpen} onClose={closeAllModals} />
-          </AnimatePresence>
+          {isClient && (
+            <AnimatePresence mode="wait">
+              <CartModal
+                key="cart-modal"
+                isOpen={isCartOpen}
+                onClose={closeAllModals}
+              />
+              <ProductModal
+                key="product-modal"
+                isOpen={false}
+                onClose={closeAllModals}
+              />
+              <CheckoutModal
+                key="checkout-modal"
+                isOpen={isCheckoutModalOpen}
+                onClose={closeCheckoutModal}
+              />
+            </AnimatePresence>
+          )}
         </>
       )}
 

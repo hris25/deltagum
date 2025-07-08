@@ -9,7 +9,12 @@ import {
   Input,
 } from "@/components/ui";
 import { formatPrice } from "@/lib/utils";
-import { useCart, useCustomer, useNotifications } from "@/stores";
+import {
+  useCart,
+  useCheckoutModal,
+  useCustomer,
+  useNotifications,
+} from "@/stores";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 
@@ -17,6 +22,7 @@ const CartSummary: React.FC = () => {
   const { cart } = useCart();
   const { customer } = useCustomer();
   const { addNotification } = useNotifications();
+  const { openModal } = useCheckoutModal();
   const [promoCode, setPromoCode] = useState("");
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
 
@@ -92,17 +98,13 @@ const CartSummary: React.FC = () => {
       return;
     }
 
-    // Rediriger vers le checkout
-    const checkoutSection = document.getElementById("checkout");
-    if (checkoutSection) {
-      checkoutSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      addNotification({
-        type: "info",
-        title: "Commande",
-        message: "Redirection vers le paiement...",
-      });
-    }
+    // Ouvrir le modal de checkout
+    openModal();
+    addNotification({
+      type: "info",
+      title: "Checkout",
+      message: "Ouverture du formulaire de commande...",
+    });
   };
 
   return (

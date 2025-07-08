@@ -3,8 +3,9 @@
 import { Badge, Button } from "@/components/ui";
 import { slideDown } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { useCart, useUI } from "@/stores";
+import { useCart, useProduct, useUI } from "@/stores";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown, Menu, ShoppingCart, X } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -13,32 +14,44 @@ const Header: React.FC = () => {
   const { getTotalItems } = useCart();
   const { openCart } = useUI();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
+  const { products, fetchProducts } = useProduct();
 
   // Détecter le scroll pour changer l'apparence du header
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 200);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Récupérer les produits pour le menu déroulant
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
   const totalItems = getTotalItems();
 
   const navItems = [
-    { label: "Accueil", href: "#hero" },
-    { label: "Produits", href: "#products" },
-    { label: "À propos", href: "#about" },
-    { label: "Témoignages", href: "#testimonials" },
-    { label: "FAQ", href: "#faq" },
-    { label: "Contact", href: "#contact" },
+    { label: "Accueil", href: "/", type: "link" },
+    { label: "À propos & Légal", href: "/about", type: "link" },
+    {
+      label: "Professionnels & Revendeurs",
+      href: "/professionals",
+      type: "link",
+    },
   ];
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+  const handleNavigation = (item: { href: string; type: string }) => {
+    if (item.type === "scroll") {
+      const element = document.querySelector(item.href);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      window.location.href = item.href;
     }
     setIsMobileMenuOpen(false);
   };
@@ -88,10 +101,98 @@ const Header: React.FC = () => {
 
           {/* Navigation Desktop */}
           <nav className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item, index) => (
+            {/* Accueil */}
+            <motion.button
+              onClick={() => handleNavigation(navItems[0])}
+              className={cn(
+                "text-gray-700 hover:text-pink-500 font-medium transition-colors",
+                "relative py-2"
+              )}
+              whileHover={{ y: -2 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0 * 0.1 }}
+            >
+              {navItems[0].label}
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-pink-500 to-orange-400"
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.2 }}
+              />
+            </motion.button>
+
+            {/* Menu déroulant Produits */}
+            <div className="relative">
+              <motion.button
+                onClick={() =>
+                  setIsProductsDropdownOpen(!isProductsDropdownOpen)
+                }
+                className={cn(
+                  "text-gray-700 hover:text-pink-500 font-medium transition-colors",
+                  "relative py-2 flex items-center space-x-1"
+                )}
+                whileHover={{ y: -2 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 * 0.1 }}
+              >
+                <span>Produits</span>
+                <ChevronDown
+                  className={cn(
+                    "w-4 h-4 transition-transform",
+                    isProductsDropdownOpen && "rotate-180"
+                  )}
+                />
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-pink-500 to-orange-400"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              </motion.button>
+
+              {/* Dropdown Menu */}
+              <AnimatePresence>
+                {isProductsDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                  >
+                    {products.map((product) => (
+                      <Link
+                        key={product.id}
+                        href={`/products/${product.id}`}
+                        className="block px-4 py-3 text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-colors"
+                        onClick={() => setIsProductsDropdownOpen(false)}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-8 h-8 rounded object-cover"
+                          />
+                          <div>
+                            <div className="font-medium">{product.name}</div>
+                            <div className="text-sm text-gray-500">
+                              {product.dosage}
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Autres éléments de navigation (À propos & Légal, Professionnels & Revendeurs) */}
+            {navItems.slice(1).map((item, index) => (
               <motion.button
                 key={item.href}
-                onClick={() => scrollToSection(item.href)}
+                onClick={() => handleNavigation(item)}
                 className={cn(
                   "text-gray-700 hover:text-pink-500 font-medium transition-colors",
                   "relative py-2"
@@ -99,7 +200,7 @@ const Header: React.FC = () => {
                 whileHover={{ y: -2 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: (index + 2) * 0.1 }}
               >
                 {item.label}
                 <motion.div
@@ -122,19 +223,7 @@ const Header: React.FC = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
-                  />
-                </svg>
+                <ShoppingCart className="w-6 h-6" />
 
                 {/* Badge du nombre d'articles */}
                 <AnimatePresence>
@@ -172,33 +261,9 @@ const Header: React.FC = () => {
                   transition={{ duration: 0.2 }}
                 >
                   {isMobileMenuOpen ? (
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                    <X className="w-6 h-6" />
                   ) : (
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 6h16M4 12h16M4 18h16"
-                      />
-                    </svg>
+                    <Menu className="w-6 h-6" />
                   )}
                 </motion.div>
               </Button>
@@ -220,7 +285,7 @@ const Header: React.FC = () => {
                 {navItems.map((item, index) => (
                   <motion.button
                     key={item.href}
-                    onClick={() => scrollToSection(item.href)}
+                    onClick={() => handleNavigation(item)}
                     className="block w-full text-left px-4 py-3 text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-colors"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}

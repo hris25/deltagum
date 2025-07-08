@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui";
+import { translateFlavor } from "@/lib/flavors";
 import { formatPrice } from "@/lib/utils";
 import type { ProductVariant } from "@/types";
 import { motion } from "framer-motion";
@@ -22,7 +23,7 @@ interface FlavorSliderProps {
 }
 
 const flavorConfig = {
-  strawberry: {
+  STRAWBERRY: {
     name: "Fraise",
     emoji: "🍓",
     color: "from-pink-400 to-red-500",
@@ -31,7 +32,7 @@ const flavorConfig = {
     selectedBorder: "border-pink-500",
     textColor: "text-pink-700",
   },
-  blueberry: {
+  BLUEBERRY: {
     name: "Myrtille",
     emoji: "🫐",
     color: "from-blue-400 to-purple-500",
@@ -40,7 +41,7 @@ const flavorConfig = {
     selectedBorder: "border-blue-500",
     textColor: "text-blue-700",
   },
-  apple: {
+  APPLE: {
     name: "Pomme",
     emoji: "🍏",
     color: "from-green-400 to-emerald-500",
@@ -59,10 +60,9 @@ const FlavorSlider: React.FC<FlavorSliderProps> = ({
   const swiperRef = useRef<any>(null);
 
   const getFlavorConfig = (flavor: string) => {
-    const normalizedFlavor = flavor.toLowerCase();
     return (
-      flavorConfig[normalizedFlavor as keyof typeof flavorConfig] || {
-        name: flavor,
+      flavorConfig[flavor as keyof typeof flavorConfig] || {
+        name: translateFlavor(flavor),
         emoji: "🍭",
         color: "from-gray-400 to-gray-500",
         bgColor: "bg-gray-50",

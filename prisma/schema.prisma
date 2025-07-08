@@ -14,15 +14,17 @@ model Product {
   id          String   @id @default(cuid())
   name        String
   description String
-  price       Decimal  @db.Decimal(10, 2)
+  basePrice   Decimal  @db.Decimal(10, 2) // Prix de base pour 1 unité
   image       String
   active      Boolean  @default(true)
+  dosage      String?  // Ex: "30mg", "75mg"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   variants    ProductVariant[]
   orderItems  OrderItem[]
-  
+  priceTiers  PriceTier[] // Nouveaux prix par quantité
+
   @@map("products")
 }
 
@@ -119,4 +121,18 @@ enum LoyaltyLevel {
   SILVER
   GOLD
   PLATINUM
+}
+
+model PriceTier {
+  id        String  @id @default(cuid())
+  productId String
+  quantity  Int     // Quantité (1, 3, 6, 10, etc.)
+  price     Decimal @db.Decimal(10, 2) // Prix pour cette quantité
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, quantity])
+  @@map("price_tiers")
 }

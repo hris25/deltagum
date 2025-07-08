@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Input, Select, Textarea } from "@/components/ui";
-import { useCustomer, useNotifications } from "@/stores";
+import { useCheckoutModal, useCustomer, useNotifications } from "@/stores";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import React from "react";
@@ -33,6 +33,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
 }) => {
   const { customer, updateCustomer } = useCustomer();
   const { addNotification } = useNotifications();
+  const { closeModal } = useCheckoutModal();
 
   const {
     register,
@@ -284,10 +285,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
       <div className="flex justify-between items-center pt-6">
         <button
           type="button"
-          onClick={() => {
-            const cartSection = document.getElementById("cart");
-            cartSection?.scrollIntoView({ behavior: "smooth" });
-          }}
+          onClick={closeModal}
           className="text-gray-600 hover:text-gray-800 transition-colors"
         >
           ← Retour au panier

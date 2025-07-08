@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckoutFloatingCandies } from "@/components/animations";
+// import { CheckoutFloatingCandies } from "@/components/animations";
 import { CartItem } from "@/components/cart/CartItem";
 import { CartSummary } from "@/components/cart/CartSummary";
 import { EmptyCart } from "@/components/cart/EmptyCart";
@@ -12,7 +12,7 @@ import {
   staggerItem,
 } from "@/lib/animations";
 import { formatPrice } from "@/lib/utils";
-import { useCart, useNotifications } from "@/stores";
+import { useCart, useCheckoutModal, useNotifications } from "@/stores";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
@@ -23,6 +23,7 @@ const CartSection: React.FC = () => {
   const total = cart.totalAmount;
   const itemCount = cart.totalItems;
   const { addNotification } = useNotifications();
+  const { openModal } = useCheckoutModal();
 
   const handleQuantityUpdate = (itemId: string, newQuantity: number) => {
     if (newQuantity === 0) {
@@ -56,14 +57,13 @@ const CartSection: React.FC = () => {
   };
 
   return (
-    <section id="cart" className="py-20 bg-gray-50 relative overflow-hidden">
-      {/* Background Elements */}
-      <CheckoutFloatingCandies />
+    <section id="cart" className="py-8 bg-gray-50 relative overflow-hidden">
+      {/* Background Elements - Removed for cleaner design */}
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-12"
+          className="text-center mb-8"
           initial={fadeIn.initial}
           whileInView={fadeIn.animate}
           viewport={{ once: true }}
@@ -212,16 +212,12 @@ const CartSection: React.FC = () => {
                 variant="primary"
                 size="lg"
                 onClick={() => {
-                  const checkoutSection = document.getElementById("checkout");
-                  if (checkoutSection) {
-                    checkoutSection.scrollIntoView({ behavior: "smooth" });
-                  } else {
-                    addNotification({
-                      type: "info",
-                      title: "Navigation",
-                      message: "Redirection vers le checkout...",
-                    });
-                  }
+                  openModal();
+                  addNotification({
+                    type: "info",
+                    title: "Checkout",
+                    message: "Ouverture du formulaire de commande...",
+                  });
                 }}
                 className="min-w-[200px]"
               >

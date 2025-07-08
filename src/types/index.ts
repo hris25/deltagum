@@ -11,6 +11,8 @@ export type OrderItem = any;
 
 export type LoyaltyProgram = any;
 
+export type PriceTier = any;
+
 // Enums
 export type FlavorType = "STRAWBERRY" | "BLUEBERRY" | "APPLE";
 export type OrderStatus =
