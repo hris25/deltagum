@@ -68,7 +68,7 @@ export async function PATCH(
       ...body,
     });
 
-    const order = await prisma.$transaction(async (tx) => {
+    const order = await prisma.$transaction(async (tx: any) => {
       // Mettre à jour la commande
       const updatedOrder = await tx.order.update({
         where: { id },

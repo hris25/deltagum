@@ -1,26 +1,28 @@
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
-import { Cart, CartItem, CartStore } from '@/types'
-import { calculateCartTotal, calculateCartItemsCount } from '@/lib/utils'
+import { calculateCartItemsCount, calculateCartTotal } from "@/lib/utils";
+import { Cart, CartItem, CartStore } from "@/types";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 const initialCart: Cart = {
   items: [],
   totalItems: 0,
   totalAmount: 0,
-}
+};
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       cart: initialCart,
 
-      addItem: (newItem: Omit<CartItem, 'id'>) => {
+      addItem: (newItem: Omit<CartItem, "id">) => {
         set((state) => {
           const existingItemIndex = state.cart.items.findIndex(
-            (item) => item.productId === newItem.productId && item.variantId === newItem.variantId
-          )
+            (item) =>
+              item.productId === newItem.productId &&
+              item.variantId === newItem.variantId
+          );
 
-          let updatedItems: CartItem[]
+          let updatedItems: CartItem[];
 
           if (existingItemIndex >= 0) {
             // L'article existe déjà, augmenter la quantité
@@ -28,18 +30,18 @@ export const useCartStore = create<CartStore>()(
               index === existingItemIndex
                 ? { ...item, quantity: item.quantity + newItem.quantity }
                 : item
-            )
+            );
           } else {
             // Nouvel article, l'ajouter avec un ID unique
             const newCartItem: CartItem = {
               ...newItem,
               id: `${newItem.productId}-${newItem.variantId}-${Date.now()}`,
-            }
-            updatedItems = [...state.cart.items, newCartItem]
+            };
+            updatedItems = [...state.cart.items, newCartItem];
           }
 
-          const totalItems = calculateCartItemsCount(updatedItems)
-          const totalAmount = calculateCartTotal(updatedItems)
+          const totalItems = calculateCartItemsCount(updatedItems);
+          const totalAmount = calculateCartTotal(updatedItems);
 
           return {
             cart: {
@@ -47,15 +49,17 @@ export const useCartStore = create<CartStore>()(
               totalItems,
               totalAmount,
             },
-          }
-        })
+          };
+        });
       },
 
       removeItem: (itemId: string) => {
         set((state) => {
-          const updatedItems = state.cart.items.filter((item) => item.id !== itemId)
-          const totalItems = calculateCartItemsCount(updatedItems)
-          const totalAmount = calculateCartTotal(updatedItems)
+          const updatedItems = state.cart.items.filter(
+            (item) => item.id !== itemId
+          );
+          const totalItems = calculateCartItemsCount(updatedItems);
+          const totalAmount = calculateCartTotal(updatedItems);
 
           return {
             cart: {
@@ -63,22 +67,22 @@ export const useCartStore = create<CartStore>()(
               totalItems,
               totalAmount,
             },
-          }
-        })
+          };
+        });
       },
 
       updateQuantity: (itemId: string, quantity: number) => {
         if (quantity <= 0) {
-          get().removeItem(itemId)
-          return
+          get().removeItem(itemId);
+          return;
         }
 
         set((state) => {
-          const updatedItems = state.cart.items.map((item) =>
+          const updatedItems = state.cart.items.map((item: any) =>
             item.id === itemId ? { ...item, quantity } : item
-          )
-          const totalItems = calculateCartItemsCount(updatedItems)
-          const totalAmount = calculateCartTotal(updatedItems)
+          );
+          const totalItems = calculateCartItemsCount(updatedItems);
+          const totalAmount = calculateCartTotal(updatedItems);
 
           return {
             cart: {
@@ -86,26 +90,26 @@ export const useCartStore = create<CartStore>()(
               totalItems,
               totalAmount,
             },
-          }
-        })
+          };
+        });
       },
 
       clearCart: () => {
-        set({ cart: initialCart })
+        set({ cart: initialCart });
       },
 
       getTotalItems: () => {
-        return get().cart.totalItems
+        return get().cart.totalItems;
       },
 
       getTotalAmount: () => {
-        return get().cart.totalAmount
+        return get().cart.totalAmount;
       },
     }),
     {
-      name: 'deltagum-cart',
+      name: "deltagum-cart",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ cart: state.cart }),
     }
   )
-)
+);

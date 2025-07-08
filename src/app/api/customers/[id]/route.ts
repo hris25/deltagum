@@ -67,7 +67,7 @@ export async function PATCH(
     // Validation des données (partielle)
     const validatedData = customerSchema.partial().parse(body);
 
-    const customer = await prisma.$transaction(async (tx) => {
+    const customer = await prisma.$transaction(async (tx: any) => {
       // Mettre à jour le client
       const updatedCustomer = await tx.customer.update({
         where: { id },
