@@ -86,7 +86,9 @@ const FlavorSlider: React.FC<FlavorSliderProps> = ({
         >
           <div className="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden shadow-xl">
             <img
-              src={(selectedVariant as any).image || "/img/placeholder.svg"}
+              src={
+                (selectedVariant as any).images?.[0] || "/img/placeholder.svg"
+              }
               alt={`Délices CBD saveur ${
                 getFlavorConfig(selectedVariant.flavor).name
               }`}

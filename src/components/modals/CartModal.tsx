@@ -2,7 +2,7 @@
 
 import { Button, Modal, ModalBody, ModalFooter } from "@/components/ui";
 import { cn, formatPrice } from "@/lib/utils";
-import { useCart, useUI } from "@/stores";
+import { useCart, useCheckoutModal } from "@/stores";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
@@ -13,8 +13,8 @@ export interface CartModalProps {
 }
 
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
-  const { cart, updateQuantity, removeItem, clearCart } = useCart();
-  const { openCheckout } = useUI();
+  const { cart, removeItem, clearCart } = useCart();
+  const { openModal } = useCheckoutModal();
 
   const items = cart.items;
   const total = cart.totalAmount;
@@ -25,33 +25,27 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
 
   const handleCheckout = () => {
     onClose();
-    openCheckout();
+    openModal();
   };
 
-  const handleQuantityChange = (itemId: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeItem(itemId);
-    } else {
-      updateQuantity(itemId, newQuantity);
-    }
-  };
+  // Fonction handleQuantityChange supprimée car les quantités ne sont plus modifiables
 
   const EmptyCart = () => (
-    <div className="text-center py-12">
+    <div className="text-center py-8 sm:py-12 px-4">
       <motion.div
-        className="text-6xl mb-4"
+        className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4"
         animate={{ rotate: [0, 10, -10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
         🛒
       </motion.div>
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
         Votre panier est vide
       </h3>
-      <p className="text-gray-600 mb-6">
+      <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
         Découvrez nos délicieux bonbons et ajoutez-les à votre panier !
       </p>
-      <Button variant="primary" onClick={onClose}>
+      <Button variant="primary" onClick={onClose} className="w-full sm:w-auto">
         Continuer mes achats
       </Button>
     </div>
@@ -63,27 +57,27 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
       onClose={onClose}
       title="Mon Panier"
       size="lg"
-      className="max-h-[90vh]"
+      className="max-h-[95vh] sm:max-h-[90vh]"
     >
       <ModalBody className="p-0">
         {items.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Articles du panier */}
-            <div className="max-h-96 overflow-y-auto px-6">
+            <div className="max-h-80 sm:max-h-96 overflow-y-auto px-3 sm:px-6">
               <AnimatePresence mode="popLayout">
                 {items.map((item) => (
                   <motion.div
                     key={item.id}
-                    className="flex items-center space-x-4 py-4 border-b border-gray-200 last:border-b-0"
+                    className="flex items-center space-x-2 sm:space-x-4 py-3 sm:py-4 border-b border-gray-200 last:border-b-0"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                     layout
                   >
                     {/* Image du produit */}
-                    <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg overflow-hidden">
                       {item.image ? (
                         <Image
                           src={item.image}
@@ -93,7 +87,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-2xl">
+                        <div className="w-full h-full flex items-center justify-center text-lg sm:text-2xl">
                           🍭
                         </div>
                       )}
@@ -101,44 +95,24 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
 
                     {/* Informations du produit */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-gray-900 truncate">
+                      <h4 className="font-medium text-gray-900 truncate text-sm sm:text-base">
                         {item.name}
                       </h4>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs sm:text-sm text-gray-600">
                         Saveur: {item.flavor}
                       </p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <span className="font-semibold text-pink-600">
+                        <span className="font-semibold text-pink-600 text-sm sm:text-base">
                           {formatPrice(item.price)}
                         </span>
                       </div>
                     </div>
 
-                    {/* Contrôles de quantité */}
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          handleQuantityChange(item.id, item.quantity - 1)
-                        }
-                        className="w-8 h-8 p-0"
-                      >
-                        -
-                      </Button>
-                      <span className="w-8 text-center font-medium">
-                        {item.quantity}
+                    {/* Affichage de la quantité (non modifiable) */}
+                    <div className="flex items-center">
+                      <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                        Qté: {item.quantity}
                       </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          handleQuantityChange(item.id, item.quantity + 1)
-                        }
-                        className="w-8 h-8 p-0"
-                      >
-                        +
-                      </Button>
                     </div>
 
                     {/* Prix total de l'article */}
@@ -178,17 +152,20 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
             <div className="px-6 py-4 bg-gray-50 border-t">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>
+                  <span className="text-gray-700">
                     Sous-total ({totalItems} article{totalItems > 1 ? "s" : ""})
                   </span>
-                  <span>{formatPrice(total)}</span>
+                  <span className="text-gray-900 font-medium">
+                    {formatPrice(total)}
+                  </span>
                 </div>
 
                 <div className="flex justify-between text-sm">
-                  <span>Livraison</span>
+                  <span className="text-gray-700">Livraison</span>
                   <span
                     className={cn(
-                      shippingCost === 0 && "text-green-600 font-medium"
+                      "text-gray-900 font-medium",
+                      shippingCost === 0 && "text-green-600 font-semibold"
                     )}
                   >
                     {shippingCost === 0
@@ -205,8 +182,8 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 )}
 
                 <div className="border-t pt-2 flex justify-between font-semibold text-lg">
-                  <span>Total</span>
-                  <span className="text-pink-600">
+                  <span className="text-gray-900">Total</span>
+                  <span className="text-pink-600 font-bold">
                     {formatPrice(finalTotal)}
                   </span>
                 </div>

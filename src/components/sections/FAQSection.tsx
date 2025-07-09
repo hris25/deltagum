@@ -26,22 +26,14 @@ const FAQSection: React.FC = () => {
   const faqItems: FAQItem[] = [
     {
       id: "1",
-      question: "Qu'est-ce que le CBD et quels sont ses effets ?",
-      answer:
-        "Le CBD (cannabidiol) est un composé naturel extrait du chanvre. Il est reconnu pour ses propriétés relaxantes et apaisantes, sans effet psychoactif. Nos délices Deltagum contiennent 10mg de CBD par unité, dosage idéal pour la détente et le bien-être quotidien.",
-      category: "products",
-      icon: "🌿",
-    },
-    {
-      id: "2",
       question: "Les produits Deltagum sont-ils légaux en France ?",
       answer:
-        "Oui, nos produits CBD Deltagum sont parfaitement légaux en France. Ils contiennent moins de 0,2% de THC conformément à la réglementation européenne. Nos produits sont testés en laboratoire et certifiés pour garantir leur conformité.",
+        "Oui, les produits Deltagum sont parfaitement légaux en France. Ils contiennent moins de 0,2% de THC conformément à la réglementation européenne. Nos produits sont testés en laboratoire et certifiés pour garantir leur conformité.",
       category: "general",
       icon: "⚖️",
     },
     {
-      id: "3",
+      id: "2",
       question: "À partir de quel âge peut-on consommer Deltagum ?",
       answer:
         "Nos délices CBD Deltagum sont strictement réservés aux adultes de 18 ans et plus. Une vérification d'âge est obligatoire lors de l'achat. Nous déconseillons la consommation aux femmes enceintes ou allaitantes.",
@@ -49,15 +41,15 @@ const FAQSection: React.FC = () => {
       icon: "🔞",
     },
     {
-      id: "4",
-      question: "Combien de délices CBD puis-je consommer par jour ?",
+      id: "3",
+      question: "Combien de produits Deltagum puis-je consommer par jour ?",
       answer:
-        "Nous recommandons de commencer par 1 délice par jour (10mg de CBD) et d'ajuster selon vos besoins. Ne pas dépasser 3 délices par jour. Attendez 2h entre chaque prise pour évaluer les effets. Consultez un professionnel de santé si vous prenez des médicaments.",
+        "Nous recommandons de commencer par 1 de nos produits par jour (10mg de CBD) et d'ajuster selon vos besoins. Ne pas dépasser 3 par jour. Attendez 2h entre chaque prise pour évaluer les effets. Consultez un professionnel de santé si vous prenez des médicaments.",
       category: "products",
       icon: "💊",
     },
     {
-      id: "5",
+      id: "4",
       question: "Combien de temps prend la livraison ?",
       answer:
         "Livraison standard gratuite en 3-5 jours ouvrés, express (4,99€) en 24-48h. Commandes avant 14h expédiées le jour même. Emballage discret et sécurisé. Suivi par email avec numéro de tracking.",

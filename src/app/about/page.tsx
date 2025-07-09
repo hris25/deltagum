@@ -2,26 +2,27 @@
 
 import { fadeIn, slideUp } from "@/lib/animations";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function AboutPage() {
   return (
-    <main className="pt-20">
+    <main className="pt-16 sm:pt-20">
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-br from-pink-50 to-orange-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-pink-50 to-orange-50">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <motion.div
             className="text-center max-w-4xl mx-auto"
             initial={fadeIn.initial}
             animate={fadeIn.animate}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               À propos de{" "}
               <span className="bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">
                 Deltagum
               </span>
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed px-2 sm:px-0">
               Découvrez l'histoire et les valeurs qui font de Deltagum une
               marque de confiance dans l'univers du CBD de qualité premium.
             </p>
@@ -30,41 +31,47 @@ export default function AboutPage() {
       </section>
 
       {/* Notre Histoire */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
             <motion.div
               initial={slideUp.initial}
               whileInView={slideUp.animate}
               viewport={{ once: true }}
+              className="order-2 lg:order-1"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Notre Histoire
               </h2>
-              <div className="space-y-4 text-gray-600">
+              <div className="space-y-3 sm:space-y-4 text-gray-600 text-sm sm:text-base">
                 <p>
                   Deltagum est née de la passion pour le bien-être naturel et
                   l'innovation. Fondée par une équipe d'experts en
                   phytothérapie, notre marque s'est donnée pour mission de
-                  démocratiser l'accès aux bienfaits du CBD.
+                  démocratiser l'accès aux bienfaits de la relaxation naturelle.
                 </p>
                 <p>
                   Depuis nos débuts, nous nous engageons à proposer des produits
-                  CBD de la plus haute qualité, rigoureusement testés et
+                  Deltagum de la plus haute qualité, rigoureusement testés et
                   certifiés, pour offrir à nos clients une expérience de
-                  bien-être exceptionnelle.
+                  bien-être exceptionnelle et des moments de détente uniques.
                 </p>
               </div>
             </motion.div>
             <motion.div
-              className="relative"
+              className="relative order-1 lg:order-2"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <div className="bg-gradient-to-br from-pink-100 to-orange-100 rounded-2xl p-8 h-80 flex items-center justify-center">
-                <span className="text-6xl">🌿</span>
+              <div className="bg-gradient-to-br from-pink-100 to-orange-100 rounded-xl sm:rounded-2xl overflow-hidden h-60 sm:h-72 lg:h-80 relative">
+                <Image
+                  src="/img/story.png"
+                  alt="Notre Histoire"
+                  fill
+                  className="object-cover rounded-xl sm:rounded-2xl"
+                />
               </div>
             </motion.div>
           </div>
@@ -72,23 +79,23 @@ export default function AboutPage() {
       </section>
 
       {/* Nos Valeurs */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-gray-50">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <motion.div
-            className="text-center mb-12"
+            className="text-center mb-8 sm:mb-12"
             initial={fadeIn.initial}
             whileInView={fadeIn.animate}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
               Nos Valeurs
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base px-2 sm:px-0">
               Les principes qui guident chacune de nos actions et décisions.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {[
               {
                 icon: "🔬",
@@ -111,17 +118,21 @@ export default function AboutPage() {
             ].map((value, index) => (
               <motion.div
                 key={index}
-                className="bg-white rounded-xl p-6 shadow-lg text-center"
+                className="bg-white rounded-xl p-4 sm:p-6 shadow-lg text-center"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
               >
-                <div className="text-4xl mb-4">{value.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">
+                  {value.icon}
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">
                   {value.title}
                 </h3>
-                <p className="text-gray-600">{value.description}</p>
+                <p className="text-gray-600 text-sm sm:text-base">
+                  {value.description}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -129,26 +140,26 @@ export default function AboutPage() {
       </section>
 
       {/* Composition mise en avant */}
-      <section className="py-16 bg-green-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-green-50">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
               initial={fadeIn.initial}
               whileInView={fadeIn.animate}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
                 🌿 Composition mise en avant
               </h2>
-              <div className="bg-white rounded-2xl p-8 shadow-lg border-2 border-green-200">
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center bg-green-100 text-green-800 px-6 py-3 rounded-full text-lg font-bold mb-4">
-                    ✅ Conformité <strong>légale européenne</strong>
+              <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg border-2 border-green-200">
+                <div className="text-center mb-6 sm:mb-8">
+                  <div className="inline-flex items-center bg-green-100 text-green-800 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base lg:text-lg font-bold mb-3 sm:mb-4">
+                    ✅ Conformité <strong> légale européenne</strong>
                   </div>
-                  <p className="text-2xl font-bold text-green-700">
+                  <p className="text-xl sm:text-2xl font-bold text-green-700">
                     THC &lt; 0,3%
                   </p>
-                  <p className="text-gray-600 mt-2">
+                  <p className="text-gray-600 mt-2 text-sm sm:text-base">
                     Nos produits respectent strictement la réglementation
                     européenne
                   </p>
@@ -160,51 +171,51 @@ export default function AboutPage() {
       </section>
 
       {/* Recommandations importantes */}
-      <section className="py-16 bg-red-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-red-50">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <motion.div
               initial={fadeIn.initial}
               whileInView={fadeIn.animate}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">
                 ⚠️ Recommandations importantes
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-red-200 text-center">
-                  <div className="text-4xl mb-4">🚫</div>
-                  <h3 className="text-xl font-bold text-red-800 mb-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border-2 border-red-200 text-center">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🚫</div>
+                  <h3 className="text-lg sm:text-xl font-bold text-red-800 mb-2 sm:mb-3">
                     Interdit sous <strong>traitement médical</strong>
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-sm sm:text-base">
                     Ne pas consommer si vous suivez un traitement médical.
                     Consultez votre médecin.
                   </p>
                 </div>
-                <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-red-200 text-center">
-                  <div className="text-4xl mb-4">🔞</div>
-                  <h3 className="text-xl font-bold text-red-800 mb-3">
+                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border-2 border-red-200 text-center">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🔞</div>
+                  <h3 className="text-lg sm:text-xl font-bold text-red-800 mb-2 sm:mb-3">
                     Réservé aux <strong>adultes</strong>
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-sm sm:text-base">
                     Produit strictement réservé aux personnes majeures (18 ans
                     et plus).
                   </p>
                 </div>
-                <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-red-200 text-center">
-                  <div className="text-4xl mb-4">🚗</div>
-                  <h3 className="text-xl font-bold text-red-800 mb-3">
+                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border-2 border-red-200 text-center">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🚗</div>
+                  <h3 className="text-lg sm:text-xl font-bold text-red-800 mb-2 sm:mb-3">
                     Ne pas <strong>conduire</strong> après usage
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-sm sm:text-base">
                     Évitez de conduire ou d'utiliser des machines après
                     consommation.
                   </p>
                 </div>
               </div>
-              <div className="mt-8 bg-yellow-100 border border-yellow-300 rounded-lg p-6 text-center">
-                <p className="text-yellow-800 font-medium">
+              <div className="mt-6 sm:mt-8 bg-yellow-100 border border-yellow-300 rounded-lg p-4 sm:p-6 text-center">
+                <p className="text-yellow-800 font-medium text-sm sm:text-base">
                   <strong>Important :</strong> Ces recommandations sont
                   essentielles pour votre sécurité et celle d'autrui.
                   Respectez-les scrupuleusement.
@@ -216,26 +227,26 @@ export default function AboutPage() {
       </section>
 
       {/* Engagement Qualité */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
               initial={fadeIn.initial}
               whileInView={fadeIn.animate}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Notre Engagement Qualité
               </h2>
-              <div className="bg-gradient-to-br from-pink-50 to-orange-50 rounded-2xl p-8">
-                <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <div className="bg-gradient-to-br from-pink-50 to-orange-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8">
+                <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-4 sm:mb-6">
                   Chaque produit Deltagum passe par un processus de contrôle
                   qualité rigoureux. Nos laboratoires partenaires certifiés
                   analysent systématiquement nos produits pour vérifier leur
                   teneur, l'absence de contaminants et leur conformité aux
                   normes européennes les plus strictes.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-left">
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">
                       ✓ Tests en laboratoire

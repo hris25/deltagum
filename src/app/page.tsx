@@ -1,5 +1,4 @@
 import {
-  CartSection,
   ContactSection,
   FAQSection,
   HeroSection,
@@ -15,9 +14,6 @@ export default function Home() {
 
       {/* Section des produits */}
       <ProductOverview />
-
-      {/* Section du panier */}
-      <CartSection />
 
       {/* Section des témoignages */}
       <TestimonialsSection />

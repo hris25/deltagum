@@ -36,21 +36,30 @@ async function main() {
       name: "Fraise",
       enumValue: "STRAWBERRY",
       color: "#FF6B9D",
-      image: "/img/4.jpg",
+      images: [
+        "/img/product/deltagum-strawberry-main1.jpg",
+        "/img/product/deltagum-strawberry-main2.jpg",
+      ],
       description: "Saveur fraise intense et sucrée",
     },
     {
       name: "Myrtille",
       enumValue: "BLUEBERRY",
       color: "#4A90E2",
-      image: "/img/5.jpg",
+      images: [
+        "/img/product/deltagum-blueberry-main1.jpg",
+        "/img/product/deltagum-blueberry-main2.jpg",
+      ],
       description: "Saveur myrtille acidulée et rafraîchissante",
     },
     {
       name: "Pomme",
       enumValue: "APPLE",
       color: "#7ED321",
-      image: "/img/6.jpg",
+      images: [
+        "/img/product/deltagum-apple-main1.jpg",
+        "/img/product/deltagum-apple-main2.jpg",
+      ],
       description: "Saveur pomme verte croquante et pétillante",
     },
   ];
@@ -78,7 +87,7 @@ async function main() {
           flavor: flavor.enumValue as any,
           stock: Math.floor(Math.random() * 100) + 50,
           color: flavor.color,
-          image: flavor.image,
+          images: flavor.images,
           sku: `${product.name
             .replace(/\s+/g, "")
             .toUpperCase()}-${flavor.name.toUpperCase()}`,

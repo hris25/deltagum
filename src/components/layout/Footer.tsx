@@ -1,29 +1,9 @@
 "use client";
 
-import { Button, Input } from "@/components/ui";
-import { fadeIn, slideUp } from "@/lib/animations";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import React from "react";
 
 const Footer: React.FC = () => {
-  const [email, setEmail] = React.useState("");
-  const [isSubscribing, setIsSubscribing] = React.useState(false);
-
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubscribing(true);
-
-    // Simuler l'inscription à la newsletter
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Ici, vous pourriez appeler votre API pour l'inscription
-    console.log("Newsletter subscription:", email);
-
-    setEmail("");
-    setIsSubscribing(false);
-  };
-
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
     if (element) {
@@ -33,16 +13,14 @@ const Footer: React.FC = () => {
 
   const footerLinks = {
     navigation: [
-      { label: "Accueil", href: "#hero" },
-      { label: "Produits", href: "#products" },
-      { label: "À propos", href: "#about" },
-      { label: "Contact", href: "#contact" },
+      { label: "Accueil", href: "/" },
+      { label: "À propos & Légal", href: "/about" },
+      { label: "Professionnels & Revendeurs", href: "/professionals" },
     ],
     legal: [
       { label: "Mentions légales", href: "/legal" },
       { label: "Politique de confidentialité", href: "/privacy" },
       { label: "Conditions générales", href: "/terms" },
-      { label: "Informations CBD", href: "/cbd-info" },
       { label: "Vérification d'âge", href: "/age-verification" },
       { label: "Cookies", href: "/cookies" },
     ],
@@ -89,36 +67,30 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       {/* Section principale */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12 lg:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
           {/* Logo et description */}
-          <motion.div
-            className="lg:col-span-1"
-            initial={fadeIn.initial}
-            whileInView={fadeIn.animate}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <div className="flex items-center space-x-2 mb-4">
-              <motion.div
-                className="text-3xl"
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
-              >
-                🍭
-              </motion.div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-orange-300 bg-clip-text text-transparent">
+          <div className="lg:col-span-1 text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3 mb-4 sm:mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10">
+                <img
+                  src="/img/logo.jpg"
+                  alt="Deltagum Logo"
+                  className="w-full h-full object-contain rounded-lg"
+                />
+              </div>
+              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-pink-400 to-orange-300 bg-clip-text text-transparent">
                 Deltagum
               </span>
             </div>
-            <p className="text-gray-300 mb-6 leading-relaxed">
+            <p className="text-gray-300 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
               Des bonbons artisanaux aux saveurs uniques qui éveillent vos sens.
               Découvrez nos créations gourmandes aux parfums de fraise, myrtille
               et pomme.
             </p>
 
             {/* Newsletter */}
-            <div>
+            {/*<div>
               <h4 className="font-semibold mb-3 text-pink-300">Newsletter</h4>
               <form onSubmit={handleNewsletterSubmit} className="space-y-3">
                 <Input
@@ -139,71 +111,56 @@ const Footer: React.FC = () => {
                   S'abonner
                 </Button>
               </form>
-            </div>
-          </motion.div>
+            </div> */}
+          </div>
 
           {/* Navigation */}
-          <motion.div
-            initial={fadeIn.initial}
-            whileInView={fadeIn.animate}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <h3 className="font-semibold text-lg mb-4 text-pink-300">
+          <div className="text-center sm:text-left">
+            <h3 className="font-semibold text-base sm:text-lg mb-3 sm:mb-4 text-pink-300">
               Navigation
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1 sm:space-y-2">
               {footerLinks.navigation.map((link) => (
                 <li key={link.href}>
                   <button
                     onClick={() => scrollToSection(link.href)}
-                    className="text-gray-300 hover:text-pink-300 transition-colors duration-200"
+                    className="text-gray-300 hover:text-pink-300 transition-colors duration-200 text-sm sm:text-base"
                   >
                     {link.label}
                   </button>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Informations légales */}
-          <motion.div
-            initial={fadeIn.initial}
-            whileInView={fadeIn.animate}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <h3 className="font-semibold text-lg mb-4 text-pink-300">
+          <div className="text-center sm:text-left">
+            <h3 className="font-semibold text-base sm:text-lg mb-3 sm:mb-4 text-pink-300">
               Informations
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1 sm:space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-300 hover:text-pink-300 transition-colors duration-200"
+                    className="text-gray-300 hover:text-pink-300 transition-colors duration-200 text-sm sm:text-base"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Contact et réseaux sociaux */}
-          <motion.div
-            initial={fadeIn.initial}
-            whileInView={fadeIn.animate}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-          >
-            <h3 className="font-semibold text-lg mb-4 text-pink-300">
+          <div className="text-center sm:text-left">
+            <h3 className="font-semibold text-base sm:text-lg mb-3 sm:mb-4 text-pink-300">
               Contact
             </h3>
-            <div className="space-y-3 mb-6">
-              <p className="text-gray-300 flex items-center">
+            <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
+              <p className="text-gray-300 flex items-center justify-center sm:justify-start text-sm sm:text-base">
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -217,9 +174,9 @@ const Footer: React.FC = () => {
                 </svg>
                 contact@deltagum.com
               </p>
-              <p className="text-gray-300 flex items-center">
+              <p className="text-gray-300 flex items-center justify-center sm:justify-start text-sm sm:text-base">
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -235,44 +192,39 @@ const Footer: React.FC = () => {
               </p>
             </div>
 
-            <h4 className="font-semibold mb-3 text-pink-300">Suivez-nous</h4>
-            <div className="flex space-x-3">
+            <h4 className="font-semibold mb-2 sm:mb-3 text-pink-300 text-sm sm:text-base">
+              Suivez-nous
+            </h4>
+            <div className="flex justify-center sm:justify-start space-x-2 sm:space-x-3">
               {footerLinks.social.map((social) => (
-                <motion.a
+                <a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 bg-gray-800 rounded-lg text-gray-300 hover:text-pink-300 hover:bg-gray-700 transition-colors duration-200"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.9 }}
+                  className="p-1.5 sm:p-2 bg-gray-800 rounded-lg text-gray-300 hover:text-pink-300 hover:bg-gray-700 transition-colors duration-200"
                   aria-label={social.label}
                 >
                   {social.icon}
-                </motion.a>
+                </a>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Barre de copyright */}
-      <motion.div
-        className="border-t border-gray-700 py-6"
-        initial={slideUp.initial}
-        whileInView={slideUp.animate}
-        viewport={{ once: true }}
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="border-t border-gray-700 py-4 sm:py-6">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           {/* Avertissement CBD */}
-          <div className="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-4 mb-6">
+          <div className="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
             <div className="text-center">
-              <p className="text-yellow-300 text-sm font-semibold mb-2">
+              <p className="text-yellow-300 text-xs sm:text-sm font-semibold mb-1 sm:mb-2">
                 🌿 AVERTISSEMENT IMPORTANT - PRODUITS CBD
               </p>
               <p className="text-yellow-200 text-xs leading-relaxed">
-                Nos produits contiennent du CBD (cannabidiol) et sont
-                strictement réservés aux personnes majeures (18 ans et plus).
+                Nos produits sont strictement réservés aux personnes majeures
+                (18 ans et plus).
                 <br />
                 Ne pas conduire ou utiliser de machines après consommation.
                 Déconseillé aux femmes enceintes ou allaitantes.
@@ -282,16 +234,16 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 text-sm">
-              © 2024 Deltagum CBD. Tous droits réservés. Fait avec ❤️ en France.
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+            <p className="text-gray-400 text-xs sm:text-sm text-center sm:text-left">
+              © 2024 Deltagum . Tous droits réservés. Fait avec ❤️ en France.
             </p>
-            <div className="flex items-center space-x-4 text-sm text-gray-400">
+            <div className="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm text-gray-400">
               <span>🌿 Détente naturelle avec style ! ✨</span>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </footer>
   );
 };

@@ -69,22 +69,22 @@ const Modal: React.FC<ModalProps> = ({
   }, [isOpen]);
 
   const sizeClasses = {
-    sm: "max-w-md",
-    md: "max-w-lg",
-    lg: "max-w-2xl",
-    xl: "max-w-4xl",
-    full: "max-w-full mx-4",
+    sm: "max-w-sm sm:max-w-md",
+    md: "max-w-md sm:max-w-lg",
+    lg: "max-w-lg sm:max-w-xl lg:max-w-2xl",
+    xl: "max-w-xl sm:max-w-2xl lg:max-w-4xl",
+    full: "max-w-full mx-2 sm:mx-4",
   };
 
   const overlayClasses = cn(
-    "fixed inset-0 z-50 flex items-center justify-center p-4",
+    "fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4",
     "bg-black/50 backdrop-blur-sm",
     overlayClassName
   );
 
   const contentClasses = cn(
-    "relative w-full bg-white rounded-xl shadow-2xl",
-    "max-h-[90vh] overflow-y-auto",
+    "relative w-full bg-white rounded-lg sm:rounded-xl shadow-2xl",
+    "max-h-[95vh] sm:max-h-[90vh] overflow-y-auto",
     sizeClasses[size],
     className
   );

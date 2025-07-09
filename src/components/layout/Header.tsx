@@ -20,7 +20,7 @@ const Header: React.FC = () => {
   // Détecter le scroll pour changer l'apparence du header
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 200);
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -72,26 +72,30 @@ const Header: React.FC = () => {
       animate={slideDown.animate}
       transition={slideDown.transition}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
           {/* Logo */}
           <motion.div
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-1 sm:space-x-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-1 sm:space-x-2">
               <motion.div
-                className="text-3xl"
-                animate={{ rotate: [0, 10, -10, 0] }}
+                className="relative w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12"
+                animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
               >
-                🍭
+                <img
+                  src="/img/logo.jpg"
+                  alt="Deltagum Logo"
+                  className="w-full h-full object-contain rounded-lg"
+                />
               </motion.div>
               <span
                 className={cn(
-                  "text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent",
-                  "hidden sm:block"
+                  "text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent",
+                  "hidden xs:block"
                 )}
               >
                 Deltagum
@@ -102,25 +106,26 @@ const Header: React.FC = () => {
           {/* Navigation Desktop */}
           <nav className="hidden lg:flex items-center space-x-8">
             {/* Accueil */}
-            <motion.button
-              onClick={() => handleNavigation(navItems[0])}
-              className={cn(
-                "text-gray-700 hover:text-pink-500 font-medium transition-colors",
-                "relative py-2"
-              )}
-              whileHover={{ y: -2 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0 * 0.1 }}
-            >
-              {navItems[0].label}
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-pink-500 to-orange-400"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.2 }}
-              />
-            </motion.button>
+            <Link href={navItems[0].href}>
+              <motion.button
+                className={cn(
+                  "text-gray-700 hover:text-pink-500 font-medium transition-colors",
+                  "relative py-2"
+                )}
+                whileHover={{ y: -2 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0 * 0.1 }}
+              >
+                {navItems[0].label}
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-pink-500 to-orange-400"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              </motion.button>
+            </Link>
 
             {/* Menu déroulant Produits */}
             <div className="relative">
@@ -190,46 +195,46 @@ const Header: React.FC = () => {
 
             {/* Autres éléments de navigation (À propos & Légal, Professionnels & Revendeurs) */}
             {navItems.slice(1).map((item, index) => (
-              <motion.button
-                key={item.href}
-                onClick={() => handleNavigation(item)}
-                className={cn(
-                  "text-gray-700 hover:text-pink-500 font-medium transition-colors",
-                  "relative py-2"
-                )}
-                whileHover={{ y: -2 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: (index + 2) * 0.1 }}
-              >
-                {item.label}
-                <motion.div
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-pink-500 to-orange-400"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.2 }}
-                />
-              </motion.button>
+              <Link href={item.href} key={index}>
+                <motion.button
+                  className={cn(
+                    "text-gray-700 hover:text-pink-500 font-medium transition-colors",
+                    "relative py-2"
+                  )}
+                  whileHover={{ y: -2 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: (index + 2) * 0.1 }}
+                >
+                  {item.label}
+                  <motion.div
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-pink-500 to-orange-400"
+                    initial={{ scaleX: 0 }}
+                    whileHover={{ scaleX: 1 }}
+                    transition={{ duration: 0.2 }}
+                  />
+                </motion.button>
+              </Link>
             ))}
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Panier */}
             <motion.div className="relative">
               <motion.button
                 onClick={openCartModal}
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="relative p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <ShoppingCart className="w-6 h-6" />
+                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
 
                 {/* Badge du nombre d'articles */}
                 <AnimatePresence>
                   {totalItems > 0 && (
                     <motion.div
-                      className="absolute -top-1 -right-1"
+                      className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
@@ -238,7 +243,7 @@ const Header: React.FC = () => {
                         variant="primary"
                         size="sm"
                         rounded
-                        className="min-w-[20px] h-5 text-xs"
+                        className="min-w-[18px] h-4 sm:min-w-[20px] sm:h-5 text-xs"
                       >
                         {totalItems}
                       </Badge>
@@ -254,16 +259,16 @@ const Header: React.FC = () => {
                 variant="ghost"
                 size="md"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2"
+                className="p-1.5 sm:p-2"
               >
                 <motion.div
                   animate={isMobileMenuOpen ? { rotate: 180 } : { rotate: 0 }}
                   transition={{ duration: 0.2 }}
                 >
                   {isMobileMenuOpen ? (
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5 sm:w-6 sm:h-6" />
                   ) : (
-                    <Menu className="w-6 h-6" />
+                    <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
                   )}
                 </motion.div>
               </Button>
@@ -281,12 +286,12 @@ const Header: React.FC = () => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <nav className="py-4 space-y-2">
+              <nav className="py-3 sm:py-4 space-y-1 sm:space-y-2">
                 {navItems.map((item, index) => (
                   <motion.button
                     key={item.href}
                     onClick={() => handleNavigation(item)}
-                    className="block w-full text-left px-4 py-3 text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-colors"
+                    className="block w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-colors text-sm sm:text-base font-medium"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}

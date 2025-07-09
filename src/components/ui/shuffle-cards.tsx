@@ -58,8 +58,8 @@ function ShuffleCards() {
   const positions = ["front", "middle", "back"];
 
   return (
-    <div className="grid place-content-center overflow-hidden px-8 py-12 text-slate-50 min-h-[600px] h-full w-full">
-      <div className="relative -ml-[100px] h-[450px] w-[350px] md:-ml-[175px]">
+    <div className="grid place-content-center overflow-hidden px-4 sm:px-8 py-8 sm:py-12 text-slate-50 min-h-[480px] sm:min-h-[600px] h-full w-full">
+      <div className="relative -ml-[60px] h-[380px] w-[280px] sm:-ml-[100px] sm:h-[450px] sm:w-[350px] md:-ml-[175px]">
         {visibleTestimonials.map((testimonial, index) => (
           <TestimonialCard
             key={testimonial.id}

@@ -34,23 +34,23 @@ export default function ProfessionalsPage() {
   };
 
   return (
-    <main className="pt-20">
+    <main className="pt-16 sm:pt-20">
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-pink-50 to-orange-50">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <motion.div
             className="text-center max-w-4xl mx-auto"
             initial={fadeIn.initial}
             animate={fadeIn.animate}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               Professionnels &{" "}
-              <span className="bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">
                 Revendeurs
               </span>
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed px-2 sm:px-0">
               Prospection <strong>B2B</strong> : boutiques CBD, vapes, etc.
               Bénéficiez de <strong>tarifs spéciaux</strong> pour les
               détaillants.
@@ -60,7 +60,7 @@ export default function ProfessionalsPage() {
       </section>
 
       {/* Tarifs spéciaux pour détaillants */}
-      <section className="py-16 bg-white">
+      {/*<section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center mb-12"
@@ -131,34 +131,34 @@ export default function ProfessionalsPage() {
             </motion.div>
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* Formulaire de contact pour achat en gros */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-gray-50">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <motion.div
             className="max-w-4xl mx-auto"
             initial={fadeIn.initial}
             whileInView={fadeIn.animate}
             viewport={{ once: true }}
           >
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
                 📋 Formulaire de contact pour achat en gros
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base px-2 sm:px-0">
                 Contactez-nous pour obtenir vos tarifs préférentiels et
                 développer votre activité.
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label
                       htmlFor="company"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
                     >
                       Nom de l'entreprise *
                     </label>
@@ -169,7 +169,7 @@ export default function ProfessionalsPage() {
                       required
                       value={formData.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors text-gray-900 placeholder-gray-400 text-sm sm:text-base"
                       placeholder="Votre entreprise"
                     />
                   </div>
@@ -177,7 +177,7 @@ export default function ProfessionalsPage() {
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
                     >
                       Nom et prénom *
                     </label>
@@ -188,7 +188,7 @@ export default function ProfessionalsPage() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors text-gray-900 placeholder-gray-400 text-sm sm:text-base"
                       placeholder="Votre nom complet"
                     />
                   </div>
@@ -207,7 +207,7 @@ export default function ProfessionalsPage() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors text-gray-900 placeholder-gray-400"
                       placeholder="contact@entreprise.com"
                     />
                   </div>
@@ -225,7 +225,7 @@ export default function ProfessionalsPage() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors text-gray-900 placeholder-gray-400"
                       placeholder="06 12 34 56 78"
                     />
                   </div>
@@ -244,7 +244,7 @@ export default function ProfessionalsPage() {
                     required
                     value={formData.businessType}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors text-gray-900"
                   >
                     <option value="">Sélectionnez votre activité</option>
                     <option value="boutique-cbd">Boutique CBD</option>
@@ -268,7 +268,7 @@ export default function ProfessionalsPage() {
                     rows={4}
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors text-gray-900 placeholder-gray-400"
                     placeholder="Décrivez vos besoins, volumes souhaités, questions..."
                   />
                 </div>
@@ -278,11 +278,11 @@ export default function ProfessionalsPage() {
                     type="submit"
                     variant="primary"
                     size="lg"
-                    className="px-8"
+                    className="w-full sm:w-auto px-6 sm:px-8 text-sm sm:text-base"
                   >
                     📧 Envoyer ma demande
                   </Button>
-                  <p className="text-sm text-gray-500 mt-3">
+                  <p className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3">
                     Nous vous recontacterons sous 48h avec une offre
                     personnalisée
                   </p>

@@ -123,7 +123,7 @@ async function updateProducts() {
       data: {
         flavor: "STRAWBERRY", // On utilise STRAWBERRY comme placeholder pour "Chocolat noir"
         color: "#8B4513",
-        image: "/img/8.jpg", // Image pour cookies chocolat
+        images: ["/img/8.jpg"], // Images pour cookies chocolat (tableau)
         stock: 100,
         sku: "COOKIES-CHOCOLAT-NOIR",
         productId: cookiesProduct.id,

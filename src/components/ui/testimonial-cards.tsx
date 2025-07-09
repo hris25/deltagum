@@ -71,14 +71,14 @@ export function TestimonialCard({
         dragRef.current = 0;
       }}
       transition={{ duration: 0.35 }}
-      className={`absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-pink-200 bg-white/90 p-6 shadow-xl backdrop-blur-md ${
+      className={`absolute left-0 top-0 grid h-[380px] w-[280px] sm:h-[450px] sm:w-[350px] select-none place-content-center space-y-4 sm:space-y-6 rounded-xl sm:rounded-2xl border-2 border-pink-200 bg-white/90 p-4 sm:p-6 shadow-xl backdrop-blur-md ${
         isFront ? "cursor-grab active:cursor-grabbing" : ""
       }`}
     >
       <img
         src={getAvatarUrl(id)}
         alt={`Avatar de ${author}`}
-        className="pointer-events-none mx-auto h-32 w-32 rounded-full border-2 border-pink-200 bg-pink-50 object-cover"
+        className="pointer-events-none mx-auto h-20 w-20 sm:h-32 sm:w-32 rounded-full border-2 border-pink-200 bg-pink-50 object-cover"
         onError={(e) => {
           // Fallback to a default avatar if Unsplash fails
           e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -86,10 +86,10 @@ export function TestimonialCard({
           )}&size=128&background=fbbf24&color=fff`;
         }}
       />
-      <span className="text-center text-lg italic text-gray-700">
+      <span className="text-center text-sm sm:text-base lg:text-lg italic text-gray-700 leading-relaxed">
         "{testimonial}"
       </span>
-      <span className="text-center text-sm font-medium text-pink-600">
+      <span className="text-center text-xs sm:text-sm font-medium text-pink-600">
         {author}
       </span>
     </motion.div>

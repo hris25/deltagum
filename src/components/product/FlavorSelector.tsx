@@ -3,7 +3,6 @@
 import { Badge } from "@/components/ui";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { translateFlavor } from "@/lib/flavors";
-import { formatPrice } from "@/lib/utils";
 import type { ProductVariant } from "@/types";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
@@ -103,45 +102,6 @@ const FlavorSelector: React.FC<FlavorSelectorProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Image de la saveur sélectionnée */}
-      {selectedVariant && (
-        <motion.div
-          key={selectedVariant.id}
-          className="text-center"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden shadow-xl">
-            <img
-              src={(selectedVariant as any).image || "/img/placeholder.svg"}
-              alt={`Délices CBD saveur ${
-                getFlavorConfig(selectedVariant.flavor).name
-              }`}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "/img/placeholder.svg";
-              }}
-            />
-            {/* Gradient overlay */}
-            <div
-              className={`absolute inset-0 bg-gradient-to-br ${
-                getFlavorConfig(selectedVariant.flavor).color
-              } opacity-20`}
-            />
-            {/* Badge saveur */}
-            <div className="absolute bottom-3 left-3 right-3">
-              <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
-                <p className="text-base font-bold text-gray-800 text-center">
-                  {getFlavorConfig(selectedVariant.flavor).emoji}{" "}
-                  {getFlavorConfig(selectedVariant.flavor).name}
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
       {/* Sélecteur horizontal des saveurs */}
       <motion.div
         className="grid grid-cols-3 gap-4"
@@ -196,18 +156,10 @@ const FlavorSelector: React.FC<FlavorSelectorProps> = ({
 
                 {/* Contenu simplifié */}
                 <div className="space-y-3">
-                  {/* Emoji grande taille */}
-                  <div className="text-4xl">{config.emoji}</div>
-
                   {/* Nom de la saveur */}
                   <h5 className={`font-bold text-lg ${config.textColor}`}>
                     {config.name}
                   </h5>
-
-                  {/* Prix */}
-                  <div className="text-lg font-semibold text-gray-800">
-                    {formatPrice(Number(variant.product.price))}
-                  </div>
 
                   {/* Indicateur de stock */}
                   <div className="flex items-center justify-center space-x-1">

@@ -23,6 +23,7 @@ export default function ProductPage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     fetchProducts();
@@ -45,6 +46,11 @@ export default function ProductPage() {
       }
     }
   }, [products, productId]);
+
+  // Réinitialiser l'index d'image quand on change de variante
+  useEffect(() => {
+    setSelectedImageIndex(0);
+  }, [selectedVariant]);
 
   const getPriceForQuantity = (product: any, quantity: number) => {
     if (!product.priceTiers || product.priceTiers.length === 0) {
@@ -125,21 +131,173 @@ export default function ProductPage() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-white shadow-xl">
-              <img
-                src={selectedProduct.image}
-                alt={selectedProduct.name}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-4 right-4 space-y-2">
-                <div className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  🌿 CBD
+            {/* Carrousel d'images de la variante sélectionnée */}
+            {selectedVariant &&
+            selectedVariant.images &&
+            selectedVariant.images.length > 0 ? (
+              <div className="space-y-4">
+                {/* Image principale */}
+                <div className="relative aspect-square rounded-2xl overflow-hidden bg-white shadow-xl">
+                  <img
+                    src={selectedVariant.images[selectedImageIndex]}
+                    alt={`${selectedVariant.name} - Image ${
+                      selectedImageIndex + 1
+                    }`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/img/placeholder.svg";
+                    }}
+                  />
+                  <div className="absolute top-4 right-4 space-y-2">
+                    <div className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      🌿 CBD
+                    </div>
+                    <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      18+
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  18+
+
+                {/* Miniatures */}
+                {selectedVariant.images.length > 1 && (
+                  <div className="flex justify-center space-x-3">
+                    {selectedVariant.images.map(
+                      (image: string, index: number) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedImageIndex(index)}
+                          className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                            selectedImageIndex === index
+                              ? "border-pink-500 ring-2 ring-pink-200"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          <img
+                            src={image}
+                            alt={`${selectedVariant.name} - Miniature ${
+                              index + 1
+                            }`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "/img/placeholder.svg";
+                            }}
+                          />
+                        </button>
+                      )
+                    )}
+                  </div>
+                )}
+
+                {/* Informations produit pour combler l'espace */}
+                <div className="space-y-4 mt-6">
+                  {/* Caractéristiques principales */}
+                  <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4">
+                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                      Caractéristiques
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">THC</span>
+                        <span className="font-medium text-green-600">
+                          &lt; 0,3%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">CBD</span>
+                        <span className="font-medium text-blue-600">
+                          Premium
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Origine</span>
+                        <span className="font-medium">UE</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Certification</span>
+                        <span className="font-medium text-green-600">Bio</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Avantages */}
+                  <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-4">
+                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
+                      <span className="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                      Avantages Deltagum
+                    </h4>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <div className="flex items-center">
+                        <span className="text-green-500 mr-2">✓</span>
+                        Goût naturel et authentique
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-500 mr-2">✓</span>
+                        Dosage précis et constant
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-500 mr-2">✓</span>
+                        Texture fondante unique
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-500 mr-2">✓</span>
+                        Emballage discret et pratique
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              // Fallback si pas d'images de variante
+              <div className="space-y-6">
+                <div className="relative aspect-square rounded-2xl overflow-hidden bg-white shadow-xl">
+                  <img
+                    src={selectedProduct.image || "/img/placeholder.svg"}
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/img/placeholder.svg";
+                    }}
+                  />
+                  <div className="absolute top-4 right-4 space-y-2">
+                    <div className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      🌿 CBD
+                    </div>
+                    <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      18+
+                    </div>
+                  </div>
+                </div>
+
+                {/* Informations produit pour le fallback aussi */}
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4">
+                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                      Caractéristiques
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">THC</span>
+                        <span className="font-medium text-green-600">
+                          &lt; 0,3%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">CBD</span>
+                        <span className="font-medium text-blue-600">
+                          Premium
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Origine</span>
+                        <span className="font-medium">UE</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </motion.div>
 
           <motion.div

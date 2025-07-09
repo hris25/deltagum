@@ -33,7 +33,7 @@ model ProductVariant {
   productId String
   flavor    FlavorType
   color     String
-  image     String     @default("/img/placeholder.svg")
+  images    String[]   @default(["/img/placeholder.svg"]) // Tableau d'images
   stock     Int        @default(0)
   sku       String     @unique
   createdAt DateTime   @default(now())
@@ -106,6 +106,7 @@ enum FlavorType {
   STRAWBERRY
   BLUEBERRY
   APPLE
+  CHOCOLATE
 }
 
 enum OrderStatus {
@@ -136,3 +137,4 @@ model PriceTier {
   @@unique([productId, quantity])
   @@map("price_tiers")
 }
+  
