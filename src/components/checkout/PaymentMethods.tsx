@@ -152,51 +152,97 @@ const PaymentMethods: React.FC<PaymentMethodsProps> = ({
     setIsProcessing(true);
 
     try {
-      // Simulation du traitement de paiement
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // Calculer le total
-      const subtotal = cart.totalAmount;
-      const tax = subtotal * 0.2;
-      const shipping = subtotal >= 50 ? 0 : 5.99;
-      const total = subtotal + tax + shipping;
-
-      // Simulation d'appel API Stripe
-      const paymentData = {
-        amount: total,
-        currency: "eur",
-        payment_method: selectedMethod,
-        customer: customer,
-        items: cart.items,
-        ...(selectedMethod === "card" && { card: cardDetails }),
-      };
-
-      console.log("Processing payment:", paymentData);
-
-      // Simulation de succès (95% de chance)
-      const success = Math.random() > 0.05;
-
-      if (success) {
-        // Vider le panier
-        clearCart();
-
+      // Vérifier que le panier n'est pas vide
+      if (cart.items.length === 0) {
         addNotification({
-          type: "success",
-          title: "Paiement",
-          message: "Paiement effectué avec succès !",
+          type: "error",
+          title: "Panier vide",
+          message:
+            "Votre panier est vide. Ajoutez des produits avant de procéder au paiement.",
         });
+        return;
+      }
 
-        onSuccess();
+      // Créer la commande avec les vrais articles du panier
+      const orderResponse = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          // Ne pas envoyer customerId s'il n'existe pas
+          ...(customer?.id && { customerId: customer.id }),
+          items: cart.items.map((item) => ({
+            productId: item.productId,
+            variantId: item.variantId,
+            quantity: item.quantity,
+          })),
+          shippingAddress: {
+            firstName: customer?.firstName || "Client",
+            lastName: customer?.lastName || "Deltagum",
+            email: customer?.email || "client@deltagum.com",
+            phone: customer?.phone || "0123456789",
+            street: customer?.address || "123 Rue de la Livraison",
+            city: customer?.city || "Paris",
+            postalCode: customer?.postalCode || "75001",
+            country: "France",
+          },
+          totalAmount: cart.totalAmount,
+        }),
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error("Erreur lors de la création de la commande");
+      }
+
+      const { order } = await orderResponse.json();
+
+      // Créer la session de checkout Stripe
+      const checkoutResponse = await fetch("/api/checkout/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId: order.id,
+        }),
+      });
+
+      if (!checkoutResponse.ok) {
+        throw new Error("Erreur lors de la création de la session de paiement");
+      }
+
+      const { data } = await checkoutResponse.json();
+
+      // Rediriger vers Stripe Checkout
+      if (data.url) {
+        // Sauvegarder les informations du panier pour les restaurer en cas d'annulation
+        localStorage.setItem(
+          "deltagum_pending_order",
+          JSON.stringify({
+            orderId: order.id,
+            cartItems: cart.items,
+            timestamp: Date.now(),
+          })
+        );
+
+        // Rediriger vers Stripe
+        window.location.href = data.url;
       } else {
-        throw new Error("Payment failed");
+        throw new Error("URL de paiement non reçue");
       }
     } catch (error) {
+      console.error("Erreur de paiement:", error);
+
       addNotification({
         type: "error",
-        title: "Paiement",
-        message: "Erreur lors du paiement. Veuillez réessayer.",
+        title: "Erreur de paiement",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Une erreur est survenue lors du paiement",
       });
-    } finally {
+
       setIsProcessing(false);
     }
   };

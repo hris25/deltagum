@@ -84,7 +84,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 e.currentTarget.src = "/img/placeholder.svg";
               }}
             />
-            {/* Badge CBD */}
+            {/* Badge THC */}
             <div className="absolute top-1 right-1 bg-green-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-lg">
               🌿
             </div>
@@ -96,9 +96,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           {/* Badges */}
           <div className="flex flex-wrap justify-center gap-2 mb-3">
-            {/* Badge CBD obligatoire */}
+            {/* Badge THC obligatoire */}
             <Badge variant="success" size="sm">
-              🌿 CBD
+              🌿 THC
             </Badge>
             {hasPromotion && (
               <Badge variant="success" size="sm">
@@ -139,10 +139,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {product.description}
           </p>
 
-          {/* Avertissement CBD */}
+          {/* Avertissement Delta-9 THC */}
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 mb-4">
             <p className="text-xs text-yellow-800 text-center">
-              ⚠️ <strong>Produit CBD</strong> - Réservé aux adultes
+              ⚠️ <strong>Produit Delta-9 THC</strong> - Réservé aux adultes
               <br />
               <span className="text-yellow-600">
                 Ne pas conduire après consommation

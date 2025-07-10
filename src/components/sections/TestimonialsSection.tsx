@@ -34,10 +34,10 @@ const TestimonialsSection: React.FC = () => {
               Nos Clients
             </span>
             <br />
-            <span className="text-gray-800">Nous Font Confiance</span>
+            <span className="text-black">Nous Font Confiance</span>
           </motion.h2>
           <motion.p
-            className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-2 sm:px-0"
+            className="text-base sm:text-lg lg:text-xl text-black max-w-2xl mx-auto px-2 sm:px-0"
             initial={slideUp.initial}
             whileInView={slideUp.animate}
             viewport={{ once: true }}
@@ -48,8 +48,8 @@ const TestimonialsSection: React.FC = () => {
         </motion.div>
 
         {/* Interactive Testimonial Cards */}
-        <div className="flex justify-center mb-8 sm:mb-12 px-2 sm:px-0">
-          <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg">
+        <div className="flex justify-center mb-8 sm:mb-12 px-2 sm:px-0 overflow-visible">
+          <div className="w-full max-w-md sm:max-w-lg lg:max-w-xl">
             <ShuffleCards />
           </div>
         </div>
@@ -66,28 +66,28 @@ const TestimonialsSection: React.FC = () => {
             <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-pink-600 mb-1 sm:mb-2">
               4.9/5
             </div>
-            <p className="text-gray-600 text-xs sm:text-sm">Note moyenne</p>
+            <p className="text-black text-xs sm:text-sm">Note moyenne</p>
           </motion.div>
 
           <motion.div variants={staggerItem} className="text-center">
             <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-pink-600 mb-1 sm:mb-2">
               500+
             </div>
-            <p className="text-gray-600 text-xs sm:text-sm">Avis clients</p>
+            <p className="text-black text-xs sm:text-sm">Avis clients</p>
           </motion.div>
 
           <motion.div variants={staggerItem} className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-pink-600 mb-2">
               98%
             </div>
-            <p className="text-gray-600">Clients satisfaits</p>
+            <p className="text-black">Clients satisfaits</p>
           </motion.div>
 
           <motion.div variants={staggerItem} className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-pink-600 mb-2">
               24h
             </div>
-            <p className="text-gray-600">Livraison moyenne</p>
+            <p className="text-black">Livraison moyenne</p>
           </motion.div>
         </motion.div>
       </div>

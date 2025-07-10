@@ -87,17 +87,19 @@ export const ParallaxBackground: React.FC<ParallaxBackgroundProps> = ({
     offset: ["start end", "end start"],
   });
 
-  // Note: Pour des raisons de performance et de règles React Hooks,
-  // nous utilisons une approche simplifiée pour les transformations
+  // Créer les transformations pour chaque layer en dehors de la boucle
+  const layerTransforms = useMemo(
+    () =>
+      layers.map((layer) =>
+        useTransform(scrollYProgress, [0, 1], [0, -100 * layer.speed])
+      ),
+    [layers, scrollYProgress]
+  );
 
   return (
     <div ref={ref} className={`relative ${className}`}>
       {layers.map((layer, index) => {
-        const y = useTransform(
-          scrollYProgress,
-          [0, 1],
-          [0, -100 * layer.speed]
-        );
+        const y = layerTransforms[index];
         return (
           <motion.div
             key={index}

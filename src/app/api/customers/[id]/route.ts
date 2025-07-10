@@ -14,7 +14,6 @@ export async function GET(
     const customer = await prisma.customer.findUnique({
       where: { id },
       include: {
-        loyalty: true,
         orders: {
           include: {
             items: {

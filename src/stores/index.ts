@@ -1,4 +1,5 @@
 // Export des stores
+export { useAuth } from "./auth-store";
 export { useCartStore } from "./cart-store";
 export { useCheckoutModal } from "./checkout-modal-store";
 export { useCustomer, useCustomerStore } from "./customer-store";

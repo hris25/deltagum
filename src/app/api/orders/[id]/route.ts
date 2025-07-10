@@ -16,7 +16,12 @@ export async function GET(
       where: { id },
       include: {
         customer: {
-          include: { loyalty: true },
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
         },
         items: {
           include: {

@@ -46,7 +46,8 @@ export function TestimonialCard({
             : position === "middle"
             ? "0deg"
             : "6deg",
-        x: position === "front" ? "0%" : position === "middle" ? "33%" : "66%",
+        x: position === "front" ? "0%" : position === "middle" ? "25%" : "50%",
+        y: position === "front" ? "0%" : position === "middle" ? "5%" : "10%",
       }}
       drag={true}
       dragElastic={0.35}

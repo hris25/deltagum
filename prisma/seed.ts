@@ -1,16 +1,55 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Début du seeding de la base de données...");
 
-  // Nettoyer les données existantes
+  // Créer un utilisateur admin par défaut AVANT le nettoyage
+  const adminEmail = "admin@deltagum.com";
+  const adminPassword = "admin123";
+
+  // Vérifier si l'admin existe déjà
+  const existingAdmin = await prisma.customer.findUnique({
+    where: { email: adminEmail },
+  });
+
+  if (!existingAdmin) {
+    const hashedPassword = await bcrypt.hash(adminPassword, 12);
+
+    const admin = await prisma.customer.create({
+      data: {
+        email: adminEmail,
+        password: hashedPassword,
+        firstName: "Admin",
+        lastName: "Deltagum",
+        phone: "+33123456789",
+        role: "ADMIN",
+      },
+    });
+
+    console.log("✅ Utilisateur admin créé:", {
+      email: admin.email,
+      role: admin.role,
+    });
+    console.log("📋 Informations de connexion admin :");
+    console.log("Email: admin@deltagum.com");
+    console.log("Mot de passe: admin123");
+  } else {
+    console.log("ℹ️ Utilisateur admin existe déjà");
+  }
+
+  // Nettoyer les autres données existantes (sauf l'admin)
   console.log("🧹 Nettoyage des données existantes...");
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.loyaltyProgram.deleteMany();
-  await prisma.customer.deleteMany();
+  await prisma.customer.deleteMany({
+    where: {
+      role: "USER", // Ne supprimer que les utilisateurs normaux
+    },
+  });
   await prisma.productVariant.deleteMany();
   await prisma.product.deleteMany();
 
@@ -19,10 +58,10 @@ async function main() {
 
   const deltagum = await prisma.product.create({
     data: {
-      name: "Deltagum CBD",
+      name: "Deltagum",
       description:
-        "Nos délices CBD artisanaux aux saveurs naturelles de fruits. Fabriqués avec du CBD de qualité premium et des ingrédients naturels. Disponible en trois délicieuses saveurs : fraise, myrtille et pomme. Parfait pour la relaxation et le bien-être au quotidien. Réservé aux adultes.",
-      price: 15.99,
+        "Nos délices Deltagum artisanaux aux saveurs naturelles de fruits. Fabriqués avec des ingrédients de qualité premium et des arômes naturels. Disponible en trois délicieuses saveurs : fraise, myrtille et pomme. Parfait pour la relaxation et le bien-être au quotidien. Réservé aux adultes.",
+      basePrice: 15.99,
       image: "/img/2.jpg",
       active: true,
     },

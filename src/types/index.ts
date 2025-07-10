@@ -1,17 +1,92 @@
 // Types de base simplifiés (sans Prisma pour éviter les erreurs de build)
-export type Product = any;
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price?: number; // Optionnel car les prix sont dans les variants et priceTiers
+  image: string;
+  images?: string[];
+  active: boolean;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  variants?: ProductVariant[];
+  priceTiers?: PriceTier[];
+}
 
-export type ProductVariant = any;
+export interface ProductVariant {
+  id: string;
+  productId: string;
+  flavor: FlavorType;
+  color: string;
+  stock: number;
+  images: string[];
+  sku: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  price?: number; // Optionnel car peut être dans les priceTiers
+  active?: boolean; // Optionnel
+  product?: Product;
+}
 
-export type Customer = any;
+export interface Customer {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  address?: string;
+  postalCode?: string;
+  city?: string;
+  role: "USER" | "ADMIN";
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  loyalty?: LoyaltyProgram;
+  orders?: Order[];
+}
 
-export type Order = any;
+export interface Order {
+  id: string;
+  customerId: string;
+  status: OrderStatus;
+  totalAmount: number;
+  shippingAddress: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  customer?: Customer;
+  items?: OrderItem[];
+}
 
-export type OrderItem = any;
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  productId: string;
+  variantId: string;
+  quantity: number;
+  price: number;
+  createdAt: Date | string;
+  order?: Order;
+  product?: Product;
+  variant?: ProductVariant;
+}
 
-export type LoyaltyProgram = any;
+export interface LoyaltyProgram {
+  id: string;
+  customerId: string;
+  points: number;
+  level: LoyaltyLevel;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  customer?: Customer;
+}
 
-export type PriceTier = any;
+export interface PriceTier {
+  id: string;
+  productId: string;
+  quantity: number;
+  price: number;
+  createdAt: Date | string;
+  product?: Product;
+}
 
 // Enums
 export type FlavorType = "STRAWBERRY" | "BLUEBERRY" | "APPLE";

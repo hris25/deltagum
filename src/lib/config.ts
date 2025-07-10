@@ -19,27 +19,27 @@ export const productConfig = {
       name: "Fraise",
       color: "#FF6B9D",
       emoji: "🍓",
-      description: "Délice CBD saveur fraise naturelle et relaxante",
+      description: "Délice Deltagum saveur fraise naturelle et relaxante",
     },
     BLUEBERRY: {
       name: "Myrtille",
       color: "#4A90E2",
       emoji: "🫐",
-      description: "Délice CBD saveur myrtille fraîche et apaisante",
+      description: "Délice Deltagum saveur myrtille fraîche et apaisante",
     },
     APPLE: {
       name: "Pomme",
       color: "#7ED321",
       emoji: "🍏",
-      description: "Délice CBD saveur pomme verte rafraîchissante",
+      description: "Délice Deltagum saveur pomme verte rafraîchissante",
     },
   },
   defaultPrice: 12.99,
   currency: "EUR",
   currencySymbol: "€",
-  cbdInfo: {
-    concentration: "10mg CBD par délice",
-    warning: "Produit contenant du CBD - Réservé aux adultes",
+  thcInfo: {
+    concentration: "Delta-9 THC < 0,3%",
+    warning: "Produit contenant du Delta-9 THC - Réservé aux adultes",
     legalNotice: "Ne pas conduire après consommation",
   },
 };

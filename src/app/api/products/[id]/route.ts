@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/products/[id] - Récupérer un produit par ID
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -57,9 +57,12 @@ export async function PUT(
     // Validation des données
     const validatedData = productSchema.parse(body);
 
+    // Extraire seulement les champs du produit (pas les relations)
+    const { variants, pricingTiers, ...productData } = validatedData;
+
     const product = await prisma.product.update({
       where: { id },
-      data: validatedData,
+      data: productData,
       include: {
         variants: true,
       },
@@ -89,7 +92,7 @@ export async function PUT(
 
 // DELETE /api/products/[id] - Supprimer un produit
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;

@@ -51,8 +51,8 @@ export default function ProfessionalsPage() {
               </span>
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed px-2 sm:px-0">
-              Prospection <strong>B2B</strong> : boutiques CBD, vapes, etc.
-              Bénéficiez de <strong>tarifs spéciaux</strong> pour les
+              Prospection <strong>B2B</strong> : boutiques spécialisées, vapes,
+              etc. Bénéficiez de <strong>tarifs spéciaux</strong> pour les
               détaillants.
             </p>
           </motion.div>
@@ -86,7 +86,7 @@ export default function ProfessionalsPage() {
             >
               <div className="text-4xl mb-4">🏪</div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Boutiques CBD
+                Boutiques spécialisées
               </h3>
               <p className="text-gray-600 mb-4">
                 Tarifs préférentiels pour les boutiques spécialisées
@@ -247,7 +247,9 @@ export default function ProfessionalsPage() {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors text-gray-900"
                   >
                     <option value="">Sélectionnez votre activité</option>
-                    <option value="boutique-cbd">Boutique CBD</option>
+                    <option value="boutique-specialisee">
+                      Boutique spécialisée
+                    </option>
                     <option value="vape-shop">Vape Shop</option>
                     <option value="grossiste">Grossiste</option>
                     <option value="pharmacie">Pharmacie</option>

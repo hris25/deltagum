@@ -35,14 +35,15 @@ export const authOptions: NextAuthOptions = {
               customer = await prisma.customer.create({
                 data: {
                   email,
+                  password: "", // Mot de passe temporaire pour OAuth
                   firstName: email.split("@")[0],
                   lastName: "User",
-                  loyalty: {
-                    create: {
-                      points: 0,
-                      level: "BRONZE",
-                    },
-                  },
+                  phone: "",
+                  address: "",
+                  postalCode: "",
+                  city: "",
+                  id: globalThis.crypto.randomUUID(),
+                  updatedAt: new Date(),
                 },
               });
             }

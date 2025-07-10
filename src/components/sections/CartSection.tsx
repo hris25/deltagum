@@ -12,12 +12,13 @@ import {
   staggerItem,
 } from "@/lib/animations";
 import { formatPrice } from "@/lib/utils";
-import { useCart, useCheckoutModal, useNotifications } from "@/stores";
+import { useAuth, useCart, useCheckoutModal, useNotifications } from "@/stores";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
 const CartSection: React.FC = () => {
   const { cart, updateQuantity, removeItem, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
 
   const items = cart.items;
   const total = cart.totalAmount;
@@ -36,6 +37,31 @@ const CartSection: React.FC = () => {
     } else {
       updateQuantity(itemId, newQuantity);
     }
+  };
+
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      addNotification({
+        type: "warning",
+        title: "🔒 Connexion requise",
+        message:
+          "Vous devez vous connecter pour passer commande. Redirection en cours...",
+      });
+
+      // Rediriger vers la page d'authentification après un court délai
+      setTimeout(() => {
+        window.location.href = "/auth";
+      }, 1500);
+      return;
+    }
+
+    // Si l'utilisateur est connecté, ouvrir le modal de checkout
+    openModal();
+    addNotification({
+      type: "info",
+      title: "Checkout",
+      message: "Ouverture du formulaire de commande...",
+    });
   };
 
   const handleRemoveItem = (itemId: string) => {
@@ -211,14 +237,7 @@ const CartSection: React.FC = () => {
               <Button
                 variant="primary"
                 size="lg"
-                onClick={() => {
-                  openModal();
-                  addNotification({
-                    type: "info",
-                    title: "Checkout",
-                    message: "Ouverture du formulaire de commande...",
-                  });
-                }}
+                onClick={handleCheckout}
                 className="min-w-[200px]"
               >
                 <span className="mr-2">💳</span>

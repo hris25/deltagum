@@ -40,19 +40,29 @@ const ContactSection: React.FC = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      // Simulation d'envoi d'email
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      console.log("Contact form submitted:", data);
-
-      addNotification({
-        type: "success",
-        title: "Succès",
-        message: "Message envoyé avec succès ! Nous vous répondrons sous 24h.",
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
 
-      reset();
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        addNotification({
+          type: "success",
+          title: "Succès",
+          message:
+            "Message envoyé avec succès ! Nous vous répondrons sous 24h.",
+        });
+        reset();
+      } else {
+        throw new Error(result.error || "Erreur lors de l'envoi");
+      }
     } catch (error) {
+      console.error("Error sending contact message:", error);
       addNotification({
         type: "error",
         title: "Erreur",

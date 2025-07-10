@@ -20,14 +20,31 @@ export const loyaltyLevelSchema = z.enum([
 export const customerSchema = z.object({
   id: z.string().optional(),
   email: z.string().email("Email invalide"),
+  password: z
+    .string()
+    .min(6, "Le mot de passe doit contenir au moins 6 caractères")
+    .optional(),
   firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
   lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  phone: z.string().optional(),
+  phone: z.string().min(10, "Numéro de téléphone invalide").optional(),
+  address: z
+    .string()
+    .min(5, "L'adresse doit contenir au moins 5 caractères")
+    .optional(),
+  postalCode: z
+    .string()
+    .regex(/^\d{5}$/, "Code postal invalide (5 chiffres)")
+    .optional(),
+  city: z
+    .string()
+    .min(2, "La ville doit contenir au moins 2 caractères")
+    .optional(),
 });
 
 export const shippingAddressSchema = z.object({
   firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
   lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  email: z.string().email("Email invalide").optional(),
   street: z.string().min(5, "L'adresse doit contenir au moins 5 caractères"),
   city: z.string().min(2, "La ville doit contenir au moins 2 caractères"),
   postalCode: z.string().regex(/^\d{5}$/, "Code postal invalide (5 chiffres)"),
@@ -43,9 +60,24 @@ export const productSchema = z.object({
   description: z
     .string()
     .min(10, "La description doit contenir au moins 10 caractères"),
-  price: z.number().positive("Le prix doit être positif"),
-  image: z.string().url("URL d'image invalide"),
+  basePrice: z.number().positive("Le prix doit être positif"),
+  image: z
+    .string()
+    .min(1, "Une image est requise")
+    .refine((val) => {
+      // Accepter les URLs complètes, les chemins absolus et les uploads
+      return (
+        val.startsWith("http") ||
+        val.startsWith("/") ||
+        val.startsWith("./") ||
+        val.includes("/uploads/") ||
+        val.includes("/img/")
+      );
+    }, "URL d'image invalide"),
   active: z.boolean().default(true),
+  dosage: z.string().optional(),
+  variants: z.array(z.any()).optional(),
+  pricingTiers: z.array(z.any()).optional(),
 });
 
 export const productVariantSchema = z.object({
@@ -54,7 +86,11 @@ export const productVariantSchema = z.object({
   flavor: flavorTypeSchema,
   color: z.string().regex(/^#[0-9A-F]{6}$/i, "Couleur hexadécimale invalide"),
   stock: z.number().int().min(0, "Le stock ne peut pas être négatif"),
-  sku: z.string().min(3, "Le SKU doit contenir au moins 3 caractères"),
+  sku: z
+    .string()
+    .min(3, "Le SKU doit contenir au moins 3 caractères")
+    .optional(),
+  images: z.array(z.string().url()).default(["/img/placeholder.svg"]),
 });
 
 // Schémas pour le panier
@@ -88,9 +124,10 @@ export const orderItemSchema = z.object({
 });
 
 export const createOrderSchema = z.object({
-  customerId: z.string(),
+  customerId: z.string().optional(), // Optionnel pour les commandes invités
   items: z.array(orderItemSchema).min(1, "Au moins un article requis"),
   shippingAddress: shippingAddressSchema,
+  totalAmount: z.number().positive().optional(), // Optionnel, sera calculé si non fourni
 });
 
 export const updateOrderStatusSchema = z.object({

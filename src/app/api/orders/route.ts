@@ -23,9 +23,7 @@ export async function GET(request: NextRequest) {
       prisma.order.findMany({
         where,
         include: {
-          customer: {
-            include: { loyalty: true },
-          },
+          customer: true,
           items: {
             include: {
               product: true,
@@ -61,7 +59,48 @@ export async function GET(request: NextRequest) {
 // POST /api/orders - Créer une nouvelle commande
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    // Vérifier que la requête a un corps
+    const contentType = request.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      const response: ApiResponse = {
+        success: false,
+        error: "Content-Type doit être application/json",
+      };
+      return NextResponse.json(response, { status: 400 });
+    }
+
+    let body: any;
+    try {
+      body = await request.json();
+    } catch (jsonError) {
+      console.error("Erreur de parsing JSON:", jsonError);
+      const response: ApiResponse = {
+        success: false,
+        error: "Corps de requête JSON invalide",
+      };
+      return NextResponse.json(response, { status: 400 });
+    }
+
+    if (!body || typeof body !== "object") {
+      const response: ApiResponse = {
+        success: false,
+        error: "Corps de requête manquant ou invalide",
+      };
+      return NextResponse.json(response, { status: 400 });
+    }
+
+    console.log("📦 Données reçues pour création de commande:", body);
+
+    // Debug: Vérifier que Prisma est disponible
+    console.log("🔍 Prisma client:", prisma ? "✅ Disponible" : "❌ Undefined");
+    console.log(
+      "🔍 Prisma product:",
+      prisma?.product ? "✅ Disponible" : "❌ Undefined"
+    );
+
+    if (!prisma) {
+      throw new Error("Prisma client non initialisé");
+    }
 
     // Validation des données
     const validatedData = createOrderSchema.parse(body);
@@ -81,7 +120,13 @@ export async function POST(request: NextRequest) {
       });
 
       if (!product) {
-        throw new Error(`Produit ${item.productId} non trouvé`);
+        console.error(
+          `Produit ${item.productId} non trouvé. Articles disponibles:`,
+          await prisma.product.findMany({ select: { id: true, name: true } })
+        );
+        throw new Error(
+          `Produit ${item.productId} non trouvé. Vérifiez que les produits existent en base de données.`
+        );
       }
 
       const itemPrice = Number((product as any).basePrice);
@@ -96,23 +141,92 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Gérer le client (créer un client temporaire si nécessaire)
+    let customerId = validatedData.customerId;
+
+    if (!customerId) {
+      // Vérifier si un client avec cet email existe déjà
+      const email =
+        validatedData.shippingAddress.email ||
+        `guest-${Date.now()}@deltagum.com`;
+
+      const existingCustomer = await prisma.customer.findUnique({
+        where: { email },
+      });
+
+      if (existingCustomer) {
+        console.log(
+          `Client existant trouvé avec email ${email}, utilisation du client existant`
+        );
+        customerId = existingCustomer.id;
+      } else {
+        // Créer un client temporaire pour les commandes invités
+        const tempCustomer = await prisma.customer.create({
+          data: {
+            id: globalThis.crypto.randomUUID(),
+            email,
+            password: "", // Mot de passe vide pour les invités
+            firstName: validatedData.shippingAddress.firstName,
+            lastName: validatedData.shippingAddress.lastName,
+            phone: validatedData.shippingAddress.phone || "",
+            address: validatedData.shippingAddress.street || "",
+            postalCode: validatedData.shippingAddress.postalCode,
+            city: validatedData.shippingAddress.city,
+            updatedAt: new Date(),
+          },
+        });
+        customerId = tempCustomer.id;
+        console.log(`Nouveau client temporaire créé avec email ${email}`);
+      }
+    } else {
+      // Vérifier que le client existe
+      const existingCustomer = await prisma.customer.findUnique({
+        where: { id: customerId },
+      });
+
+      if (!existingCustomer) {
+        console.error(
+          `Client ${customerId} non trouvé. Création d'un client temporaire.`
+        );
+        // Créer un client temporaire si le client spécifié n'existe pas
+        const tempCustomer = await prisma.customer.create({
+          data: {
+            id: globalThis.crypto.randomUUID(),
+            email:
+              validatedData.shippingAddress.email ||
+              `guest-${Date.now()}@deltagum.com`,
+            password: "",
+            firstName: validatedData.shippingAddress.firstName,
+            lastName: validatedData.shippingAddress.lastName,
+            phone: validatedData.shippingAddress.phone || "",
+            address: validatedData.shippingAddress.street || "",
+            postalCode: validatedData.shippingAddress.postalCode,
+            city: validatedData.shippingAddress.city,
+            updatedAt: new Date(),
+          },
+        });
+        customerId = tempCustomer.id;
+      }
+    }
+
     // Créer la commande avec transaction
     const order = await prisma.$transaction(async (tx: any) => {
       // Créer la commande
+      const orderId = globalThis.crypto.randomUUID();
       const newOrder = await tx.order.create({
         data: {
-          customerId: validatedData.customerId,
+          id: orderId,
+          customerId,
           status: "PENDING",
-          totalAmount,
+          totalAmount: validatedData.totalAmount || totalAmount,
           shippingAddress: validatedData.shippingAddress,
+          updatedAt: new Date(),
           items: {
             create: orderItems,
           },
         },
         include: {
-          customer: {
-            include: { loyalty: true },
-          },
+          customer: true,
           items: {
             include: {
               product: true,

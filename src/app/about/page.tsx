@@ -2,7 +2,6 @@
 
 import { fadeIn, slideUp } from "@/lib/animations";
 import { motion } from "framer-motion";
-import Image from "next/image";
 
 export default function AboutPage() {
   return (
@@ -24,7 +23,8 @@ export default function AboutPage() {
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed px-2 sm:px-0">
               Découvrez l'histoire et les valeurs qui font de Deltagum une
-              marque de confiance dans l'univers du CBD de qualité premium.
+              marque de confiance dans l'univers des produits premium à base de
+              Delta-9 THC.
             </p>
           </motion.div>
         </div>
@@ -33,45 +33,66 @@ export default function AboutPage() {
       {/* Notre Histoire */}
       <section className="py-12 sm:py-16 bg-white">
         <div className="container mx-auto px-3 sm:px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
+          <div className="max-w-4xl mx-auto">
             <motion.div
               initial={slideUp.initial}
               whileInView={slideUp.animate}
               viewport={{ once: true }}
-              className="order-2 lg:order-1"
             >
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
-                Notre Histoire
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-center">
+                Produits Delta-9 THC – Objets de collection conformes à la
+                législation
               </h2>
-              <div className="space-y-3 sm:space-y-4 text-gray-600 text-sm sm:text-base">
-                <p>
-                  Deltagum est née de la passion pour le bien-être naturel et
-                  l'innovation. Fondée par une équipe d'experts en
-                  phytothérapie, notre marque s'est donnée pour mission de
-                  démocratiser l'accès aux bienfaits de la relaxation naturelle.
-                </p>
-                <p>
-                  Depuis nos débuts, nous nous engageons à proposer des produits
-                  Deltagum de la plus haute qualité, rigoureusement testés et
-                  certifiés, pour offrir à nos clients une expérience de
-                  bien-être exceptionnelle et des moments de détente uniques.
-                </p>
-              </div>
-            </motion.div>
-            <motion.div
-              className="relative order-1 lg:order-2"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <div className="bg-gradient-to-br from-pink-100 to-orange-100 rounded-xl sm:rounded-2xl overflow-hidden h-60 sm:h-72 lg:h-80 relative">
-                <Image
-                  src="/img/story.png"
-                  alt="Notre Histoire"
-                  fill
-                  className="object-cover rounded-xl sm:rounded-2xl"
-                />
+
+              <div className="space-y-6">
+                <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                  <p className="text-gray-700 leading-relaxed">
+                    Bienvenue dans la catégorie{" "}
+                    <strong>Delta-9 THC de Deltagum</strong>, dédiée à une gamme
+                    de produits exclusivement réservés à un{" "}
+                    <strong>usage de collection</strong>. Tous les articles
+                    proposés ici contiennent du{" "}
+                    <strong>Delta-9 tétrahydrocannabinol</strong> dans une
+                    concentration strictement{" "}
+                    <strong>inférieure à 0,3 %</strong>, conformément à la
+                    législation européenne en vigueur.
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <p className="text-gray-700 leading-relaxed">
+                    Qu'il s'agisse de <strong>gummies</strong>, de{" "}
+                    <strong>liquides</strong> ou d'autres formats à venir, nos
+                    produits sont <strong>non alimentaires</strong> et ne
+                    doivent en aucun cas être utilisés à des fins de
+                    consommation.
+                  </p>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                  <h3 className="text-lg font-bold text-yellow-800 mb-4">
+                    Qu'est-ce que le Delta-9 THC ?
+                  </h3>
+                  <p className="text-yellow-700 leading-relaxed mb-4">
+                    Le <strong>Delta-9 THC</strong> est une molécule
+                    naturellement présente dans la plante de chanvre. Bien
+                    qu'elle soit reconnue pour son{" "}
+                    <strong>caractère psychoactif</strong>, une teneur
+                    inférieure à 0,3 % permet une commercialisation encadrée en
+                    France et dans l'Union européenne, à condition que le
+                    produit ne soit{" "}
+                    <strong>
+                      ni destiné ni présenté comme destiné à la consommation
+                    </strong>
+                    .
+                  </p>
+                  <p className="text-yellow-700 leading-relaxed">
+                    Chez Deltagum, nous sélectionnons uniquement des produits
+                    conformes, <strong>traçables</strong> et{" "}
+                    <strong>stables</strong>, issus de laboratoires respectant
+                    toutes les exigences réglementaires.
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -104,12 +125,6 @@ export default function AboutPage() {
                   "Tous nos produits sont rigoureusement testés en laboratoire pour garantir pureté et efficacité.",
               },
               {
-                icon: "🌱",
-                title: "Naturel & Bio",
-                description:
-                  "Nous privilégions les ingrédients naturels et biologiques pour respecter votre santé et l'environnement.",
-              },
-              {
                 icon: "🤝",
                 title: "Transparence",
                 description:
@@ -139,38 +154,90 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Composition mise en avant */}
+      {/* Engagement qualité */}
       <section className="py-12 sm:py-16 bg-green-50">
         <div className="container mx-auto px-3 sm:px-4 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto">
             <motion.div
               initial={fadeIn.initial}
               whileInView={fadeIn.animate}
               viewport={{ once: true }}
             >
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
-                🌿 Composition mise en avant
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-center">
+                🔬 Un engagement qualité sur chaque produit
               </h2>
-              <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg border-2 border-green-200">
-                <div className="text-center mb-6 sm:mb-8">
-                  <div className="inline-flex items-center bg-green-100 text-green-800 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base lg:text-lg font-bold mb-3 sm:mb-4">
-                    ✅ Conformité <strong> légale européenne</strong>
-                  </div>
-                  <p className="text-xl sm:text-2xl font-bold text-green-700">
-                    THC &lt; 0,3%
-                  </p>
-                  <p className="text-gray-600 mt-2 text-sm sm:text-base">
-                    Nos produits respectent strictement la réglementation
-                    européenne
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">
+                    ✅ Produits testés en laboratoire
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    <strong>THC &lt; 0,3 %</strong> - Conformité européenne
+                    garantie
                   </p>
                 </div>
+
+                <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">
+                    🔒 Traçabilité complète
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Suivi rigoureux de la production à la livraison
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">
+                    🌡️ Conditionnements sécurisés
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Stockage et transport dans des conditions optimales
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">
+                    🏆 Objets de collection uniquement
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Présentés comme objets de collection exclusivement
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-orange-50 border-l-4 border-orange-400 p-6 rounded-r-xl">
+                <h3 className="text-lg font-bold text-orange-800 mb-4">
+                  ⚠️ En cas d'utilisation non conforme
+                </h3>
+                <p className="text-orange-700 text-sm mb-4">
+                  Si les produits Delta-9 THC de cette catégorie venaient à être
+                  utilisés en dehors de leur destination de collection, les{" "}
+                  <strong>effets secondaires suivants</strong> pourraient être
+                  ressentis :
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-orange-700">
+                  <div>
+                    <p>• Sensation de relâchement physique ou mental</p>
+                    <p>• Somnolence ou fatigue intense</p>
+                    <p>• Rougeur des yeux</p>
+                  </div>
+                  <div>
+                    <p>• Sécheresse buccale</p>
+                    <p>• Trouble de l'attention ou ralentissement moteur</p>
+                    <p>• Épisodes de nausée ou vertiges</p>
+                  </div>
+                </div>
+                <p className="text-orange-800 font-medium mt-4 text-sm">
+                  Une seule unité suffirait à provoquer ces effets.
+                </p>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Recommandations importantes */}
+      {/* Précautions essentielles */}
       <section className="py-12 sm:py-16 bg-red-50">
         <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <div className="max-w-4xl mx-auto">
@@ -179,46 +246,69 @@ export default function AboutPage() {
               whileInView={fadeIn.animate}
               viewport={{ once: true }}
             >
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">
-                ⚠️ Recommandations importantes
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-center">
+                🚨 Précautions essentielles
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border-2 border-red-200 text-center">
-                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🚫</div>
-                  <h3 className="text-lg sm:text-xl font-bold text-red-800 mb-2 sm:mb-3">
-                    Interdit sous <strong>traitement médical</strong>
-                  </h3>
-                  <p className="text-gray-600 text-sm sm:text-base">
-                    Ne pas consommer si vous suivez un traitement médical.
-                    Consultez votre médecin.
-                  </p>
+
+              <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-red-200 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-lg font-bold text-red-800 mb-4">
+                      🔞 Produit interdit aux mineurs
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Strictement réservé aux personnes majeures (18 ans et
+                      plus)
+                    </p>
+
+                    <h3 className="text-lg font-bold text-red-800 mb-4">
+                      🤱 Déconseillé aux femmes enceintes ou allaitantes
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Usage fortement déconseillé pendant la grossesse et
+                      l'allaitement
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-red-800 mb-4">
+                      👶 À conserver hors de portée des enfants
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Stockage sécurisé obligatoire, loin des enfants
+                    </p>
+
+                    <h3 className="text-lg font-bold text-red-800 mb-4">
+                      🚫 Ne pas consommer
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Produits destinés exclusivement à la collection
+                    </p>
+                  </div>
                 </div>
-                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border-2 border-red-200 text-center">
-                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🔞</div>
-                  <h3 className="text-lg sm:text-xl font-bold text-red-800 mb-2 sm:mb-3">
-                    Réservé aux <strong>adultes</strong>
-                  </h3>
-                  <p className="text-gray-600 text-sm sm:text-base">
-                    Produit strictement réservé aux personnes majeures (18 ans
-                    et plus).
-                  </p>
-                </div>
-                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border-2 border-red-200 text-center">
-                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🚗</div>
-                  <h3 className="text-lg sm:text-xl font-bold text-red-800 mb-2 sm:mb-3">
-                    Ne pas <strong>conduire</strong> après usage
-                  </h3>
-                  <p className="text-gray-600 text-sm sm:text-base">
-                    Évitez de conduire ou d'utiliser des machines après
-                    consommation.
-                  </p>
+
+                <div className="border-t border-gray-200 pt-6 mt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-red-500 text-xl">🚫</span>
+                      <span className="text-sm text-gray-700">
+                        Ne pas inhaler ni transformer
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-red-500 text-xl">⚠️</span>
+                      <span className="text-sm text-gray-700">
+                        Usage de collection uniquement
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="mt-6 sm:mt-8 bg-yellow-100 border border-yellow-300 rounded-lg p-4 sm:p-6 text-center">
-                <p className="text-yellow-800 font-medium text-sm sm:text-base">
-                  <strong>Important :</strong> Ces recommandations sont
-                  essentielles pour votre sécurité et celle d'autrui.
-                  Respectez-les scrupuleusement.
+
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-xl">
+                <p className="text-yellow-800 font-bold text-center">
+                  ⚠️ Toute utilisation abusive engage la seule responsabilité de
+                  l'utilisateur.
                 </p>
               </div>
             </motion.div>
@@ -226,65 +316,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Engagement Qualité */}
-      <section className="py-12 sm:py-16 bg-white">
-        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div
-              initial={fadeIn.initial}
-              whileInView={fadeIn.animate}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
-                Notre Engagement Qualité
-              </h2>
-              <div className="bg-gradient-to-br from-pink-50 to-orange-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8">
-                <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-4 sm:mb-6">
-                  Chaque produit Deltagum passe par un processus de contrôle
-                  qualité rigoureux. Nos laboratoires partenaires certifiés
-                  analysent systématiquement nos produits pour vérifier leur
-                  teneur, l'absence de contaminants et leur conformité aux
-                  normes européennes les plus strictes.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-left">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">
-                      ✓ Tests en laboratoire
-                    </h4>
-                    <p className="text-gray-600">
-                      Analyses complètes par des laboratoires indépendants
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">
-                      ✓ Traçabilité complète
-                    </h4>
-                    <p className="text-gray-600">
-                      Suivi de la graine au produit fini
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">
-                      ✓ Conformité légale européenne
-                    </h4>
-                    <p className="text-gray-600">
-                      THC &lt; 0,3% - Respect strict de la réglementation
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">
-                      ✓ Qualité premium
-                    </h4>
-                    <p className="text-gray-600">
-                      Ingrédients sélectionnés avec le plus grand soin
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      {/* Section complète Delta-9 THC */}
     </main>
   );
 }

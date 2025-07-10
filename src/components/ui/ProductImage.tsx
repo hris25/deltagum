@@ -78,9 +78,9 @@ const ProductImage: React.FC<ProductImageProps> = ({
         />
       </motion.div>
 
-      {/* Badge CBD */}
+      {/* Badge THC */}
       <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-        🌿 CBD
+        🌿 THC
       </div>
 
       {/* Badge 18+ */}

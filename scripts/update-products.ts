@@ -14,6 +14,7 @@ async function updateProducts() {
     // 1. Créer le produit Bonbons Delta-9
     const bonbonsProduct = await prisma.product.create({
       data: {
+        id: globalThis.crypto.randomUUID(),
         name: "Bonbons Delta-9",
         description:
           "Bonbons délicieux à base de Delta-9 (THC < 0,3%). Goûts variés pour une expérience gustative unique. Dosage précis de 30mg par bonbon.",
@@ -21,6 +22,7 @@ async function updateProducts() {
         dosage: "30mg",
         image: "/img/2.jpg", // Image originale
         active: true,
+        updatedAt: new Date(),
       },
     });
 
@@ -37,9 +39,11 @@ async function updateProducts() {
     for (const priceData of bonbonsPrices) {
       await prisma.priceTier.create({
         data: {
+          id: globalThis.crypto.randomUUID(),
           productId: bonbonsProduct.id,
           quantity: priceData.quantity,
           price: priceData.price,
+          updatedAt: new Date(),
         },
       });
       console.log(
@@ -50,6 +54,7 @@ async function updateProducts() {
     // 2. Créer le produit Cookies Delta-9
     const cookiesProduct = await prisma.product.create({
       data: {
+        id: globalThis.crypto.randomUUID(),
         name: "Cookies Delta-9",
         description:
           "Cookies au chocolat noir à base de Delta-9 (THC < 0,3%). Dosage précis de 75mg par cookie pour une expérience intense et savoureuse.",
@@ -57,6 +62,7 @@ async function updateProducts() {
         dosage: "75mg",
         image: "/img/7.jpg", // Image différente pour les cookies
         active: true,
+        updatedAt: new Date(),
       },
     });
 
@@ -73,9 +79,11 @@ async function updateProducts() {
     for (const priceData of cookiesPrices) {
       await prisma.priceTier.create({
         data: {
+          id: globalThis.crypto.randomUUID(),
           productId: cookiesProduct.id,
           quantity: priceData.quantity,
           price: priceData.price,
+          updatedAt: new Date(),
         },
       });
       console.log(
@@ -111,8 +119,10 @@ async function updateProducts() {
     for (const variant of bonbonsVariants) {
       const createdVariant = await prisma.productVariant.create({
         data: {
+          id: globalThis.crypto.randomUUID(),
           ...variant,
           productId: bonbonsProduct.id,
+          updatedAt: new Date(),
         },
       });
       console.log(`✅ Variante bonbons créée: ${createdVariant.flavor}`);
@@ -121,12 +131,14 @@ async function updateProducts() {
     // Créer une variante unique pour les cookies (chocolat noir uniquement)
     await prisma.productVariant.create({
       data: {
+        id: globalThis.crypto.randomUUID(),
         flavor: "STRAWBERRY", // On utilise STRAWBERRY comme placeholder pour "Chocolat noir"
         color: "#8B4513",
         images: ["/img/8.jpg"], // Images pour cookies chocolat (tableau)
         stock: 100,
         sku: "COOKIES-CHOCOLAT-NOIR",
         productId: cookiesProduct.id,
+        updatedAt: new Date(),
       },
     });
 

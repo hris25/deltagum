@@ -2,10 +2,11 @@
 export const mockProducts = [
   {
     id: "1",
-    name: "Deltagum Original",
-    description: "Nos délicieux produits Deltagum aux saveurs naturelles. Parfait pour une expérience relaxante et savoureuse.",
+    name: "Bonbons Delta-9",
+    description:
+      "Nos délicieux bonbons Delta-9 aux saveurs naturelles. Parfait pour une expérience relaxante et savoureuse.",
     image: "/img/product/packaging-group-deltagum.jpg",
-    basePrice: 12.00,
+    basePrice: 12.0,
     dosage: "10mg",
     active: true,
     createdAt: new Date().toISOString(),
@@ -15,7 +16,7 @@ export const mockProducts = [
         id: "1",
         productId: "1",
         quantity: 1,
-        price: 12.00,
+        price: 12.0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -23,7 +24,7 @@ export const mockProducts = [
         id: "2",
         productId: "1",
         quantity: 3,
-        price: 30.00,
+        price: 30.0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -31,7 +32,7 @@ export const mockProducts = [
         id: "3",
         productId: "1",
         quantity: 5,
-        price: 45.00,
+        price: 45.0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -45,7 +46,7 @@ export const mockProducts = [
         stock: 50,
         images: [
           "/img/product/deltagum-fraise-main1.png",
-          "/img/product/deltagum-fraise-main2.png"
+          "/img/product/deltagum-fraise-main2.png",
         ],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -58,7 +59,7 @@ export const mockProducts = [
         stock: 45,
         images: [
           "/img/product/deltagum-myrtille-main1.png",
-          "/img/product/deltagum-myrtille-main2.png"
+          "/img/product/deltagum-myrtille-main2.png",
         ],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -71,7 +72,7 @@ export const mockProducts = [
         stock: 40,
         images: [
           "/img/product/deltagum-apple-main1.png",
-          "/img/product/deltagum-apple-main2.png"
+          "/img/product/deltagum-apple-main2.png",
         ],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -80,10 +81,11 @@ export const mockProducts = [
   },
   {
     id: "2",
-    name: "Deltagum Cookies",
-    description: "Délicieux cookies Deltagum pour une expérience gourmande unique. Parfait pour accompagner votre pause détente.",
+    name: "Cookies Delta-9",
+    description:
+      "Délicieux cookies Delta-9 pour une expérience gourmande unique. Parfait pour accompagner votre pause détente.",
     image: "/img/product/packaging-group-cookie.png",
-    basePrice: 15.00,
+    basePrice: 15.0,
     dosage: "15mg",
     active: true,
     createdAt: new Date().toISOString(),
@@ -93,7 +95,7 @@ export const mockProducts = [
         id: "4",
         productId: "2",
         quantity: 1,
-        price: 15.00,
+        price: 15.0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -101,7 +103,7 @@ export const mockProducts = [
         id: "5",
         productId: "2",
         quantity: 3,
-        price: 40.00,
+        price: 40.0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },

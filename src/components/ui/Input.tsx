@@ -45,7 +45,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const variantClasses = {
       default: [
         "border border-gray-300 bg-white text-gray-900",
-        "placeholder:text-gray-400",
+        "placeholder:text-gray-700", // Texte du placeholder plus foncé
         "hover:border-gray-400",
         "focus:border-pink-500 focus:ring-pink-500/20",
         "shadow-sm",
@@ -55,7 +55,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       ],
       filled: [
         "border-0 bg-gray-50 text-gray-900",
-        "placeholder:text-gray-400",
+        "placeholder:text-gray-700", // Texte du placeholder plus foncé
         "hover:bg-gray-100",
         "focus:bg-white focus:ring-pink-500/20 focus:shadow-md",
         "shadow-sm",
@@ -63,7 +63,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       ],
       outlined: [
         "border-2 border-gray-300 bg-white text-gray-900",
-        "placeholder:text-gray-400",
+        "placeholder:text-gray-700", // Texte du placeholder plus foncé
         "hover:border-gray-400",
         "focus:border-pink-500 focus:ring-pink-500/20",
         "shadow-sm",
@@ -254,7 +254,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     const variantClasses = {
       default: [
         "border border-gray-300 bg-white text-gray-900",
-        "placeholder:text-gray-400",
+        "placeholder:text-gray-700", // Texte du placeholder plus foncé
         "hover:border-gray-400",
         "focus:border-pink-500 focus:ring-pink-500/20",
         "shadow-sm",
@@ -264,7 +264,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       ],
       filled: [
         "border-0 bg-gray-50 text-gray-900",
-        "placeholder:text-gray-400",
+        "placeholder:text-gray-700", // Texte du placeholder plus foncé
         "hover:bg-gray-100",
         "focus:bg-white focus:ring-pink-500/20 focus:shadow-md",
         "shadow-sm",
@@ -272,7 +272,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       ],
       outlined: [
         "border-2 border-gray-300 bg-white text-gray-900",
-        "placeholder:text-gray-400",
+        "placeholder:text-gray-700", // Texte du placeholder plus foncé
         "hover:border-gray-400",
         "focus:border-pink-500 focus:ring-pink-500/20",
         "shadow-sm",

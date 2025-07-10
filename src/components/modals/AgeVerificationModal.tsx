@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui";
-import { motion, AnimatePresence } from "framer-motion";
-import React, { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useState } from "react";
 
 interface AgeVerificationModalProps {
   isOpen: boolean;
@@ -67,7 +67,8 @@ const AgeVerificationModal: React.FC<AgeVerificationModalProps> = ({
                   Accès réservé aux adultes
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Ce site propose des produits à base de <strong>CBD</strong> (cannabidiol).
+                  Ce site propose des produits à base de{" "}
+                  <strong>Delta-9 THC</strong>.
                   <br />
                   L'accès est strictement réservé aux personnes majeures.
                 </p>
@@ -75,7 +76,9 @@ const AgeVerificationModal: React.FC<AgeVerificationModalProps> = ({
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                 <p className="text-sm text-yellow-800">
-                  ⚠️ <strong>Avertissement :</strong> Ces produits contiennent du CBD et ne sont pas destinés aux mineurs, aux femmes enceintes ou allaitantes.
+                  ⚠️ <strong>Avertissement :</strong> Ces produits contiennent
+                  du Delta-9 THC et ne sont pas destinés aux mineurs, aux femmes
+                  enceintes ou allaitantes.
                 </p>
               </div>
 
@@ -120,7 +123,8 @@ const AgeVerificationModal: React.FC<AgeVerificationModalProps> = ({
             {/* Footer */}
             <div className="bg-gray-50 px-6 py-4 text-center">
               <p className="text-xs text-gray-500">
-                En continuant, vous confirmez être majeur et acceptez nos conditions d'utilisation.
+                En continuant, vous confirmez être majeur et acceptez nos
+                conditions d'utilisation.
               </p>
             </div>
           </div>

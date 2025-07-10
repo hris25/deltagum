@@ -68,7 +68,7 @@ const Footer: React.FC = () => {
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       {/* Section principale */}
       <div className="container mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12 lg:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
           {/* Logo et description */}
           <div className="lg:col-span-1 text-center sm:text-left">
             <div className="flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3 mb-4 sm:mb-6">
@@ -88,35 +88,14 @@ const Footer: React.FC = () => {
               Découvrez nos créations gourmandes aux parfums de fraise, myrtille
               et pomme.
             </p>
-
-            {/* Newsletter */}
-            {/*<div>
-              <h4 className="font-semibold mb-3 text-pink-300">Newsletter</h4>
-              <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-                <Input
-                  type="email"
-                  placeholder="Votre email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-                />
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="sm"
-                  loading={isSubscribing}
-                  fullWidth
-                >
-                  S'abonner
-                </Button>
-              </form>
-            </div> */}
           </div>
 
           {/* Navigation */}
-          <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-base sm:text-lg mb-3 sm:mb-4 text-pink-300">
+          {/*<div className="text-center sm:text-left">
+            <h3
+              className="font-bold text-white sm:text-lg mb-3 sm:mb-4"
+              style={{ color: "#ffffff" }}
+            >
               Navigation
             </h3>
             <ul className="space-y-1 sm:space-y-2">
@@ -131,11 +110,14 @@ const Footer: React.FC = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </div>*/}
 
           {/* Informations légales */}
           <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-base sm:text-lg mb-3 sm:mb-4 text-pink-300">
+            <h3
+              className="font-bold text-white sm:text-lg mb-3 sm:mb-4"
+              style={{ color: "#ffffff" }}
+            >
               Informations
             </h3>
             <ul className="space-y-1 sm:space-y-2">
@@ -154,7 +136,10 @@ const Footer: React.FC = () => {
 
           {/* Contact et réseaux sociaux */}
           <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-base sm:text-lg mb-3 sm:mb-4 text-pink-300">
+            <h3
+              className="font-bold text-white sm:text-lg mb-3 sm:mb-4"
+              style={{ color: "#ffffff" }}
+            >
               Contact
             </h3>
             <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
@@ -216,11 +201,11 @@ const Footer: React.FC = () => {
       {/* Barre de copyright */}
       <div className="border-t border-gray-700 py-4 sm:py-6">
         <div className="container mx-auto px-3 sm:px-4 lg:px-8">
-          {/* Avertissement CBD */}
+          {/* Avertissement Delta-9 THC */}
           <div className="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
             <div className="text-center">
               <p className="text-yellow-300 text-xs sm:text-sm font-semibold mb-1 sm:mb-2">
-                🌿 AVERTISSEMENT IMPORTANT - PRODUITS CBD
+                🌿 AVERTISSEMENT IMPORTANT - PRODUITS DELTA-9 THC
               </p>
               <p className="text-yellow-200 text-xs leading-relaxed">
                 Nos produits sont strictement réservés aux personnes majeures

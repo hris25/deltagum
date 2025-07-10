@@ -162,9 +162,6 @@ const ProductOverview = () => {
                         e.currentTarget.src = "/img/placeholder.svg";
                       }}
                     />
-                    <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 bg-green-500 text-white text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full shadow-lg">
-                      🌿
-                    </div>
                     <div className="absolute bottom-1.5 sm:bottom-2 left-1.5 sm:left-2 bg-red-500 text-white text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full shadow-lg">
                       18+
                     </div>
@@ -174,12 +171,6 @@ const ProductOverview = () => {
                     <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
                       {product.name}
                     </h3>
-
-                    {product.dosage && (
-                      <div className="text-center inline-flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium mb-3">
-                        💊 {product.dosage}
-                      </div>
-                    )}
                   </CardHeader>
 
                   <CardContent className="pt-0 px-3 sm:px-6">

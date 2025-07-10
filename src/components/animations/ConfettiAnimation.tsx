@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 export interface ConfettiAnimationProps {
   trigger?: boolean;
@@ -35,11 +35,14 @@ const ConfettiAnimation: React.FC<ConfettiAnimationProps> = ({
   const [particles, setParticles] = useState<Particle[]>([]);
   const [isActive, setIsActive] = useState(false);
 
-  const sizeConfig = {
-    sm: { min: 4, max: 8 },
-    md: { min: 6, max: 12 },
-    lg: { min: 8, max: 16 },
-  };
+  const sizeConfig = useMemo(
+    () => ({
+      sm: { min: 4, max: 8 },
+      md: { min: 6, max: 12 },
+      lg: { min: 8, max: 16 },
+    }),
+    []
+  );
 
   const createParticle = useCallback(
     (id: number): Particle => {

@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     const response: ApiResponse<ProductsResponse> = {
       success: true,
       data: {
-        products,
+        products: products as any,
         total,
       },
     };
@@ -53,9 +53,9 @@ export async function GET(request: NextRequest) {
         products: [
           {
             id: "1",
-            name: "Deltagum Original",
+            name: "Bonbons Delta-9",
             description:
-              "Nos délicieux produits Deltagum aux saveurs naturelles. Parfait pour une expérience relaxante et savoureuse.",
+              "Nos délicieux bonbons Delta-9 aux saveurs naturelles. Parfait pour une expérience relaxante et savoureuse.",
             image: "/img/product/packaging-group-deltagum.jpg",
             basePrice: 12.0,
             dosage: "10mg",
@@ -132,9 +132,9 @@ export async function GET(request: NextRequest) {
           },
           {
             id: "2",
-            name: "Deltagum Cookies",
+            name: "Cookies Delta-9",
             description:
-              "Délicieux cookies Deltagum pour une expérience gourmande unique. Parfait pour accompagner votre pause détente.",
+              "Délicieux cookies Delta-9 pour une expérience gourmande unique. Parfait pour accompagner votre pause détente.",
             image: "/img/product/packaging-group-cookie.png",
             basePrice: 15.0,
             dosage: "15mg",
@@ -189,23 +189,72 @@ export async function POST(request: NextRequest) {
     // Validation des données
     const validatedData = productSchema.parse(body);
 
-    // Transformer price en basePrice pour Prisma
-    const { price, ...otherData } = validatedData;
-    const productData = {
-      ...otherData,
-      basePrice: price,
+    // Préparer les données pour Prisma (exclure les champs non-DB)
+    const { variants, pricingTiers, ...productData } = validatedData;
+
+    // Ajouter les champs requis
+    const productDataWithRequired = {
+      ...productData,
+      id: globalThis.crypto.randomUUID(),
+      updatedAt: new Date(),
     };
 
-    const product = await prisma.product.create({
-      data: productData,
-      include: {
-        variants: true,
-      },
+    // Créer le produit avec ses variantes et prix en transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Créer le produit
+      const product = await tx.product.create({
+        data: productDataWithRequired,
+      });
+
+      // Créer les variantes si elles existent
+      if (variants && Array.isArray(variants) && variants.length > 0) {
+        for (const variantData of variants) {
+          // Générer un SKU unique si non fourni
+          if (!variantData.sku) {
+            const skuBase = `${product.name
+              .substring(0, 3)
+              .toUpperCase()}-${variantData.flavor.toUpperCase()}`;
+            variantData.sku = `${skuBase}-${Date.now()}`;
+          }
+
+          await tx.productVariant.create({
+            data: {
+              ...variantData,
+              productId: product.id,
+            },
+          });
+        }
+      }
+
+      // Créer les prix par palier si ils existent
+      if (
+        pricingTiers &&
+        Array.isArray(pricingTiers) &&
+        pricingTiers.length > 0
+      ) {
+        for (const tierData of pricingTiers) {
+          await tx.priceTier.create({
+            data: {
+              ...tierData,
+              productId: product.id,
+            },
+          });
+        }
+      }
+
+      // Retourner le produit complet
+      return await tx.product.findUnique({
+        where: { id: product.id },
+        include: {
+          variants: true,
+          priceTiers: true,
+        },
+      });
     });
 
     const response: ApiResponse = {
       success: true,
-      data: product,
+      data: result,
       message: "Produit créé avec succès",
     };
 

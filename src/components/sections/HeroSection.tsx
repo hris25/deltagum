@@ -150,7 +150,7 @@ const HeroSection: React.FC = () => {
                 et bien-être dans chaque produit !
                 <br />
                 <span className="text-xs sm:text-sm text-gray-700 mt-2 block font-semibold">
-                  🔞 Produit réservé aux adultes - Contient du CBD
+                  🔞 Produit réservé aux adultes - Contient du Delta-9 THC
                 </span>
               </motion.p>
 
@@ -191,9 +191,9 @@ const HeroSection: React.FC = () => {
                 transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
               >
                 {/* Image décorative */}
-                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl">
+                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden ">
                   <img
-                    src="/img/3.jpg"
+                    src="/img/herobn.png"
                     alt="Délicieux délices colorés - Image décorative"
                     className="w-full h-auto object-cover"
                     loading="eager"

@@ -2,7 +2,7 @@
 
 import { Button, Modal, ModalBody, ModalFooter } from "@/components/ui";
 import { cn, formatPrice } from "@/lib/utils";
-import { useCart, useCheckoutModal } from "@/stores";
+import { useAuth, useCart, useCheckoutModal, useNotifications } from "@/stores";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
@@ -15,6 +15,9 @@ export interface CartModalProps {
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const { cart, removeItem, clearCart } = useCart();
   const { openModal } = useCheckoutModal();
+  const { isAuthenticated, user } = useAuth();
+  const { addNotification } = useNotifications();
+  const [isProcessing, setIsProcessing] = React.useState(false);
 
   const items = cart.items;
   const total = cart.totalAmount;
@@ -23,9 +26,143 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const shippingCost = total >= shippingThreshold ? 0 : 5.99;
   const finalTotal = total + shippingCost;
 
-  const handleCheckout = () => {
-    onClose();
-    openModal();
+  const handleCheckout = async () => {
+    if (isProcessing) return; // Éviter les clics multiples
+
+    // Vérifier l'authentification
+    if (!isAuthenticated) {
+      addNotification({
+        type: "warning",
+        title: "🔒 Connexion requise",
+        message:
+          "Vous devez vous connecter pour passer commande. Redirection en cours...",
+      });
+
+      onClose(); // Fermer le modal du panier
+
+      // Rediriger vers la page d'authentification après un court délai
+      setTimeout(() => {
+        window.location.href = "/auth";
+      }, 1500);
+      return;
+    }
+
+    try {
+      if (items.length === 0) {
+        addNotification({
+          type: "error",
+          title: "Panier vide",
+          message: "Ajoutez des produits à votre panier avant de commander",
+        });
+        return;
+      }
+
+      setIsProcessing(true);
+      console.log("🛒 Début du processus de commande...");
+      console.log("📦 Articles du panier:", items);
+      console.log("💰 Total:", finalTotal);
+
+      // Préparer les données de commande
+      const orderData = {
+        items: items.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+        })),
+        shippingAddress: {
+          firstName: user?.firstName || "Client",
+          lastName: user?.lastName || "Deltagum",
+          email: user?.email || `client-${Date.now()}@deltagum.com`,
+          phone: user?.phone || "0123456789",
+          street: user?.address || "123 Rue de la Livraison",
+          city: user?.city || "Paris",
+          postalCode: user?.postalCode || "75001",
+          country: "France",
+        },
+        ...(user?.id && { customerId: user.id }),
+        totalAmount: finalTotal,
+      };
+
+      console.log("📤 Données de commande:", orderData);
+
+      // Créer la commande
+      const orderResponse = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!orderResponse.ok) {
+        const errorData = await orderResponse.json();
+        console.error("❌ Erreur commande:", errorData);
+        addNotification({
+          type: "error",
+          title: "Erreur de commande",
+          message: "Impossible de créer la commande. Veuillez réessayer.",
+        });
+        setIsProcessing(false);
+        return;
+      }
+
+      const { data: orderResult } = await orderResponse.json();
+      console.log("✅ Commande créée:", orderResult.id);
+
+      // Créer la session Stripe
+      const sessionResponse = await fetch("/api/checkout/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: orderResult.id }),
+      });
+
+      if (!sessionResponse.ok) {
+        const errorData = await sessionResponse.json();
+        console.error("❌ Erreur session:", errorData);
+        addNotification({
+          type: "error",
+          title: "Erreur de paiement",
+          message:
+            "Impossible de créer la session de paiement. Veuillez réessayer.",
+        });
+        setIsProcessing(false);
+        return;
+      }
+
+      const sessionData = await sessionResponse.json();
+
+      if (sessionData.success && sessionData.data.url) {
+        console.log("✅ Session Stripe créée, redirection...");
+
+        // Sauvegarder les informations du panier pour les restaurer en cas d'annulation
+        localStorage.setItem(
+          "deltagum_pending_order",
+          JSON.stringify({
+            orderId: orderResult.id,
+            cartItems: items,
+            timestamp: Date.now(),
+          })
+        );
+
+        // Fermer le modal et rediriger vers Stripe
+        onClose();
+        window.location.href = sessionData.data.url;
+      } else {
+        console.error("❌ Erreur session:", sessionData);
+        addNotification({
+          type: "error",
+          title: "Erreur de session",
+          message: "Problème lors de la création de la session de paiement",
+        });
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error("❌ Erreur:", error);
+      addNotification({
+        type: "error",
+        title: "Erreur inattendue",
+        message: "Une erreur s'est produite. Veuillez réessayer.",
+      });
+      setIsProcessing(false);
+    }
   };
 
   // Fonction handleQuantityChange supprimée car les quantités ne sont plus modifiables
@@ -174,13 +311,6 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   </span>
                 </div>
 
-                {total < shippingThreshold && (
-                  <div className="text-xs text-gray-600 bg-blue-50 p-2 rounded">
-                    💡 Ajoutez {formatPrice(shippingThreshold - total)} pour
-                    bénéficier de la livraison gratuite !
-                  </div>
-                )}
-
                 <div className="border-t pt-2 flex justify-between font-semibold text-lg">
                   <span className="text-gray-900">Total</span>
                   <span className="text-pink-600 font-bold">
@@ -195,6 +325,91 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
 
       {items.length > 0 && (
         <ModalFooter className="flex-col space-y-3">
+          {/* Bouton de test Stripe (développement) - Désactivé car intégré dans "Commander" */}
+          {false && process.env.NODE_ENV === "development" && (
+            <div className="mb-3 text-center">
+              <button
+                onClick={async () => {
+                  // Test direct de l'API checkout
+                  try {
+                    if (items.length === 0) {
+                      alert("❌ Panier vide ! Ajoutez des produits d'abord.");
+                      return;
+                    }
+
+                    console.log("🧪 Test Stripe avec panier réel...");
+                    console.log("📦 Articles du panier:", items);
+                    console.log("💰 Total:", finalTotal);
+
+                    // Préparer les données de commande avec email unique
+                    const orderData = {
+                      items: items.map((item) => ({
+                        productId: item.productId,
+                        variantId: item.variantId,
+                        quantity: item.quantity,
+                      })),
+                      shippingAddress: {
+                        firstName: "Test",
+                        lastName: "User",
+                        email: `test-${Date.now()}@example.com`, // Email unique pour chaque test
+                        phone: "0123456789",
+                        street: "123 Rue de Test",
+                        city: "Paris",
+                        postalCode: "75001",
+                        country: "France",
+                      },
+                      totalAmount: finalTotal || 0,
+                    };
+
+                    console.log("📤 Données envoyées:", orderData);
+
+                    // D'abord créer une commande de test
+                    const orderResponse = await fetch("/api/orders", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(orderData),
+                    });
+
+                    if (orderResponse.ok) {
+                      const { data: orderData } = await orderResponse.json();
+
+                      // Puis créer la session Stripe
+                      const sessionResponse = await fetch(
+                        "/api/checkout/session",
+                        {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ orderId: orderData.id }),
+                        }
+                      );
+
+                      const sessionData = await sessionResponse.json();
+                      console.log("Test Stripe:", sessionData);
+
+                      if (sessionData.success && sessionData.data.url) {
+                        console.log("✅ Redirection vers Stripe...");
+                        window.location.href = sessionData.data.url;
+                      } else {
+                        console.error("❌ Erreur session:", sessionData);
+                        alert("❌ Erreur session: " + sessionData.error);
+                      }
+                    } else {
+                      const errorData = await orderResponse.json();
+                      console.error("❌ Erreur commande:", errorData);
+                      alert("❌ Erreur commande: " + errorData.error);
+                    }
+                  } catch (error) {
+                    console.error("❌ Erreur test:", error);
+                    alert("❌ Erreur: " + error);
+                  }
+                }}
+                className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm hover:bg-blue-200 transition-colors"
+              >
+                🧪 Test Stripe API
+              </button>
+            </div>
+          )}
+
           <div className="flex space-x-3 w-full">
             <Button
               variant="outline"
@@ -206,9 +421,17 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
             <Button
               variant="primary"
               onClick={handleCheckout}
+              disabled={isProcessing}
               className="flex-1"
             >
-              Commander ({formatPrice(finalTotal)})
+              {isProcessing ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Traitement en cours...
+                </>
+              ) : (
+                `Commander (${formatPrice(finalTotal)})`
+              )}
             </Button>
           </div>
           <p className="text-xs text-gray-500 text-center">

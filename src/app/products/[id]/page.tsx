@@ -150,7 +150,7 @@ export default function ProductPage() {
                   />
                   <div className="absolute top-4 right-4 space-y-2">
                     <div className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                      🌿 CBD
+                      🌿 THC
                     </div>
                     <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                       18+
@@ -204,9 +204,9 @@ export default function ProductPage() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">CBD</span>
+                        <span className="text-gray-600">Delta-9 THC</span>
                         <span className="font-medium text-blue-600">
-                          Premium
+                          &lt; 0,3%
                         </span>
                       </div>
                       <div className="flex justify-between">

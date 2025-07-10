@@ -1,105 +1,115 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model Product {
-  id          String   @id @default(cuid())
-  name        String
-  description String
-  basePrice   Decimal  @db.Decimal(10, 2) // Prix de base pour 1 unité
-  image       String
-  active      Boolean  @default(true)
-  dosage      String?  // Ex: "30mg", "75mg"
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  variants    ProductVariant[]
-  orderItems  OrderItem[]
-  priceTiers  PriceTier[] // Nouveaux prix par quantité
-
-  @@map("products")
-}
-
-model ProductVariant {
-  id        String     @id @default(cuid())
-  productId String
-  flavor    FlavorType
-  color     String
-  images    String[]   @default(["/img/placeholder.svg"]) // Tableau d'images
-  stock     Int        @default(0)
-  sku       String     @unique
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-
-  product    Product     @relation(fields: [productId], references: [id])
-  orderItems OrderItem[]
-
-  @@map("product_variants")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Customer {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  firstName String
-  lastName  String
-  phone     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  orders  Order[]
-  loyalty LoyaltyProgram?
-  
+  id               String            @id
+  email            String            @unique
+  firstName        String
+  lastName         String
+  phone            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime
+  password         String?
+  address          String?
+  city             String?
+  postalCode       String?
+  role             UserRole          @default(USER)
+  loyaltyProgram   LoyaltyProgram?
+  orders           Order[]
+
   @@map("customers")
 }
 
+model LoyaltyProgram {
+  id         String       @id
+  customerId String       @unique
+  points     Int          @default(0)
+  level      LoyaltyLevel @default(BRONZE)
+  customer   Customer     @relation(fields: [customerId], references: [id])
+
+  @@map("loyalty_programs")
+}
+
+model OrderItem {
+  id        String          @id
+  orderId   String
+  productId String
+  variantId String
+  quantity  Int
+  price     Decimal         @db.Decimal(10, 2)
+  order     Order           @relation(fields: [orderId], references: [id])
+  product   Product         @relation(fields: [productId], references: [id])
+  variant   ProductVariant  @relation(fields: [variantId], references: [id])
+
+  @@map("order_items")
+}
+
 model Order {
-  id              String      @id @default(cuid())
+  id              String      @id
   customerId      String
   status          OrderStatus @default(PENDING)
   totalAmount     Decimal     @db.Decimal(10, 2)
   stripePaymentId String?
   shippingAddress Json
   createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  
-  customer Customer    @relation(fields: [customerId], references: [id])
-  items    OrderItem[]
-  
+  updatedAt       DateTime
+  items           OrderItem[]
+  customer        Customer    @relation(fields: [customerId], references: [id])
+
   @@map("orders")
 }
 
-model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
+model PriceTier {
+  id        String   @id
   productId String
-  variantId String
   quantity  Int
-  price     Decimal @db.Decimal(10, 2)
-  
-  order   Order          @relation(fields: [orderId], references: [id])
-  product Product        @relation(fields: [productId], references: [id])
-  variant ProductVariant @relation(fields: [variantId], references: [id])
-  
-  @@map("order_items")
+  price     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, quantity])
+  @@map("price_tiers")
 }
 
-model LoyaltyProgram {
-  id         String       @id @default(cuid())
-  customerId String       @unique
-  points     Int          @default(0)
-  level      LoyaltyLevel @default(BRONZE)
-  
-  customer Customer @relation(fields: [customerId], references: [id])
-  
-  @@map("loyalty_programs")
+model ProductVariant {
+  id        String      @id
+  productId String
+  flavor    FlavorType
+  color     String
+  images    String[]    @default(["/img/placeholder.svg"])
+  stock     Int         @default(0)
+  sku       String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime
+  orderItems OrderItem[]
+  product   Product     @relation(fields: [productId], references: [id])
+
+  @@map("product_variants")
+}
+
+model Product {
+  id          String           @id
+  name        String
+  description String
+  basePrice   Decimal          @db.Decimal(10, 2)
+  image       String
+  active      Boolean          @default(true)
+  dosage      String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime
+  orderItems  OrderItem[]
+  priceTiers  PriceTier[]
+  variants    ProductVariant[]
+
+  @@map("products")
 }
 
 enum FlavorType {
@@ -107,6 +117,14 @@ enum FlavorType {
   BLUEBERRY
   APPLE
   CHOCOLATE
+  VANILLA
+}
+
+enum LoyaltyLevel {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
 }
 
 enum OrderStatus {
@@ -117,24 +135,7 @@ enum OrderStatus {
   CANCELLED
 }
 
-enum LoyaltyLevel {
-  BRONZE
-  SILVER
-  GOLD
-  PLATINUM
+enum UserRole {
+  USER
+  ADMIN
 }
-
-model PriceTier {
-  id        String  @id @default(cuid())
-  productId String
-  quantity  Int     // Quantité (1, 3, 6, 10, etc.)
-  price     Decimal @db.Decimal(10, 2) // Prix pour cette quantité
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([productId, quantity])
-  @@map("price_tiers")
-}
-  

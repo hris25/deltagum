@@ -36,7 +36,7 @@ const FAQSection: React.FC = () => {
       id: "2",
       question: "À partir de quel âge peut-on consommer Deltagum ?",
       answer:
-        "Nos délices CBD Deltagum sont strictement réservés aux adultes de 18 ans et plus. Une vérification d'âge est obligatoire lors de l'achat. Nous déconseillons la consommation aux femmes enceintes ou allaitantes.",
+        "Nos délices Deltagum sont strictement réservés aux adultes de 18 ans et plus. Une vérification d'âge est obligatoire lors de l'achat. Nous déconseillons la consommation aux femmes enceintes ou allaitantes.",
       category: "general",
       icon: "🔞",
     },
@@ -44,7 +44,7 @@ const FAQSection: React.FC = () => {
       id: "3",
       question: "Combien de produits Deltagum puis-je consommer par jour ?",
       answer:
-        "Nous recommandons de commencer par 1 de nos produits par jour (10mg de CBD) et d'ajuster selon vos besoins. Ne pas dépasser 3 par jour. Attendez 2h entre chaque prise pour évaluer les effets. Consultez un professionnel de santé si vous prenez des médicaments.",
+        "Nous recommandons de commencer par 1 de nos produits par jour et d'ajuster selon vos besoins. Ne pas dépasser 3 par jour. Attendez 2h entre chaque prise pour évaluer les effets. Consultez un professionnel de santé si vous prenez des médicaments.",
       category: "products",
       icon: "💊",
     },

@@ -89,7 +89,7 @@ const FlavorSlider: React.FC<FlavorSliderProps> = ({
               src={
                 (selectedVariant as any).images?.[0] || "/img/placeholder.svg"
               }
-              alt={`Délices CBD saveur ${
+              alt={`Délices Deltagum saveur ${
                 getFlavorConfig(selectedVariant.flavor).name
               }`}
               className="w-full h-full object-cover"
@@ -218,7 +218,7 @@ const FlavorSlider: React.FC<FlavorSliderProps> = ({
 
                       {/* Prix */}
                       <div className="text-xl font-semibold text-gray-800">
-                        {formatPrice(Number(variant.product.price))}
+                        {formatPrice(Number(variant.product?.price || 0))}
                       </div>
 
                       {/* Indicateur de stock */}

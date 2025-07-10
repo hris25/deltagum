@@ -19,10 +19,16 @@ export async function POST(request: NextRequest) {
     if (!customer) {
       customer = await prisma.customer.create({
         data: {
+          id: globalThis.crypto.randomUUID(),
           email: validatedData.customer.email,
+          password: "", // Mot de passe temporaire pour les commandes sans compte
           firstName: validatedData.customer.firstName,
           lastName: validatedData.customer.lastName,
-          phone: validatedData.customer.phone,
+          phone: validatedData.customer.phone || "",
+          address: validatedData.customer.address || "",
+          postalCode: validatedData.customer.postalCode || "",
+          city: validatedData.customer.city || "",
+          updatedAt: new Date(),
         },
       });
     }
@@ -39,8 +45,11 @@ export async function POST(request: NextRequest) {
         customerId: customer.id,
         totalAmount: totalAmount,
         shippingAddress: validatedData.shippingAddress,
+        id: globalThis.crypto.randomUUID(),
+        updatedAt: new Date(),
         items: {
           create: validatedData.items.map((item) => ({
+            id: globalThis.crypto.randomUUID(),
             productId: item.productId,
             variantId: item.variantId,
             quantity: item.quantity,
@@ -105,7 +114,7 @@ export async function POST(request: NextRequest) {
       mode: "payment",
       customer_email: order.customer.email,
       success_url: `${process.env.NEXTAUTH_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/cancel`,
       metadata: {
         orderId: order.id,
         customerId: order.customerId,
@@ -125,12 +134,12 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Mettre à jour la commande avec l'ID de session
+    // Mettre à jour la commande avec l'ID de session (statut reste PENDING)
     await prisma.order.update({
       where: { id: order.id },
       data: {
         stripePaymentId: session.id,
-        status: "PAID",
+        // Le statut sera mis à jour à "PAID" par le webhook après confirmation
       },
     });
 

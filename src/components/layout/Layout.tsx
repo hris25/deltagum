@@ -2,6 +2,7 @@
 
 import { ToastContainer } from "@/components/ui";
 import { useAgeVerification } from "@/hooks/useAgeVerification";
+import { useAuthInit } from "@/hooks/useAuthInit";
 import { cn } from "@/lib/utils";
 import { useCheckoutModal, useUI } from "@/stores";
 import { AnimatePresence, motion } from "framer-motion";
@@ -14,6 +15,7 @@ import { AgeVerificationModal } from "@/components/modals/AgeVerificationModal";
 import { CartModal } from "@/components/modals/CartModal";
 import { CheckoutModal } from "@/components/modals/CheckoutModal";
 import { ProductModal } from "@/components/modals/ProductModal";
+import { StripeProvider } from "@/components/providers/StripeProvider";
 
 export interface LayoutProps {
   children: React.ReactNode;
@@ -31,7 +33,6 @@ const Layout: React.FC<LayoutProps> = ({
   const {
     isCartOpen,
     isAuthModalOpen,
-    isMobile,
     setIsMobile,
     isLoading,
     closeAllModals,
@@ -41,6 +42,9 @@ const Layout: React.FC<LayoutProps> = ({
     useCheckoutModal();
 
   const { isVerified, showModal, confirmAge, denyAge } = useAgeVerification();
+
+  // Initialiser l'authentification
+  useAuthInit();
 
   // État pour éviter les problèmes d'hydratation
   const [isClient, setIsClient] = React.useState(false);
@@ -98,7 +102,7 @@ const Layout: React.FC<LayoutProps> = ({
 
       {/* Contenu principal (affiché seulement si vérifié) */}
       {isVerified && (
-        <>
+        <StripeProvider>
           {/* Header */}
           {showHeader && <Header />}
 
@@ -136,7 +140,7 @@ const Layout: React.FC<LayoutProps> = ({
               />
             </AnimatePresence>
           )}
-        </>
+        </StripeProvider>
       )}
 
       {/* Toast Notifications */}
