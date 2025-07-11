@@ -1,7 +1,14 @@
 "use client";
 
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
-import { Product, ProductVariant } from "@/types";
+import DeleteConfirmModal from "@/components/modals/DeleteConfirmModal";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui";
+import { Product } from "@/types";
 import { motion } from "framer-motion";
 import { Edit, Eye, Package, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -13,10 +20,23 @@ interface ProductListProps {
   onViewProduct: (product: Product) => void;
 }
 
-export default function ProductList({ onAddProduct, onEditProduct, onViewProduct }: ProductListProps) {
+export default function ProductList({
+  onAddProduct,
+  onEditProduct,
+  onViewProduct,
+}: ProductListProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    product: Product | null;
+    isLoading: boolean;
+  }>({
+    isOpen: false,
+    product: null,
+    isLoading: false,
+  });
 
   useEffect(() => {
     fetchProducts();
@@ -25,38 +45,55 @@ export default function ProductList({ onAddProduct, onEditProduct, onViewProduct
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/products');
+      const response = await fetch("/api/products");
       const data = await response.json();
-      
+
       if (data.success) {
         setProducts(data.data.products || []);
       } else {
-        setError('Erreur lors du chargement des produits');
+        setError("Erreur lors du chargement des produits");
       }
     } catch (err) {
-      setError('Erreur de connexion');
+      setError("Erreur de connexion");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteProduct = async (productId: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      return;
-    }
+  const handleDeleteProduct = (product: Product) => {
+    setDeleteModal({
+      isOpen: true,
+      product: product,
+      isLoading: false,
+    });
+  };
+
+  const confirmDeleteProduct = async () => {
+    if (!deleteModal.product) return;
+
+    setDeleteModal((prev) => ({ ...prev, isLoading: true }));
 
     try {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: 'DELETE',
+      const response = await fetch(`/api/products/${deleteModal.product.id}`, {
+        method: "DELETE",
       });
 
       if (response.ok) {
-        setProducts(products.filter(p => p.id !== productId));
+        setProducts(products.filter((p) => p.id !== deleteModal.product!.id));
+        setDeleteModal({ isOpen: false, product: null, isLoading: false });
       } else {
-        alert('Erreur lors de la suppression');
+        alert("Erreur lors de la suppression");
+        setDeleteModal((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (err) {
-      alert('Erreur de connexion');
+      alert("Erreur de connexion");
+      setDeleteModal((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const closeDeleteModal = () => {
+    if (!deleteModal.isLoading) {
+      setDeleteModal({ isOpen: false, product: null, isLoading: false });
     }
   };
 
@@ -86,10 +123,12 @@ export default function ProductList({ onAddProduct, onEditProduct, onViewProduct
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Gestion des produits</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Gestion des produits
+          </h2>
           <p className="text-gray-600">{products.length} produit(s) au total</p>
         </div>
-        <Button 
+        <Button
           onClick={onAddProduct}
           className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600"
         >
@@ -109,7 +148,7 @@ export default function ProductList({ onAddProduct, onEditProduct, onViewProduct
             <p className="text-gray-600 mb-6">
               Commencez par créer votre premier produit Deltagum.
             </p>
-            <Button 
+            <Button
               onClick={onAddProduct}
               className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600"
             >
@@ -130,48 +169,44 @@ export default function ProductList({ onAddProduct, onEditProduct, onViewProduct
               <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-48 bg-gray-100">
                   <Image
-                    src={product.image || '/img/placeholder.svg'}
+                    src={product.image || "/img/placeholder.svg"}
                     alt={product.name}
                     fill
                     className="object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = '/img/placeholder.svg';
+                      e.currentTarget.src = "/img/placeholder.svg";
                     }}
                   />
                   <div className="absolute top-2 right-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      product.active 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {product.active ? 'Actif' : 'Inactif'}
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        product.active
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {product.active ? "Actif" : "Inactif"}
                     </span>
                   </div>
                 </div>
-                
+
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">{product.name}</CardTitle>
                   <p className="text-sm text-gray-600 line-clamp-2">
                     {product.description}
                   </p>
                 </CardHeader>
-                
+
                 <CardContent className="pt-0">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <p className="text-sm text-gray-500">Prix de base</p>
-                      <p className="font-semibold">
-                        {product.price ? `${product.price}€` : 'Variable'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Variants</p>
-                      <p className="font-semibold">
+                      <p className="text-sm text-gray-500">Saveures</p>
+                      <p className="text-black">
                         {product.variants?.length || 0}
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex space-x-2">
                     <Button
                       variant="outline"
@@ -194,7 +229,7 @@ export default function ProductList({ onAddProduct, onEditProduct, onViewProduct
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => handleDeleteProduct(product.id)}
+                      onClick={() => handleDeleteProduct(product)}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -205,6 +240,17 @@ export default function ProductList({ onAddProduct, onEditProduct, onViewProduct
           ))}
         </div>
       )}
+
+      {/* Modal de confirmation de suppression */}
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDeleteProduct}
+        title="Supprimer le produit"
+        message="Êtes-vous sûr de vouloir supprimer ce produit ? Cette action supprimera également toutes les variantes, prix et commandes associées."
+        itemName={deleteModal.product?.name}
+        isLoading={deleteModal.isLoading}
+      />
     </div>
   );
 }

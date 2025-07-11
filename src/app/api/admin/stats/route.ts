@@ -126,7 +126,7 @@ export async function GET() {
         products: productsCount,
         orders: ordersCount,
         customers: customersCount,
-        revenue: totalRevenue._sum?.totalAmount || 0,
+        revenue: Number(totalRevenue._sum?.totalAmount || 0),
         ordersGrowth: Math.round(ordersGrowth * 100) / 100,
       },
       recentOrders: recentOrders.map((order) => ({

@@ -17,8 +17,6 @@ import {
   MapPin,
   Package,
   Phone,
-  Printer,
-  Truck,
   User,
   XCircle,
 } from "lucide-react";
@@ -153,10 +151,10 @@ export default function OrderDetails({
           >
             {getStatusLabel(order.status)}
           </span>
-          <Button variant="outline" size="sm">
+          {/*<Button variant="outline" size="sm">
             <Printer className="w-4 h-4 mr-2" />
             Imprimer
-          </Button>
+          </Button>*/}
         </div>
       </div>
 
@@ -290,20 +288,22 @@ export default function OrderDetails({
             <CardContent className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Sous-total</span>
-                <span className="font-medium">
+                <span className="font-medium text-black">
                   {Number(order.totalAmount).toFixed(2)}€
                 </span>
               </div>
 
               <div className="flex justify-between">
                 <span className="text-gray-600">Livraison</span>
-                <span className="font-medium">Gratuite</span>
+                <span className="font-medium text-black">Gratuite</span>
               </div>
 
               <div className="border-t pt-3">
                 <div className="flex justify-between">
-                  <span className="text-lg font-semibold">Total</span>
-                  <span className="text-lg font-bold text-pink-600">
+                  <span className="text-lg font-semibold text-black ">
+                    Total
+                  </span>
+                  <span className="text-lg text-black font-bold text-pink-600">
                     {Number(order.totalAmount).toFixed(2)}€
                   </span>
                 </div>
@@ -357,9 +357,9 @@ export default function OrderDetails({
           </Card>
 
           {/* Actions */}
-          <Card>
+          {/*<Card>
             <CardHeader>
-              <CardTitle>Actions</CardTitle>
+              <CardTitle className="pb-2">Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {order.status === "PENDING" && (
@@ -412,7 +412,7 @@ export default function OrderDetails({
                 Suivi de livraison
               </Button>
             </CardContent>
-          </Card>
+          </Card>*/}
         </div>
       </div>
     </motion.div>

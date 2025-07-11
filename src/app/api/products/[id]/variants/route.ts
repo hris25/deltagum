@@ -42,9 +42,23 @@ export async function POST(
   try {
     const body = await request.json();
 
+    // Transformer les noms de saveurs français en enum
+    const flavorMapping: Record<string, string> = {
+      Myrtille: "BLUEBERRY",
+      Fraise: "STRAWBERRY",
+      Pomme: "APPLE",
+      Chocolat: "CHOCOLATE",
+      Vanille: "VANILLA",
+    };
+
+    const transformedBody = {
+      ...body,
+      flavor: flavorMapping[body.flavor] || body.flavor,
+    };
+
     // Validation des données
     const validatedData = productVariantSchema.parse({
-      ...body,
+      ...transformedBody,
       productId: id,
     });
 

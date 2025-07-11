@@ -1,10 +1,18 @@
 import { z } from "zod";
 
 // Schémas pour les enums
-export const flavorTypeSchema = z.enum(["STRAWBERRY", "BLUEBERRY", "APPLE"]);
+export const flavorTypeSchema = z.enum([
+  "STRAWBERRY",
+  "BLUEBERRY",
+  "APPLE",
+  "CHOCOLATE",
+  "VANILLA",
+  "MYRTILLE",
+]);
 export const orderStatusSchema = z.enum([
   "PENDING",
   "PAID",
+  "PROCESSING",
   "SHIPPED",
   "DELIVERED",
   "CANCELLED",
@@ -60,7 +68,9 @@ export const productSchema = z.object({
   description: z
     .string()
     .min(10, "La description doit contenir au moins 10 caractères"),
-  basePrice: z.number().positive("Le prix doit être positif"),
+  basePrice: z
+    .union([z.number(), z.string().transform((val) => parseFloat(val))])
+    .refine((val) => val > 0, "Le prix doit être positif"),
   image: z
     .string()
     .min(1, "Une image est requise")
@@ -90,7 +100,20 @@ export const productVariantSchema = z.object({
     .string()
     .min(3, "Le SKU doit contenir au moins 3 caractères")
     .optional(),
-  images: z.array(z.string().url()).default(["/img/placeholder.svg"]),
+  images: z
+    .array(
+      z.string().refine((val) => {
+        // Accepter les URLs complètes, les chemins absolus et les uploads
+        return (
+          val.startsWith("http") ||
+          val.startsWith("/") ||
+          val.startsWith("./") ||
+          val.includes("/uploads/") ||
+          val.includes("/img/")
+        );
+      }, "URL ou chemin d'image invalide")
+    )
+    .default(["/img/placeholder.svg"]),
 });
 
 // Schémas pour le panier

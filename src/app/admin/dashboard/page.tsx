@@ -308,7 +308,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Revenus",
-      value: `€${statsData.overview.revenue.toFixed(2)}`,
+      value: `€${Number(statsData.overview.revenue || 0).toFixed(2)}`,
       icon: DollarSign,
       color: "bg-orange-500",
     },
@@ -432,7 +432,7 @@ export default function AdminDashboard() {
                       Revenus
                     </h3>
                     <p className="text-3xl font-bold text-orange-600">
-                      €{statsData.overview.revenue.toFixed(2)}
+                      €{Number(statsData.overview.revenue || 0).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -444,7 +444,7 @@ export default function AdminDashboard() {
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Button
-                        onClick={handleAddProduct}
+                        onClick={() => setActiveTab("products")}
                         className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600"
                       >
                         <Plus className="w-6 h-6" />

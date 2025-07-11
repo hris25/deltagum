@@ -118,6 +118,7 @@ enum FlavorType {
   APPLE
   CHOCOLATE
   VANILLA
+  MYRTILLE
 }
 
 enum LoyaltyLevel {
@@ -130,6 +131,7 @@ enum LoyaltyLevel {
 enum OrderStatus {
   PENDING
   PAID
+  PROCESSING
   SHIPPED
   DELIVERED
   CANCELLED

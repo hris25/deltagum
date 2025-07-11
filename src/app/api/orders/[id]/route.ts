@@ -67,10 +67,20 @@ export async function PATCH(
   try {
     const body = await request.json();
 
+    // Transformer les statuts si nécessaire (temporaire)
+    const statusMapping: Record<string, string> = {
+      PROCESSING: "PAID", // Temporaire jusqu'à ce que PROCESSING soit ajouté
+    };
+
+    const transformedBody = {
+      ...body,
+      status: statusMapping[body.status] || body.status,
+    };
+
     // Validation des données
     const validatedData = updateOrderStatusSchema.parse({
       orderId: id,
-      ...body,
+      ...transformedBody,
     });
 
     const order = await prisma.$transaction(async (tx: any) => {

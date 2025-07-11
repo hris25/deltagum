@@ -325,9 +325,6 @@ export default function ProductFormAdvanced({
                         <p className="text-xs text-gray-700 mt-1">
                           JPG, PNG jusqu'à 5MB
                         </p>
-                        <p className="text-xs text-green-600 mt-1">
-                          Les images sont stockées dans /public/uploads
-                        </p>
                       </div>
                     </div>
                   </div>

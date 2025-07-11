@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validation des données
+    // Validation des données (Zod convertit automatiquement les strings en numbers)
     const validatedData = productSchema.parse(body);
 
     // Préparer les données pour Prisma (exclure les champs non-DB)
@@ -208,7 +208,20 @@ export async function POST(request: NextRequest) {
 
       // Créer les variantes si elles existent
       if (variants && Array.isArray(variants) && variants.length > 0) {
+        // Transformer les noms de saveurs français en enum
+        const flavorMapping: Record<string, string> = {
+          Myrtille: "BLUEBERRY",
+          Fraise: "STRAWBERRY",
+          Pomme: "APPLE",
+          Chocolat: "CHOCOLATE",
+          Vanille: "VANILLA",
+        };
+
         for (const variantData of variants) {
+          // Transformer la saveur si nécessaire
+          if (variantData.flavor && flavorMapping[variantData.flavor]) {
+            variantData.flavor = flavorMapping[variantData.flavor];
+          }
           // Générer un SKU unique si non fourni
           if (!variantData.sku) {
             const skuBase = `${product.name
@@ -219,8 +232,10 @@ export async function POST(request: NextRequest) {
 
           await tx.productVariant.create({
             data: {
+              id: globalThis.crypto.randomUUID(),
               ...variantData,
               productId: product.id,
+              updatedAt: new Date(),
             },
           });
         }
@@ -235,8 +250,10 @@ export async function POST(request: NextRequest) {
         for (const tierData of pricingTiers) {
           await tx.priceTier.create({
             data: {
+              id: globalThis.crypto.randomUUID(),
               ...tierData,
               productId: product.id,
+              updatedAt: new Date(),
             },
           });
         }

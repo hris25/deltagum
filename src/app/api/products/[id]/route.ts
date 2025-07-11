@@ -54,7 +54,7 @@ export async function PUT(
   try {
     const body = await request.json();
 
-    // Validation des données
+    // Validation des données (Zod convertit automatiquement les strings en numbers)
     const validatedData = productSchema.parse(body);
 
     // Extraire seulement les champs du produit (pas les relations)
@@ -97,8 +97,27 @@ export async function DELETE(
 ) {
   const { id } = await params;
   try {
-    await prisma.product.delete({
-      where: { id },
+    // Supprimer en transaction pour éviter les erreurs de contraintes
+    await prisma.$transaction(async (tx) => {
+      // Supprimer d'abord les variants (qui supprimeront automatiquement les OrderItems liés)
+      await tx.productVariant.deleteMany({
+        where: { productId: id },
+      });
+
+      // Supprimer les price tiers
+      await tx.priceTier.deleteMany({
+        where: { productId: id },
+      });
+
+      // Supprimer les order items liés au produit
+      await tx.orderItem.deleteMany({
+        where: { productId: id },
+      });
+
+      // Enfin supprimer le produit
+      await tx.product.delete({
+        where: { id },
+      });
     });
 
     const response: ApiResponse = {

@@ -46,9 +46,6 @@ export default function VariantManager({
     { name: "Fraise", color: "#ff6b9d" },
     { name: "Myrtille", color: "#4dabf7" },
     { name: "Pomme", color: "#51cf66" },
-    { name: "Orange", color: "#ff922b" },
-    { name: "Citron", color: "#ffd43b" },
-    { name: "Raisin", color: "#9775fa" },
   ];
 
   // Fonction pour générer un SKU automatiquement
@@ -597,7 +594,7 @@ export default function VariantManager({
             className="w-full"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Ajouter le variant
+            Ajouter la saveur
           </Button>
         </CardContent>
       </Card>

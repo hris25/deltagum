@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -19,14 +19,14 @@ export async function GET() {
     // Revenus totaux (commandes livrées uniquement)
     const totalRevenueResult = await prisma.order.aggregate({
       _sum: { totalAmount: true },
-      where: { 
+      where: {
         status: {
-          in: ["PAID", "SHIPPED", "DELIVERED"]
-        }
+          in: ["PAID", "SHIPPED", "DELIVERED"],
+        },
       },
     });
 
-    const totalRevenue = totalRevenueResult._sum.totalAmount || 0;
+    const totalRevenue = Number(totalRevenueResult._sum.totalAmount || 0);
 
     const stats = {
       overview: {
