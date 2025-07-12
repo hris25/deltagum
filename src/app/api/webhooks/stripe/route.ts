@@ -1,8 +1,4 @@
-import { prisma } from "@/lib/prisma";
-import { stripe } from "@/lib/stripe";
-import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -12,8 +8,9 @@ export async function POST(request: NextRequest) {
     { error: "Webhook désactivé - utilisation de la vérification côté client" },
     { status: 200 }
   );
+}
 
-  /* ANCIEN CODE WEBHOOK - COMMENTÉ
+/* ANCIEN CODE WEBHOOK - COMMENTÉ
 export async function POST_DISABLED(req: NextRequest) {
   const body = await request.text();
   const signature = (await headers()).get("stripe-signature")!;
@@ -87,7 +84,6 @@ async function handleCheckoutSessionCompleted(
     console.log(`Order ${session.metadata.orderId} marked as PAID`);
   }
 }
-*/ // FIN DU COMMENTAIRE WEBHOOK
 
 async function handlePaymentIntentSucceeded(
   paymentIntent: Stripe.PaymentIntent
@@ -129,3 +125,4 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
   // Gérer les paiements d'abonnement si nécessaire
   // Pour l'instant, nous n'avons pas d'abonnements dans Deltagum
 }
+*/ // FIN DU COMMENTAIRE WEBHOOK
