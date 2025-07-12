@@ -53,6 +53,7 @@ export function StripePaymentForm({
             productId: item.productId,
             variantId: item.variantId,
             quantity: item.quantity,
+            price: item.price, // Inclure le prix du panier
           })),
           shippingAddress: shippingData,
           totalAmount: cart.totalAmount,

@@ -144,6 +144,7 @@ export const orderItemSchema = z.object({
   productId: z.string(),
   variantId: z.string(),
   quantity: z.number().int().positive(),
+  price: z.number().positive().optional(), // Prix unitaire du panier (optionnel, calculé si absent)
 });
 
 export const createOrderSchema = z.object({

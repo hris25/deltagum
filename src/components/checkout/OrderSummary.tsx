@@ -19,7 +19,7 @@ const OrderSummary: React.FC = () => {
   // Calculer les valeurs dérivées
   const subtotal = cart.totalAmount;
   const tax = subtotal * 0.2; // TVA 20%
-  const shipping = subtotal >= 50 ? 0 : 5.99; // Livraison gratuite à partir de 50€
+  const shipping = subtotal >= 25 ? 0 : 4.9; // Livraison gratuite à partir de 25€
   const total = subtotal + tax + shipping;
   const totalSavings = 0; // Simplifié car pas de prix originaux
 

@@ -176,6 +176,7 @@ const PaymentMethods: React.FC<PaymentMethodsProps> = ({
             productId: item.productId,
             variantId: item.variantId,
             quantity: item.quantity,
+            price: item.price, // Inclure le prix du panier
           })),
           shippingAddress: {
             firstName: customer?.firstName || "Client",

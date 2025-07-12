@@ -22,8 +22,8 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const items = cart.items;
   const total = cart.totalAmount;
   const totalItems = cart.totalItems;
-  const shippingThreshold = 50; // Livraison gratuite à partir de 50€
-  const shippingCost = total >= shippingThreshold ? 0 : 5.99;
+  const shippingThreshold = 25; // Livraison gratuite à partir de 25€
+  const shippingCost = total >= shippingThreshold ? 0 : 4.9;
   const finalTotal = total + shippingCost;
 
   const handleCheckout = async () => {
@@ -68,6 +68,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
           productId: item.productId,
           variantId: item.variantId,
           quantity: item.quantity,
+          price: item.price, // Inclure le prix du panier
         })),
         shippingAddress: {
           firstName: user?.firstName || "Client",
@@ -347,6 +348,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                         productId: item.productId,
                         variantId: item.variantId,
                         quantity: item.quantity,
+                        price: item.price, // Inclure le prix du panier
                       })),
                       shippingAddress: {
                         firstName: "Test",

@@ -72,12 +72,16 @@ export default function ProductPage() {
   const handleAddToCart = () => {
     if (!selectedProduct || !selectedVariant) return;
 
+    // Calculer le prix unitaire effectif pour ce palier
+    const totalPrice = getPriceForQuantity(selectedProduct, selectedQuantity);
+    const unitPrice = totalPrice / selectedQuantity;
+
     addItem({
       productId: selectedProduct.id,
       variantId: selectedVariant.id,
       quantity: selectedQuantity,
       name: selectedProduct.name,
-      price: getPriceForQuantity(selectedProduct, selectedQuantity),
+      price: unitPrice, // Prix unitaire, pas prix total
       image: selectedProduct.image,
       flavor: selectedVariant.flavor,
       color: selectedVariant.color,

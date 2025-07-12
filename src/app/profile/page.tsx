@@ -501,7 +501,7 @@ export default function ProfilePage() {
               {loadingOrders ? (
                 <div className="text-center py-8">
                   <div className="w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p>Chargement des commandes...</p>
+                  <p className="text-black">Chargement des commandes...</p>
                 </div>
               ) : orders.length === 0 ? (
                 <div className="text-center py-12">

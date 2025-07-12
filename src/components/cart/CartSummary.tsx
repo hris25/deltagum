@@ -35,7 +35,7 @@ const CartSummary: React.FC = () => {
   // Calculer les valeurs dérivées
   const subtotal = cart.totalAmount;
   const tax = subtotal * 0.2; // TVA 20%
-  const shipping = subtotal >= 50 ? 0 : 5.99; // Livraison gratuite à partir de 50€
+  const shipping = subtotal >= 25 ? 0 : 4.9; // Livraison gratuite à partir de 25€
   const total = subtotal + tax + shipping;
 
   const handleApplyPromoCode = async () => {
@@ -263,7 +263,7 @@ const CartSummary: React.FC = () => {
             <div className="text-sm text-blue-700">
               <p className="font-medium">🚚 Livraison gratuite</p>
               <p>
-                Ajoutez {formatPrice(5000 - subtotal)} pour la livraison
+                Ajoutez {formatPrice(2500 - subtotal)} pour la livraison
                 gratuite !
               </p>
             </div>

@@ -7,6 +7,14 @@ import Stripe from "stripe";
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(request: NextRequest) {
+  // WEBHOOK DÉSACTIVÉ - Utilisation de la vérification côté client
+  return NextResponse.json(
+    { error: "Webhook désactivé - utilisation de la vérification côté client" },
+    { status: 200 }
+  );
+
+  /* ANCIEN CODE WEBHOOK - COMMENTÉ
+export async function POST_DISABLED(req: NextRequest) {
   const body = await request.text();
   const signature = (await headers()).get("stripe-signature")!;
 
@@ -79,6 +87,7 @@ async function handleCheckoutSessionCompleted(
     console.log(`Order ${session.metadata.orderId} marked as PAID`);
   }
 }
+*/ // FIN DU COMMENTAIRE WEBHOOK
 
 async function handlePaymentIntentSucceeded(
   paymentIntent: Stripe.PaymentIntent

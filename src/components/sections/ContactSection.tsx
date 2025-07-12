@@ -75,26 +75,26 @@ const ContactSection: React.FC = () => {
     {
       icon: "📧",
       title: "Email",
-      value: "contact@deltagum.com",
+      value: "Bonplanpro76@gmail.com",
       description: "Réponse sous 24h",
     },
     {
       icon: "📞",
       title: "Téléphone",
-      value: "+33 1 23 45 67 89",
+      value: "07 88 64 69 83",
       description: "Lun-Ven 9h-18h",
     },
     {
       icon: "📍",
       title: "Adresse",
-      value: "123 Rue de la Gourmandise",
-      description: "75001 Paris, France",
+      value: "7 Rue Saint-Gervais",
+      description: "76000 Rouen",
     },
     {
       icon: "⏰",
       title: "Horaires",
-      value: "Lun-Ven 9h-18h",
-      description: "Sam 10h-16h",
+      value: "Lun-Dim : 11h00 – 21h00 ",
+      description: "Peut varier les jours fériés",
     },
   ];
 

@@ -12,10 +12,19 @@ interface OrderDetails {
   totalAmount: number;
   status: string;
   items: Array<{
-    productName: string;
-    variantFlavor: string;
+    id: string;
+    productId: string;
+    variantId: string;
     quantity: number;
     price: number;
+    product: {
+      id: string;
+      name: string;
+    };
+    variant: {
+      id: string;
+      flavor: string;
+    };
   }>;
   customer: {
     firstName: string;
@@ -44,16 +53,53 @@ export default function SuccessPage() {
     // Récupérer les détails de la commande
     const fetchOrderDetails = async () => {
       try {
+        // D'abord, vérifier et confirmer le paiement si order_id est présent
+        const orderId = searchParams.get("order_id");
+        if (orderId) {
+          const verifyResponse = await fetch("/api/checkout/verify-payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              sessionId,
+              orderId,
+            }),
+          });
+
+          const verifyData = await verifyResponse.json();
+          if (verifyData.success) {
+            console.log(
+              "🎉 Données de commande reçues:",
+              verifyData.data.order
+            );
+            console.log(
+              "📦 Items de la commande:",
+              verifyData.data.order.items
+            );
+            setOrderDetails(verifyData.data.order);
+            clearCart();
+            localStorage.removeItem("deltagum_pending_order");
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Fallback : utiliser l'ancienne méthode
         const response = await fetch(`/api/checkout/session/${sessionId}`);
         const data = await response.json();
 
         if (data.success) {
+          console.log(
+            "🔄 Fallback - Données de commande reçues:",
+            data.data.order
+          );
+          console.log(
+            "📦 Fallback - Items de la commande:",
+            data.data.order.items
+          );
           setOrderDetails(data.data.order);
-
-          // Vider le panier après un paiement réussi
           clearCart();
-
-          // Nettoyer les données de commande en attente
           localStorage.removeItem("deltagum_pending_order");
         } else {
           setError(
@@ -184,21 +230,31 @@ export default function SuccessPage() {
                   Articles commandés
                 </h3>
                 <div className="space-y-2">
-                  {orderDetails.items.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center py-2 border-b border-gray-100"
-                    >
-                      <span className="text-gray-600">
-                        {item.productName} - {item.variantFlavor} x
-                        {item.quantity}
-                      </span>
-                      <span className="font-medium">
-                        {(item.price * item.quantity).toFixed(2)}€
-                      </span>
-                    </div>
-                  ))}
-                  <div className="flex justify-between items-center pt-3 font-bold text-lg">
+                  {orderDetails.items.map((item, index) => {
+                    console.log(`🔍 Item ${index}:`, item);
+                    console.log(`📦 Product:`, item.product);
+                    console.log(`🎨 Variant:`, item.variant);
+
+                    return (
+                      <div
+                        key={index}
+                        className="flex text-black justify-between items-center py-2 border-b border-gray-100"
+                      >
+                        <span className="text-gray-600">
+                          {item.product?.name ||
+                            `Produit (ID: ${item.productId})`}{" "}
+                          -{" "}
+                          {item.variant?.flavor ||
+                            `Variant (ID: ${item.variantId})`}{" "}
+                          x {item.quantity}
+                        </span>
+                        <span className="font-medium">
+                          {(Number(item.price) * item.quantity).toFixed(2)}€
+                        </span>
+                      </div>
+                    );
+                  })}
+                  <div className="flex justify-between items-center pt-3 font-bold text-black text-lg">
                     <span>Total</span>
                     <span>{Number(orderDetails.totalAmount).toFixed(2)}€</span>
                   </div>

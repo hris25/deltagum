@@ -15,7 +15,8 @@ export function StripeTestButton() {
       addNotification({
         type: "error",
         title: "Panier vide",
-        message: "Ajoutez des produits à votre panier avant de tester le paiement",
+        message:
+          "Ajoutez des produits à votre panier avant de tester le paiement",
       });
       return;
     }
@@ -31,10 +32,11 @@ export function StripeTestButton() {
         },
         body: JSON.stringify({
           customerId: customer?.id || "test-customer",
-          items: cart.items.map(item => ({
+          items: cart.items.map((item) => ({
             productId: item.productId,
             variantId: item.variantId,
             quantity: item.quantity,
+            price: item.price, // Inclure le prix du panier
           })),
           shippingAddress: {
             firstName: "Test",
@@ -79,13 +81,15 @@ export function StripeTestButton() {
       } else {
         throw new Error("URL de paiement non reçue");
       }
-
     } catch (error) {
       console.error("Erreur de test:", error);
       addNotification({
         type: "error",
         title: "Erreur de test",
-        message: error instanceof Error ? error.message : "Erreur lors du test de paiement",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Erreur lors du test de paiement",
       });
     } finally {
       setIsLoading(false);

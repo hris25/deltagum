@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
     // Calculer le montant total
     let totalAmount = 0;
     const orderItems: Array<{
+      id: string;
       productId: string;
       variantId: string;
       quantity: number;
@@ -129,11 +130,22 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const itemPrice = Number((product as any).basePrice);
+      // Utiliser le prix du panier s'il est fourni, sinon utiliser le basePrice
+      const itemPrice = item.price
+        ? Number(item.price)
+        : Number((product as any).basePrice);
       const itemTotal = itemPrice * item.quantity;
       totalAmount += itemTotal;
 
+      console.log(`📦 Création commande - Item: ${product.name}`);
+      console.log(`💰 Prix reçu du panier: ${item.price || "non fourni"}€`);
+      console.log(`💰 Prix de base produit: ${product.basePrice}€`);
+      console.log(`💰 Prix utilisé: ${itemPrice}€`);
+      console.log(`🔢 Quantité: ${item.quantity}`);
+      console.log(`💵 Total item: ${itemTotal}€`);
+
       orderItems.push({
+        id: globalThis.crypto.randomUUID(),
         productId: item.productId,
         variantId: item.variantId,
         quantity: item.quantity,

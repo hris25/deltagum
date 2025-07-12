@@ -50,7 +50,19 @@ export async function POST(request: NextRequest) {
     // Créer les line items pour Stripe
     const lineItems: any[] = [];
 
+    console.log("🛒 Détails de la commande pour Stripe:");
+    console.log("📦 Total commande:", order.totalAmount);
+    console.log("📋 Items de la commande:", order.items);
+
     for (const item of order.items) {
+      const unitPrice = Number(item.price);
+      const totalItemPrice = unitPrice * item.quantity;
+
+      console.log(`📦 Item: ${item.product.name}`);
+      console.log(`💰 Prix unitaire: ${unitPrice}€`);
+      console.log(`🔢 Quantité: ${item.quantity}`);
+      console.log(`💵 Total item: ${totalItemPrice}€`);
+
       lineItems.push({
         price_data: {
           currency: "eur",
@@ -71,11 +83,56 @@ export async function POST(request: NextRequest) {
               variantId: item.variantId,
             },
           },
-          unit_amount: Math.round(Number(item.price) * 100), // Prix en centimes
+          unit_amount: Math.round(unitPrice * 100), // Prix en centimes
         },
         quantity: item.quantity,
       });
     }
+
+    const calculatedTotal =
+      lineItems.reduce((total, item) => {
+        return total + item.price_data.unit_amount * item.quantity;
+      }, 0) / 100;
+
+    console.log("💳 Total calculé pour Stripe:", calculatedTotal + "€");
+    console.log(
+      "📊 Différence:",
+      calculatedTotal - Number(order.totalAmount) + "€"
+    );
+
+    // Ajouter les frais de livraison si nécessaire
+    const shippingThreshold = 25; // Livraison gratuite dès 25€
+    const shippingCost = 4.9; // Frais de livraison standard
+
+    if (Number(order.totalAmount) < shippingThreshold) {
+      console.log(`🚚 Ajout frais de livraison: ${shippingCost}€`);
+      lineItems.push({
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: "Frais de livraison",
+            description: "Livraison standard (3-5 jours ouvrés)",
+            images: [],
+            metadata: {
+              productId: "shipping",
+              variantId: "standard",
+            },
+          },
+          unit_amount: Math.round(shippingCost * 100), // En centimes
+        },
+        quantity: 1,
+      });
+    } else {
+      console.log("🆓 Livraison gratuite (commande ≥ 25€)");
+    }
+
+    // Recalculer le total avec livraison
+    const finalCalculatedTotal =
+      lineItems.reduce((total, item) => {
+        return total + item.price_data.unit_amount * item.quantity;
+      }, 0) / 100;
+
+    console.log("💳 Total final avec livraison:", finalCalculatedTotal + "€");
 
     // Créer la session Stripe Checkout
     const session = await stripe.checkout.sessions.create({
@@ -83,7 +140,7 @@ export async function POST(request: NextRequest) {
       line_items: lineItems,
       mode: "payment",
       customer_email: order.customer.email,
-      success_url: `${process.env.NEXTAUTH_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.NEXTAUTH_URL}/success?session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/cancel`,
       metadata: {
         orderId: order.id,
