@@ -7,7 +7,7 @@ import { useAuth, useCart, useProduct, useUI } from "@/stores";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu, ShoppingCart, User, X } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,6 +15,8 @@ const Header: React.FC = () => {
   const { openCart } = useUI();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
   const { products, fetchProducts } = useProduct();
   const { isAuthenticated, user, logout } = useAuth();
 
@@ -32,6 +34,26 @@ const Header: React.FC = () => {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  // Fermer le menu utilisateur en cliquant à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    if (isUserDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isUserDropdownOpen]);
 
   const totalItems = getTotalItems();
 
@@ -220,44 +242,63 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Connexion */}
             {isAuthenticated ? (
-              <div className="relative group">
+              <div className="relative" ref={userDropdownRef}>
                 <motion.button
-                  className="relative p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="relative p-2 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors touch-manipulation"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
+                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                 >
                   <User className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                 </motion.button>
 
                 {/* Menu déroulant utilisateur */}
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-9999">
-                  <div className="p-3 border-b">
-                    <p className="text-sm font-medium text-gray-900">
-                      {user?.firstName} {user?.lastName}
-                    </p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
-                  </div>
-                  <div className="p-2">
-                    <Link href="/profile">
-                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors mb-1">
-                        Mon profil
-                      </button>
-                    </Link>
-                    {user?.role === "ADMIN" && (
-                      <Link href="/admin/dashboard">
-                        <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors mb-1">
-                          Dashboard Admin
-                        </button>
-                      </Link>
-                    )}
-                    <button
-                      onClick={logout}
-                      className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                <AnimatePresence>
+                  {isUserDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border z-50"
                     >
-                      Se déconnecter
-                    </button>
-                  </div>
-                </div>
+                      <div className="p-3 border-b">
+                        <p className="text-sm font-medium text-gray-900">
+                          {user?.firstName} {user?.lastName}
+                        </p>
+                        <p className="text-xs text-gray-500">{user?.email}</p>
+                      </div>
+                      <div className="p-2">
+                        <Link href="/profile">
+                          <button
+                            className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors mb-1"
+                            onClick={() => setIsUserDropdownOpen(false)}
+                          >
+                            Mon profil
+                          </button>
+                        </Link>
+                        {user?.role === "ADMIN" && (
+                          <Link href="/admin/dashboard">
+                            <button
+                              className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors mb-1"
+                              onClick={() => setIsUserDropdownOpen(false)}
+                            >
+                              Dashboard Admin
+                            </button>
+                          </Link>
+                        )}
+                        <button
+                          onClick={() => {
+                            logout();
+                            setIsUserDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                        >
+                          Se déconnecter
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <Link href="/auth">
@@ -275,7 +316,7 @@ const Header: React.FC = () => {
             <motion.div className="relative">
               <motion.button
                 onClick={openCartModal}
-                className="relative p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="relative p-2 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors touch-manipulation"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >

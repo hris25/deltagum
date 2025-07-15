@@ -7,38 +7,38 @@ const testimonials = [
   {
     id: 1,
     testimonial:
-      "Deltagum m'aide énormément à gérer mon stress quotidien. La saveur fraise est délicieuse et l'effet relaxant se fait sentir rapidement.",
-    author: "Marie Dubois - Paris",
+      "Personnel très sympa les produits sont de qualité et les prix raisonnable je vous conseille de venir.",
+    author: "Maxence Martins",
   },
   {
     id: 2,
     testimonial:
-      "J'ai découvert Deltagum pour mes problèmes de sommeil. Les délices à la myrtille m'aident à me détendre le soir. Qualité exceptionnelle.",
-    author: "Pierre Martin - Lyon",
+      "Accueil au top. De très bons vendeurs qui prennent bien en compte nos besoins afin de nous proposer les meilleurs produits !! Je recommande fortement, jamais été déçu",
+    author: "Clémentine Chandellier",
   },
   {
     id: 3,
     testimonial:
-      "Excellente alternative naturelle pour la relaxation ! Les délices Deltagum saveur pomme sont parfaits pour décompresser.",
-    author: "Sophie Leroy - Marseille",
+      "Super boutique ! Large choix de produits de qualité, avec de très bons conseils de la part de l’équipe. L’accueil est toujours chaleureux et professionnel. Je recommande vivement à tous ceux qui recherchent du CBD de qualité !",
+    author: "Dylan Lesueur",
   },
   {
     id: 4,
     testimonial:
-      "En tant que professionnel du bien-être, je recommande Deltagum. Produit de qualité premium, dosage parfait et saveurs naturelles remarquables.",
-    author: "Thomas Rousseau - Toulouse",
+      "Je suis passée dans cette boutique cet après midi , j ai été très bien accueillie par 2 petits jeunes très sympathiques. Beaucoup de produits très variés. De bons conseils. Je recommande.",
+    author: "Dominique JEHANNO",
   },
   {
     id: 5,
     testimonial:
-      "Service client très professionnel ! Ils m'ont bien expliqué les effets et conseillé le bon dosage. Produit efficace pour la détente.",
-    author: "Emma Moreau - Bordeaux",
+      "J’ai été très bien conseillé, l’équipe est à l’écoute et a pris le temps de répondre à mes questions. Les produits sont de très bonne qualité, je suis vraiment satisfaite. Je reviendrai sans hésiter !",
+    author: "Chloé Simon",
   },
   {
     id: 6,
     testimonial:
-      "Livraison rapide et discrète. Les délices Deltagum sont devenus indispensables dans ma routine bien-être quotidienne.",
-    author: "Lucas Petit - Nice",
+      "Je suis passée à la boutique aujourd’hui par curiosité, le vendeur est adorable et professionnel, il a pris le temps de tout m’expliquer, super expérience !",
+    author: "Camille zelazko",
   },
 ];
 

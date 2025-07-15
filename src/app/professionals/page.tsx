@@ -14,12 +14,52 @@ export default function ProfessionalsPage() {
     businessType: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logique d'envoi du formulaire
-    console.log("Formulaire soumis:", formData);
-    alert("Votre demande a été envoyée ! Nous vous recontacterons sous 48h.");
+    setIsSubmitting(true);
+
+    try {
+      // Préparer les données pour l'API
+      const contactData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: `Entreprise: ${formData.company}\nType d'activité: ${formData.businessType}\n\n${formData.message}`,
+        type: "professional" as const,
+      };
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        alert("✅ " + result.message);
+        // Réinitialiser le formulaire
+        setFormData({
+          company: "",
+          name: "",
+          email: "",
+          phone: "",
+          businessType: "",
+          message: "",
+        });
+      } else {
+        throw new Error(result.message || "Erreur lors de l'envoi");
+      }
+    } catch (error) {
+      console.error("Erreur envoi formulaire professionnel:", error);
+      alert("❌ Erreur lors de l'envoi de votre demande. Veuillez réessayer.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -280,9 +320,12 @@ export default function ProfessionalsPage() {
                     type="submit"
                     variant="primary"
                     size="lg"
+                    disabled={isSubmitting}
                     className="w-full sm:w-auto px-6 sm:px-8 text-sm sm:text-base"
                   >
-                    📧 Envoyer ma demande
+                    {isSubmitting
+                      ? "⏳ Envoi en cours..."
+                      : "📧 Envoyer ma demande"}
                   </Button>
                   <p className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3">
                     Nous vous recontacterons sous 48h avec une offre

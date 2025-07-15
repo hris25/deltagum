@@ -262,13 +262,13 @@ const FAQSection: React.FC = () => {
               </motion.button>
 
               <motion.a
-                href="mailto:support@deltagum.com"
+                href="mailto:Gumdelta@gmail.com"
                 className="border-2 border-pink-500 text-pink-500 px-6 py-3 rounded-lg font-semibold hover:bg-pink-50 transition-all duration-300"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <span className="mr-2">📧</span>
-                support@deltagum.com
+                Gumdelta@gmail.com
               </motion.a>
             </div>
           </div>

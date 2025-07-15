@@ -23,8 +23,8 @@ export default function Settings() {
   const [settings, setSettings] = useState({
     siteName: "Deltagum",
     siteDescription: "Produits Delta-9 THC de qualité premium",
-    contactEmail: "contact@deltagum.com",
-    supportEmail: "support@deltagum.com",
+    contactEmail: "Gumdelta@gmail.com",
+    supportEmail: "Gumdelta@gmail.com",
     currency: "EUR",
     language: "fr",
     timezone: "Europe/Paris",

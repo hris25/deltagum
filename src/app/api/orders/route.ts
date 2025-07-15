@@ -115,25 +115,31 @@ export async function POST(request: NextRequest) {
       price: number;
     }> = [];
 
-    for (const item of validatedData.items) {
-      const product = await prisma.product.findUnique({
-        where: { id: item.productId },
-      });
+    console.log("🔍 Traitement des items de commande:", validatedData.items);
 
+    // Récupérer tous les produits en une seule requête pour optimiser
+    const productIds = validatedData.items.map((item) => item.productId);
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, name: true, basePrice: true },
+    });
+
+    console.log(
+      `✅ ${products.length} produits trouvés sur ${productIds.length} demandés`
+    );
+
+    // Traiter tous les items et calculer le total
+    for (const item of validatedData.items) {
+      const product = products.find((p) => p.id === item.productId);
       if (!product) {
-        console.error(
-          `Produit ${item.productId} non trouvé. Articles disponibles:`,
-          await prisma.product.findMany({ select: { id: true, name: true } })
-        );
-        throw new Error(
-          `Produit ${item.productId} non trouvé. Vérifiez que les produits existent en base de données.`
-        );
+        console.error(`❌ Produit ${item.productId} non trouvé`);
+        throw new Error(`Produit ${item.productId} non trouvé.`);
       }
 
       // Utiliser le prix du panier s'il est fourni, sinon utiliser le basePrice
       const itemPrice = item.price
         ? Number(item.price)
-        : Number((product as any).basePrice);
+        : Number(product.basePrice);
       const itemTotal = itemPrice * item.quantity;
       totalAmount += itemTotal;
 
@@ -221,22 +227,63 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Créer la commande avec transaction
-    const order = await prisma.$transaction(async (tx: any) => {
-      // Créer la commande
-      const orderId = globalThis.crypto.randomUUID();
-      const newOrder = await tx.order.create({
-        data: {
-          id: orderId,
-          customerId,
-          status: "PENDING",
-          totalAmount: validatedData.totalAmount || totalAmount,
-          shippingAddress: validatedData.shippingAddress,
-          updatedAt: new Date(),
-          items: {
-            create: orderItems,
+    // Créer la commande avec transaction (timeout augmenté)
+    const order = await prisma.$transaction(
+      async (tx: any) => {
+        // Créer la commande
+        const orderId = globalThis.crypto.randomUUID();
+        const newOrder = await tx.order.create({
+          data: {
+            id: orderId,
+            customerId,
+            status: "PENDING",
+            totalAmount: validatedData.totalAmount || totalAmount,
+            shippingAddress: validatedData.shippingAddress,
+            updatedAt: new Date(),
+            items: {
+              create: orderItems,
+            },
           },
-        },
+          include: {
+            customer: true,
+            items: {
+              include: {
+                product: true,
+                variant: true,
+              },
+            },
+          },
+        });
+
+        // Mettre à jour le stock des variantes
+        for (const item of validatedData.items) {
+          await tx.productVariant.update({
+            where: { id: item.variantId },
+            data: {
+              stock: {
+                decrement: item.quantity,
+              },
+            },
+          });
+        }
+
+        return newOrder;
+      },
+      {
+        timeout: 15000, // 15 secondes au lieu de 5 par défaut
+      }
+    );
+
+    // Envoyer l'email de confirmation de commande
+    try {
+      console.log("📧 Envoi email de confirmation de commande...");
+
+      // Importer dynamiquement pour éviter les problèmes d'IDE
+      const { sendOrderConfirmationEmail } = await import("@/lib/email");
+
+      // Récupérer les détails complets de la commande pour l'email
+      const orderWithDetails = await prisma.order.findUnique({
+        where: { id: order.id },
         include: {
           customer: true,
           items: {
@@ -248,20 +295,47 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Mettre à jour le stock des variantes
-      for (const item of validatedData.items) {
-        await tx.productVariant.update({
-          where: { id: item.variantId },
-          data: {
-            stock: {
-              decrement: item.quantity,
-            },
+      if (orderWithDetails) {
+        const emailData = {
+          orderId: orderWithDetails.id,
+          customerName: `${orderWithDetails.customer.firstName} ${orderWithDetails.customer.lastName}`,
+          customerEmail: orderWithDetails.customer.email,
+          totalAmount: Number(orderWithDetails.totalAmount),
+          items: orderWithDetails.items.map((item) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            price: Number(item.price),
+            flavor: item.variant?.flavor || undefined,
+          })),
+          shippingAddress: {
+            firstName: orderWithDetails.shippingFirstName,
+            lastName: orderWithDetails.shippingLastName,
+            street: orderWithDetails.shippingStreet,
+            city: orderWithDetails.shippingCity,
+            postalCode: orderWithDetails.shippingPostalCode,
+            phone: orderWithDetails.shippingPhone || undefined,
           },
-        });
-      }
+        };
 
-      return newOrder;
-    });
+        const emailResult = await sendOrderConfirmationEmail(emailData);
+
+        if (emailResult.success) {
+          console.log("✅ Email de confirmation envoyé avec succès");
+        } else {
+          console.error(
+            "❌ Erreur envoi email de confirmation:",
+            emailResult.error
+          );
+          // Ne pas faire échouer la commande si l'email échoue
+        }
+      }
+    } catch (emailError) {
+      console.error(
+        "❌ Erreur lors de l'envoi de l'email de confirmation:",
+        emailError
+      );
+      // Ne pas faire échouer la commande si l'email échoue
+    }
 
     const response: ApiResponse = {
       success: true,

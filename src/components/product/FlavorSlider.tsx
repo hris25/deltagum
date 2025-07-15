@@ -20,6 +20,7 @@ interface FlavorSliderProps {
   variants: ProductVariant[];
   selectedVariant: ProductVariant | null;
   onVariantSelect: (variant: ProductVariant) => void;
+  autoSelectOnSlide?: boolean; // Nouvelle prop pour activer la sélection automatique
 }
 
 const flavorConfig = {
@@ -56,8 +57,16 @@ const FlavorSlider: React.FC<FlavorSliderProps> = ({
   variants,
   selectedVariant,
   onVariantSelect,
+  autoSelectOnSlide = false,
 }) => {
   const swiperRef = useRef<any>(null);
+
+  // Fonction pour gérer le changement de slide
+  const handleSlideChange = (swiper: any) => {
+    if (autoSelectOnSlide && variants[swiper.activeIndex]) {
+      onVariantSelect(variants[swiper.activeIndex]);
+    }
+  };
 
   const getFlavorConfig = (flavor: string) => {
     return (
@@ -140,6 +149,7 @@ const FlavorSlider: React.FC<FlavorSliderProps> = ({
           spaceBetween={16}
           slidesPerView={1}
           centeredSlides={true}
+          onSlideChange={handleSlideChange}
           pagination={{
             clickable: true,
             bulletClass: "swiper-pagination-bullet !bg-pink-300",

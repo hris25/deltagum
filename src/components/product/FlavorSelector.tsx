@@ -96,6 +96,7 @@ const FlavorSelector: React.FC<FlavorSelectorProps> = ({
         variants={variants}
         selectedVariant={selectedVariant}
         onVariantSelect={onVariantSelect}
+        autoSelectOnSlide={true}
       />
     );
   }

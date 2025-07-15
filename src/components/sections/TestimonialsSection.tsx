@@ -14,7 +14,7 @@ const TestimonialsSection: React.FC = () => {
   return (
     <section
       id="testimonials"
-      className="py-12 sm:py-16 bg-gradient-to-br from-pink-50 to-orange-50 relative overflow-hidden"
+      className="py-12 pr-5 sm:py-16 bg-gradient-to-br from-pink-50 to-orange-50 relative overflow-hidden"
     >
       <div className="container mx-auto px-3 sm:px-4 lg:px-8">
         {/* Section Header */}
