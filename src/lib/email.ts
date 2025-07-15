@@ -134,7 +134,7 @@ export const sendContactEmail = async (data: ContactFormData) => {
 
     const { data: result, error } = await resend.emails.send({
       from: "Deltagum <noreply@deltagum.com>",
-      to: ["Gumdelta@gmail.com"],
+      to: ["lokoharris25@gmail.com"],
       subject: isProf
         ? "Nouvelle demande professionnelle - Deltagum"
         : "Nouveau message de contact - Deltagum",
@@ -309,7 +309,7 @@ export const sendOrderConfirmationEmail = async (data: OrderData) => {
     // Email de notification à l'admin
     const adminResult = await resend.emails.send({
       from: "Deltagum <noreply@deltagum.com>",
-      to: ["Gumdelta@gmail.com"],
+      to: ["lokoharris25@gmail.com"],
       subject: `Nouvelle commande #${data.orderId} - ${data.customerName}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
