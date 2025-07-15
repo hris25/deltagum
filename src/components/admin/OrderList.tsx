@@ -3,10 +3,10 @@
 import { Button, Card, CardContent } from "@/components/ui";
 import { motion } from "framer-motion";
 import {
-  Calendar,
+  ChevronLeft,
+  ChevronRight,
   DollarSign,
   Eye,
-  Package,
   Search,
   ShoppingCart,
   User,
@@ -55,34 +55,55 @@ export default function OrderList({ onViewOrder }: OrderListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState<string>("ALL");
 
+  // États de pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const ordersPerPage = 10;
+
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [currentPage, statusFilter, searchTerm, dateFilter]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      console.log("🔍 [ADMIN] Récupération de toutes les commandes...");
+      console.log("🔍 [ADMIN] Récupération des commandes avec pagination...");
 
-      const response = await fetch("/api/orders");
+      // Construire les paramètres de requête
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: ordersPerPage.toString(),
+        ...(statusFilter !== "ALL" && { status: statusFilter }),
+        ...(searchTerm && { search: searchTerm }),
+        ...(dateFilter !== "ALL" && { dateFilter }),
+      });
+
+      const response = await fetch(`/api/orders?${params}`);
       const data = await response.json();
 
       console.log("📥 [ADMIN] Réponse API orders:", data);
-      console.log("📊 [ADMIN] Statut de la réponse:", response.status);
 
       if (data.success) {
-        const allOrders = data.data.orders || [];
-        console.log("✅ [ADMIN] Commandes récupérées:", allOrders.length);
-        console.log("📋 [ADMIN] Détails des commandes:", allOrders);
-        setOrders(allOrders);
+        const orders = data.data.orders || [];
+        const total = data.data.totalOrders || 0;
+
+        console.log("✅ [ADMIN] Commandes récupérées:", orders.length);
+        console.log("📊 [ADMIN] Total des commandes:", total);
+
+        setOrders(orders);
+        setTotalOrders(total);
+        setTotalPages(Math.ceil(total / ordersPerPage));
       } else {
         console.error(
           "❌ [ADMIN] Erreur lors du chargement des commandes:",
           data.error
         );
+        setOrders([]);
       }
     } catch (err) {
       console.error("❌ [ADMIN] Erreur de connexion:", err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -139,122 +160,55 @@ export default function OrderList({ onViewOrder }: OrderListProps) {
     }
   };
 
-  const filteredOrders = orders.filter((order) => {
-    const matchesSearch =
-      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customer.firstName
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      order.customer.lastName
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      order.customer.email.toLowerCase().includes(searchTerm.toLowerCase());
+  // Fonction pour réinitialiser la pagination lors du changement de filtres
+  const handleFilterChange = (filterType: string, value: string) => {
+    setCurrentPage(1); // Retour à la première page
 
-    const matchesStatus =
-      statusFilter === "ALL" || order.status === statusFilter;
-
-    let matchesDate = true;
-    if (dateFilter !== "ALL") {
-      const orderDate = new Date(order.createdAt);
-      const now = new Date();
-
-      switch (dateFilter) {
-        case "TODAY":
-          matchesDate = orderDate.toDateString() === now.toDateString();
-          break;
-        case "WEEK":
-          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-          matchesDate = orderDate >= weekAgo;
-          break;
-        case "MONTH":
-          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-          matchesDate = orderDate >= monthAgo;
-          break;
-      }
+    switch (filterType) {
+      case "status":
+        setStatusFilter(value);
+        break;
+      case "search":
+        setSearchTerm(value);
+        break;
+      case "date":
+        setDateFilter(value);
+        break;
     }
-
-    return matchesSearch && matchesStatus && matchesDate;
-  });
-
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              Gestion des Commandes
-            </h2>
-            <div className="h-4 bg-gray-200 rounded w-32 mt-2 animate-pulse"></div>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          {[...Array(5)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardContent className="p-6">
-                <div className="h-20 bg-gray-200 rounded"></div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Gestion des Commandes
-          </h2>
-          <p className="text-black">
-            {filteredOrders.length} commande(s) au total
-          </p>
-        </div>
-      </div>
-
-      {/* Filtres et Recherche */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+      {/* Filtres */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between bg-white p-4 rounded-lg border">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Rechercher une commande..."
+            placeholder="Rechercher par client, email, ID..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black bg-white"
+            onChange={(e) => handleFilterChange("search", e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-black"
           />
         </div>
 
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black bg-white"
+          onChange={(e) => handleFilterChange("status", e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-black"
         >
-          <option value="ALL">Tous les statuts ({orders.length})</option>
-          <option value="PENDING">
-            En attente ({orders.filter((o) => o.status === "PENDING").length})
-          </option>
-          <option value="PAID">
-            Payées ({orders.filter((o) => o.status === "PAID").length})
-          </option>
-          <option value="SHIPPED">
-            Expédiées ({orders.filter((o) => o.status === "SHIPPED").length})
-          </option>
-          <option value="DELIVERED">
-            Livrées ({orders.filter((o) => o.status === "DELIVERED").length})
-          </option>
-          <option value="CANCELLED">
-            Annulées ({orders.filter((o) => o.status === "CANCELLED").length})
-          </option>
+          <option value="ALL">Tous les statuts</option>
+          <option value="PENDING">En attente</option>
+          <option value="PAID">Payées</option>
+          <option value="SHIPPED">Expédiées</option>
+          <option value="DELIVERED">Livrées</option>
+          <option value="CANCELLED">Annulées</option>
         </select>
 
         <select
           value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black bg-white"
+          onChange={(e) => handleFilterChange("date", e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-black"
         >
           <option value="ALL">Toutes les dates</option>
           <option value="TODAY">Aujourd'hui</option>
@@ -268,7 +222,12 @@ export default function OrderList({ onViewOrder }: OrderListProps) {
       </div>
 
       {/* Liste des Commandes */}
-      {filteredOrders.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Chargement des commandes...</p>
+        </div>
+      ) : orders.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
             <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -277,7 +236,7 @@ export default function OrderList({ onViewOrder }: OrderListProps) {
                 ? "Aucune commande trouvée"
                 : "Aucune commande enregistrée"}
             </h3>
-            <p className="text-black">
+            <p className="text-gray-600">
               {searchTerm || statusFilter !== "ALL" || dateFilter !== "ALL"
                 ? "Essayez de modifier vos filtres de recherche"
                 : "Les commandes apparaîtront ici après les premiers achats"}
@@ -285,32 +244,31 @@ export default function OrderList({ onViewOrder }: OrderListProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
-          {filteredOrders.map((order, index) => (
-            <motion.div
-              key={order.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-            >
-              <Card
-                className="hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => onViewOrder?.(order)}
+        <>
+          <div className="grid grid-cols-1 gap-6">
+            {orders.map((order) => (
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-semibold">
-                        <ShoppingCart className="w-6 h-6" />
-                      </div>
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-4 mb-4">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900">
+                              Commande #{order.id.slice(-8)}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {formatDate(order.createdAt)}
+                            </p>
+                          </div>
 
-                      <div>
-                        <div className="flex items-center space-x-3">
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            Commande #{order.id.slice(-8)}
-                          </h3>
                           <span
-                            className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                            className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                               order.status
                             )}`}
                           >
@@ -318,82 +276,121 @@ export default function OrderList({ onViewOrder }: OrderListProps) {
                           </span>
                         </div>
 
-                        <div className="flex items-center space-x-4 mt-1 text-sm text-gray-600">
-                          <div className="flex items-center">
-                            <User className="w-4 h-4 mr-1" />
-                            <span>
-                              {order.customer.firstName}{" "}
-                              {order.customer.lastName}
-                            </span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="flex items-center space-x-3">
+                            <User className="w-5 h-5 text-gray-400" />
+                            <div>
+                              <p className="font-medium text-gray-900">
+                                {order.customer.firstName}{" "}
+                                {order.customer.lastName}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {order.customer.email}
+                              </p>
+                            </div>
                           </div>
-                          <div className="flex items-center">
-                            <Calendar className="w-4 h-4 mr-1" />
-                            <span>{formatDate(order.createdAt)}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Package className="w-4 h-4 mr-1" />
-                            <span>{order.items.length} article(s)</span>
+
+                          <div className="flex items-center space-x-3">
+                            <DollarSign className="w-5 h-5 text-gray-400" />
+                            <div>
+                              <p className="font-medium text-gray-900">
+                                {formatCurrency(order.totalAmount)}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {order.items.length} article
+                                {order.items.length > 1 ? "s" : ""}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="text-right">
-                      <div className="flex items-center text-2xl font-bold text-gray-900">
-                        <DollarSign className="w-6 h-6 mr-1" />
-                        {Number(order.totalAmount).toFixed(2)}€
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onViewOrder?.(order);
-                        }}
-                        className="mt-2"
-                      >
-                        <Eye className="w-4 h-4 mr-2" />
-                        Voir détails
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Aperçu des articles */}
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center space-x-2">
-                      {order.items.slice(0, 3).map((item, itemIndex) => (
-                        <div
-                          key={itemIndex}
-                          className="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-1"
+                      <div className="ml-4">
+                        <Button
+                          onClick={() => onViewOrder?.(order)}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center space-x-2"
                         >
-                          <span className="text-sm font-medium">
-                            {item.quantity}x
-                          </span>
-                          <span className="text-sm text-gray-700">
-                            {item.product.name}
-                          </span>
-                          {item.variant && (
-                            <span className="text-xs text-gray-500">
-                              ({item.variant.flavor})
-                            </span>
-                          )}
-                          <span className="text-xs text-gray-400">
-                            {formatCurrency(item.price)}
-                          </span>
-                        </div>
-                      ))}
-                      {order.items.length > 3 && (
-                        <span className="text-sm text-gray-500">
-                          +{order.items.length - 3} autre(s)
-                        </span>
-                      )}
+                          <Eye className="w-4 h-4" />
+                          <span>Voir détails</span>
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex items-center justify-between">
+              <div className="text-sm text-gray-700">
+                Affichage de {(currentPage - 1) * ordersPerPage + 1} à{" "}
+                {Math.min(currentPage * ordersPerPage, totalOrders)} sur{" "}
+                {totalOrders} commandes
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                  className="flex items-center space-x-1"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Précédent</span>
+                </Button>
+
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum: number;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+
+                    return (
+                      <Button
+                        key={pageNum}
+                        variant={
+                          currentPage === pageNum ? "primary" : "outline"
+                        }
+                        size="sm"
+                        onClick={() => setCurrentPage(pageNum)}
+                        className="w-8 h-8 p-0"
+                      >
+                        {pageNum}
+                      </Button>
+                    );
+                  })}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="flex items-center space-x-1"
+                >
+                  <span>Suivant</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

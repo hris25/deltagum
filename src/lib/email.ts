@@ -36,6 +36,12 @@ interface OrderData {
   };
 }
 
+interface PasswordResetData {
+  email: string;
+  name: string;
+  resetUrl: string;
+}
+
 export const sendOrderConfirmation = async (
   to: string,
   orderData: {
@@ -134,7 +140,7 @@ export const sendContactEmail = async (data: ContactFormData) => {
 
     const { data: result, error } = await resend.emails.send({
       from: "Deltagum <noreply@deltagum.com>",
-      to: ["lokoharris25@gmail.com"],
+      to: ["Gumdelta@gmail.com"],
       subject: isProf
         ? "Nouvelle demande professionnelle - Deltagum"
         : "Nouveau message de contact - Deltagum",
@@ -202,6 +208,13 @@ export const sendContactEmail = async (data: ContactFormData) => {
 // Fonction améliorée pour les confirmations de commande
 export const sendOrderConfirmationEmail = async (data: OrderData) => {
   try {
+    console.log("📧 Envoi email de confirmation de commande...");
+    console.log("Données reçues:", JSON.stringify(data, null, 2));
+    console.log(
+      "Adresse de livraison:",
+      JSON.stringify(data.shippingAddress, null, 2)
+    );
+
     const itemsHtml = data.items
       .map(
         (item) => `
@@ -309,7 +322,7 @@ export const sendOrderConfirmationEmail = async (data: OrderData) => {
     // Email de notification à l'admin
     const adminResult = await resend.emails.send({
       from: "Deltagum <noreply@deltagum.com>",
-      to: ["lokoharris25@gmail.com"],
+      to: ["Gumdelta@gmail.com"],
       subject: `Nouvelle commande #${data.orderId} - ${data.customerName}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -339,13 +352,15 @@ export const sendOrderConfirmationEmail = async (data: OrderData) => {
 
           <h3>Adresse de livraison :</h3>
           <p>
-            ${data.shippingAddress.firstName} ${
-        data.shippingAddress.lastName
+            ${data.shippingAddress?.firstName || "N/A"} ${
+        data.shippingAddress?.lastName || "N/A"
       }<br>
-            ${data.shippingAddress.street}<br>
-            ${data.shippingAddress.postalCode} ${data.shippingAddress.city}
+            ${data.shippingAddress?.street || "Adresse non spécifiée"}<br>
+            ${data.shippingAddress?.postalCode || ""} ${
+        data.shippingAddress?.city || "Ville non spécifiée"
+      }
             ${
-              data.shippingAddress.phone
+              data.shippingAddress?.phone
                 ? `<br>Tél: ${data.shippingAddress.phone}`
                 : ""
             }
@@ -365,6 +380,91 @@ export const sendOrderConfirmationEmail = async (data: OrderData) => {
     return { success: true, data: { customerResult, adminResult } };
   } catch (error) {
     console.error("❌ Erreur envoi emails de commande:", error);
+    return { success: false, error };
+  }
+};
+
+// Fonction pour envoyer un email de réinitialisation de mot de passe
+export const sendPasswordResetEmail = async (data: PasswordResetData) => {
+  try {
+    console.log("📧 Envoi email de réinitialisation de mot de passe...");
+
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #ec4899; font-size: 28px; margin: 0;">🔐 Réinitialisation de mot de passe</h1>
+          </div>
+
+          <h2 style="color: #333; font-size: 20px; margin-bottom: 20px;">
+            Bonjour ${data.name},
+          </h2>
+
+          <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+            Vous avez demandé la réinitialisation de votre mot de passe pour votre compte Deltagum.
+          </p>
+
+          <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+            Cliquez sur le bouton ci-dessous pour créer un nouveau mot de passe :
+          </p>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${data.resetUrl}"
+               style="background: linear-gradient(135deg, #ec4899, #f97316);
+                      color: white;
+                      padding: 15px 30px;
+                      text-decoration: none;
+                      border-radius: 8px;
+                      font-weight: bold;
+                      font-size: 16px;
+                      display: inline-block;">
+              Réinitialiser mon mot de passe
+            </a>
+          </div>
+
+          <div style="background: #fef3c7; border: 1px solid #fbbf24; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <p style="color: #92400e; font-size: 14px; margin: 0; line-height: 1.5;">
+              <strong>⚠️ Important :</strong><br>
+              • Ce lien est valide pendant 1 heure seulement<br>
+              • Si vous n'avez pas demandé cette réinitialisation, ignorez cet email<br>
+              • Votre mot de passe actuel reste inchangé tant que vous n'en créez pas un nouveau
+            </p>
+          </div>
+
+          <p style="color: #666; font-size: 14px; line-height: 1.6; margin-top: 30px;">
+            Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :<br>
+            <a href="${data.resetUrl}" style="color: #ec4899; word-break: break-all;">${data.resetUrl}</a>
+          </p>
+
+          <div style="border-top: 1px solid #e5e7eb; margin-top: 30px; padding-top: 20px; text-align: center;">
+            <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+              Cet email a été envoyé par Deltagum<br>
+              Si vous avez des questions, contactez-nous à Gumdelta@gmail.com
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const { data: result, error } = await resend.emails.send({
+      from: "Deltagum <noreply@deltagum.com>",
+      to: [data.email],
+      subject: "🔐 Réinitialisation de votre mot de passe Deltagum",
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error("❌ Erreur Resend:", error);
+      return { success: false, error };
+    }
+
+    console.log("✅ Email de réinitialisation envoyé:", result?.id);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error(
+      "❌ Erreur lors de l'envoi de l'email de réinitialisation:",
+      error
+    );
     return { success: false, error };
   }
 };

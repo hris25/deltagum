@@ -274,68 +274,8 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    // Envoyer l'email de confirmation de commande
-    try {
-      console.log("📧 Envoi email de confirmation de commande...");
-
-      // Importer dynamiquement pour éviter les problèmes d'IDE
-      const { sendOrderConfirmationEmail } = await import("@/lib/email");
-
-      // Récupérer les détails complets de la commande pour l'email
-      const orderWithDetails = await prisma.order.findUnique({
-        where: { id: order.id },
-        include: {
-          customer: true,
-          items: {
-            include: {
-              product: true,
-              variant: true,
-            },
-          },
-        },
-      });
-
-      if (orderWithDetails) {
-        const emailData = {
-          orderId: orderWithDetails.id,
-          customerName: `${orderWithDetails.customer.firstName} ${orderWithDetails.customer.lastName}`,
-          customerEmail: orderWithDetails.customer.email,
-          totalAmount: Number(orderWithDetails.totalAmount),
-          items: orderWithDetails.items.map((item) => ({
-            name: item.product.name,
-            quantity: item.quantity,
-            price: Number(item.price),
-            flavor: item.variant?.flavor || undefined,
-          })),
-          shippingAddress: {
-            firstName: orderWithDetails.shippingFirstName,
-            lastName: orderWithDetails.shippingLastName,
-            street: orderWithDetails.shippingStreet,
-            city: orderWithDetails.shippingCity,
-            postalCode: orderWithDetails.shippingPostalCode,
-            phone: orderWithDetails.shippingPhone || undefined,
-          },
-        };
-
-        const emailResult = await sendOrderConfirmationEmail(emailData);
-
-        if (emailResult.success) {
-          console.log("✅ Email de confirmation envoyé avec succès");
-        } else {
-          console.error(
-            "❌ Erreur envoi email de confirmation:",
-            emailResult.error
-          );
-          // Ne pas faire échouer la commande si l'email échoue
-        }
-      }
-    } catch (emailError) {
-      console.error(
-        "❌ Erreur lors de l'envoi de l'email de confirmation:",
-        emailError
-      );
-      // Ne pas faire échouer la commande si l'email échoue
-    }
+    // L'email sera envoyé après la vérification du paiement dans /api/checkout/verify-payment
+    console.log("📝 Commande créée, en attente de paiement...");
 
     const response: ApiResponse = {
       success: true,

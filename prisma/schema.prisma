@@ -21,6 +21,8 @@ model Customer {
   city             String?
   postalCode       String?
   role             UserRole          @default(USER)
+  resetToken       String?           @unique
+  resetTokenExpiry DateTime?
   loyaltyProgram   LoyaltyProgram?
   orders           Order[]
 

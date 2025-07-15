@@ -12,27 +12,11 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      // Timeout de 10 secondes
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      console.log("🔄 Chargement des produits avec cache...");
 
-      const response = await fetch("/api/products", {
-        cache: "no-store", // Éviter les problèmes de cache
-        headers: {
-          "Content-Type": "application/json",
-        },
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error(
-          `Erreur HTTP: ${response.status} - ${response.statusText}`
-        );
-      }
-
-      const data = await response.json();
+      // Utiliser le cache pour éviter les appels multiples
+      const { cachedFetch } = await import("@/lib/cache");
+      const data = await cachedFetch.products();
 
       if (data.success && data.data && Array.isArray(data.data.products)) {
         console.log("Produits chargés avec succès:", data.data.products.length);

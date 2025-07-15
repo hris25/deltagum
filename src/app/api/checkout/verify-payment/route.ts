@@ -56,6 +56,47 @@ export async function POST(request: NextRequest) {
         },
       });
 
+      // Envoyer l'email de confirmation après paiement réussi
+      try {
+        console.log("📧 Envoi email de confirmation après paiement...");
+
+        const { sendOrderConfirmationEmail } = await import("@/lib/email");
+
+        const emailData = {
+          orderId: updatedOrder.id,
+          customerName: `${updatedOrder.customer.firstName} ${updatedOrder.customer.lastName}`,
+          customerEmail: updatedOrder.customer.email,
+          totalAmount: Number(updatedOrder.totalAmount),
+          items: updatedOrder.items.map((item) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            price: Number(item.price),
+            flavor: item.variant?.flavor || undefined,
+          })),
+          shippingAddress: {
+            firstName: updatedOrder.shippingFirstName,
+            lastName: updatedOrder.shippingLastName,
+            street: updatedOrder.shippingStreet,
+            city: updatedOrder.shippingCity,
+            postalCode: updatedOrder.shippingPostalCode,
+            phone: updatedOrder.shippingPhone || undefined,
+          },
+        };
+
+        const emailResult = await sendOrderConfirmationEmail(emailData);
+
+        if (emailResult.success) {
+          console.log(
+            "✅ Email de confirmation envoyé avec succès après paiement"
+          );
+        } else {
+          console.error("❌ Erreur envoi email:", emailResult.error);
+        }
+      } catch (emailError) {
+        console.error("❌ Erreur lors de l'envoi de l'email:", emailError);
+        // Ne pas faire échouer la vérification pour un problème d'email
+      }
+
       const response: ApiResponse = {
         success: true,
         data: {

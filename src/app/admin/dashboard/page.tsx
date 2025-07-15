@@ -54,12 +54,14 @@ export default function AdminDashboard() {
     monthlyStats: [],
   });
 
-  // Fonction pour charger les statistiques
+  // Fonction pour charger les statistiques avec cache
   const loadStats = async () => {
     try {
-      console.log("🔄 Chargement des statistiques...");
-      const response = await fetch("/api/admin/stats-simple");
-      const data = await response.json();
+      console.log("🔄 Chargement des statistiques avec cache...");
+
+      // Utiliser le cache pour éviter les appels multiples
+      const { cachedFetch } = await import("@/lib/cache");
+      const data = (await cachedFetch.stats()) as any;
 
       console.log("📊 Réponse API stats:", data);
 
@@ -176,7 +178,11 @@ export default function AdminDashboard() {
 
   const handleUpdateOrderStatus = async (orderId: string, status: string) => {
     try {
-      const response = await fetch(`/api/orders/${orderId}`, {
+      console.log(
+        `🔄 Mise à jour du statut de la commande ${orderId} vers ${status}`
+      );
+
+      const response = await fetch(`/api/admin/orders/${orderId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -184,15 +190,23 @@ export default function AdminDashboard() {
         body: JSON.stringify({ status }),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
         // Mettre à jour l'ordre local
         setSelectedOrder((prev: any) => (prev ? { ...prev, status } : null));
-        alert("Statut de la commande mis à jour avec succès !");
+        console.log(`✅ Statut mis à jour avec succès: ${data.data.message}`);
+
+        // Optionnel: afficher une notification de succès
+        // Vous pouvez remplacer alert par un toast/notification plus élégant
+        alert(`✅ ${data.data.message}`);
       } else {
-        alert("Erreur lors de la mise à jour du statut");
+        console.error("❌ Erreur API:", data.error);
+        alert(`❌ Erreur: ${data.error}`);
       }
     } catch (error) {
-      alert("Erreur de connexion");
+      console.error("❌ Erreur de connexion:", error);
+      alert("❌ Erreur de connexion");
     }
   };
 

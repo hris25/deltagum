@@ -11,16 +11,14 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Calendar,
-  CheckCircle,
-  Edit,
   Mail,
   MapPin,
   Package,
   Phone,
   User,
-  XCircle,
 } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 
 interface OrderItem {
   id: string;
@@ -74,9 +72,22 @@ export default function OrderDetails({
   onBack,
   onUpdateStatus,
 }: OrderDetailsProps) {
-  const handleStatusChange = (newStatus: string) => {
-    if (onUpdateStatus) {
-      onUpdateStatus(order.id, newStatus);
+  const [isEditingStatus, setIsEditingStatus] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(order.status);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!onUpdateStatus) return;
+
+    setIsUpdating(true);
+    try {
+      await onUpdateStatus(order.id, newStatus);
+      setSelectedStatus(newStatus);
+      setIsEditingStatus(false);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du statut:", error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -144,17 +155,70 @@ export default function OrderDetails({
         </div>
 
         <div className="flex items-center space-x-3">
-          <span
-            className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-              order.status
-            )}`}
-          >
-            {getStatusLabel(order.status)}
-          </span>
-          {/*<Button variant="outline" size="sm">
-            <Printer className="w-4 h-4 mr-2" />
-            Imprimer
-          </Button>*/}
+          {isEditingStatus ? (
+            <div className="flex items-center space-x-2">
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-black"
+                disabled={isUpdating}
+              >
+                {statusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
+              <Button
+                size="sm"
+                onClick={() => handleStatusChange(selectedStatus)}
+                disabled={isUpdating || selectedStatus === order.status}
+                className="flex items-center space-x-1"
+              >
+                {isUpdating ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                ) : (
+                  <>
+                    <span>💾</span>
+                    <span>Sauvegarder</span>
+                  </>
+                )}
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsEditingStatus(false);
+                  setSelectedStatus(order.status);
+                }}
+                disabled={isUpdating}
+              >
+                Annuler
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <span
+                className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                  order.status
+                )}`}
+              >
+                {getStatusLabel(order.status)}
+              </span>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditingStatus(true)}
+                className="flex items-center space-x-1"
+              >
+                <span>✏️</span>
+                <span>Modifier statut</span>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -303,7 +367,7 @@ export default function OrderDetails({
                   <span className="text-lg font-semibold text-black ">
                     Total
                   </span>
-                  <span className="text-lg text-black font-bold text-pink-600">
+                  <span className="text-lg font-bold text-pink-600">
                     {Number(order.totalAmount).toFixed(2)}€
                   </span>
                 </div>
@@ -356,63 +420,92 @@ export default function OrderDetails({
             </CardContent>
           </Card>
 
-          {/* Actions */}
-          {/*<Card>
+          {/* Actions rapides */}
+          <Card>
             <CardHeader>
-              <CardTitle className="pb-2">Actions</CardTitle>
+              <CardTitle className="pb-2">Actions rapides</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {order.status === "PENDING" && (
                 <>
                   <Button
-                    className="w-full bg-blue-600 hover:bg-blue-700"
-                    onClick={() => onUpdateStatus?.(order.id, "PROCESSING")}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={() => handleStatusChange("PAID")}
+                    disabled={isUpdating}
                   >
-                    <Edit className="w-4 h-4 mr-2" />
-                    Marquer en cours
+                    <span className="mr-2">💳</span>
+                    Marquer comme payée
                   </Button>
                   <Button
-                    className="w-full bg-green-600 hover:bg-green-700"
-                    onClick={() => onUpdateStatus?.(order.id, "COMPLETED")}
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => handleStatusChange("CANCELLED")}
+                    disabled={isUpdating}
                   >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Marquer terminée
+                    <span className="mr-2">❌</span>
+                    Annuler la commande
                   </Button>
                 </>
               )}
 
-              {order.status === "PROCESSING" && (
+              {order.status === "PAID" && (
+                <>
+                  <Button
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={() => handleStatusChange("SHIPPED")}
+                    disabled={isUpdating}
+                  >
+                    <span className="mr-2">🚚</span>
+                    Marquer comme expédiée
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => handleStatusChange("CANCELLED")}
+                    disabled={isUpdating}
+                  >
+                    <span className="mr-2">❌</span>
+                    Annuler la commande
+                  </Button>
+                </>
+              )}
+
+              {order.status === "SHIPPED" && (
                 <Button
-                  className="w-full bg-green-600 hover:bg-green-700"
-                  onClick={() => onUpdateStatus?.(order.id, "COMPLETED")}
+                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  onClick={() => handleStatusChange("DELIVERED")}
+                  disabled={isUpdating}
                 >
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Marquer terminée
+                  <span className="mr-2">📦</span>
+                  Marquer comme livrée
                 </Button>
               )}
 
-              {order.status !== "CANCELLED" && order.status !== "COMPLETED" && (
+              {(order.status === "DELIVERED" ||
+                order.status === "CANCELLED") && (
+                <div className="text-center py-4">
+                  <p className="text-gray-500 text-sm">
+                    {order.status === "DELIVERED"
+                      ? "✅ Commande terminée"
+                      : "❌ Commande annulée"}
+                  </p>
+                </div>
+              )}
+
+              {/* Bouton pour forcer l'édition du statut */}
+              <div className="pt-3 border-t border-gray-200">
                 <Button
-                  variant="danger"
+                  variant="outline"
                   className="w-full"
-                  onClick={() => onUpdateStatus?.(order.id, "CANCELLED")}
+                  onClick={() => setIsEditingStatus(true)}
+                  disabled={isUpdating}
                 >
-                  <XCircle className="w-4 h-4 mr-2" />
-                  Annuler la commande
+                  <span className="mr-2">✏️</span>
+                  Modifier le statut manuellement
                 </Button>
-              )}
-
-              <Button variant="outline" className="w-full">
-                <Mail className="w-4 h-4 mr-2" />
-                Contacter le client
-              </Button>
-
-              <Button variant="outline" className="w-full">
-                <Truck className="w-4 h-4 mr-2" />
-                Suivi de livraison
-              </Button>
+              </div>
             </CardContent>
-          </Card>*/}
+          </Card>
         </div>
       </div>
     </motion.div>

@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -22,6 +23,7 @@ const AuthPage = () => {
     city: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState("");
 
   const { login, register, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
@@ -36,14 +38,31 @@ const AuthPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+    setSuccessMessage("");
 
     try {
-      if (isLogin) {
+      if (isForgotPassword) {
+        // Gérer la demande de réinitialisation
+        const response = await fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: formData.email }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setSuccessMessage(data.message);
+        } else {
+          setErrors({ general: data.error });
+        }
+      } else if (isLogin) {
         await login(formData.email, formData.password);
+        router.push("/");
       } else {
         await register(formData);
+        router.push("/");
       }
-      router.push("/");
     } catch (error: any) {
       setErrors({ general: error.message || "Une erreur est survenue" });
     }
@@ -76,10 +95,29 @@ const AuthPage = () => {
             />
           </Link>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-black">
-            {isLogin ? "Connexion" : "Créer un compte"}
+            {isForgotPassword
+              ? "Mot de passe oublié"
+              : isLogin
+              ? "Connexion"
+              : "Créer un compte"}
           </h2>
           <p className="mt-2 text-center text-sm text-black">
-            {isLogin ? (
+            {isForgotPassword ? (
+              <>
+                Vous vous souvenez de votre mot de passe ?{" "}
+                <button
+                  onClick={() => {
+                    setIsForgotPassword(false);
+                    setIsLogin(true);
+                    setSuccessMessage("");
+                    setErrors({});
+                  }}
+                  className="font-medium text-pink-600 hover:text-pink-500"
+                >
+                  Se connecter
+                </button>
+              </>
+            ) : isLogin ? (
               <>
                 Pas encore de compte ?{" "}
                 <button
@@ -248,48 +286,58 @@ const AuthPage = () => {
               </>
             )}
 
-            {/* Mot de passe */}
-            <div className="w-full">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-black mb-3"
-              >
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-700 w-5 h-5 z-10" />
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  className="w-full pl-12 pr-14 h-14 text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-pink-500 focus:ring-2 transition-all duration-200"
-                  placeholder="Votre mot de passe"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                />
-                <button
-                  type="button"
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-700 hover:text-black transition-colors z-10 p-1"
-                  onClick={() => setShowPassword(!showPassword)}
+            {/* Mot de passe - masqué en mode "mot de passe oublié" */}
+            {!isForgotPassword && (
+              <div className="w-full">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-black mb-3"
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
+                  Mot de passe
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-700 w-5 h-5 z-10" />
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    className="w-full pl-12 pr-14 h-14 text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-pink-500 focus:ring-2 transition-all duration-200"
+                    placeholder="Votre mot de passe"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-700 hover:text-black transition-colors z-10 p-1"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+                {!isLogin && (
+                  <p className="mt-1 text-xs text-black">
+                    Minimum 6 caractères
+                  </p>
+                )}
               </div>
-              {!isLogin && (
-                <p className="mt-1 text-xs text-black">Minimum 6 caractères</p>
-              )}
-            </div>
+            )}
           </div>
 
-          {/* Erreurs */}
+          {/* Messages */}
           {errors.general && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm text-center">
               {errors.general}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-700 text-sm text-center">
+              {successMessage}
             </div>
           )}
 
@@ -304,11 +352,31 @@ const AuthPage = () => {
             >
               {isLoading
                 ? "Chargement..."
+                : isForgotPassword
+                ? "Envoyer le lien de réinitialisation"
                 : isLogin
                 ? "Se connecter"
                 : "Créer mon compte"}
             </Button>
           </div>
+
+          {/* Lien "Mot de passe oublié" en mode connexion */}
+          {isLogin && !isForgotPassword && (
+            <div className="text-center pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsForgotPassword(true);
+                  setIsLogin(false);
+                  setErrors({});
+                  setSuccessMessage("");
+                }}
+                className="text-sm text-pink-600 hover:text-pink-500 font-medium"
+              >
+                Mot de passe oublié ?
+              </button>
+            </div>
+          )}
 
           {/* Avertissement 18+ */}
           <div className="text-center pt-4 border-t border-gray-100">
