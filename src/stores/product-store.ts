@@ -16,7 +16,11 @@ export const useProductStore = create<ProductStore>((set, get) => ({
 
       // Utiliser le cache pour éviter les appels multiples
       const { cachedFetch } = await import("@/lib/cache");
-      const data = await cachedFetch.products();
+      const data = (await cachedFetch.products()) as {
+        success: boolean;
+        data?: { products: Product[] };
+        error?: string;
+      };
 
       if (data.success && data.data && Array.isArray(data.data.products)) {
         console.log("Produits chargés avec succès:", data.data.products.length);
